@@ -7,22 +7,3 @@
     </div>
   </div>
 </div>
-
-
- <?php
- 
- function event_default_coords_banner($sem_in, $room_in, $time_in) {
- 
- echo '<div class="container-fluid text-center" id="sem_header">';
- 
- echo '<h2>';
- echo $sem_in . ' - ' . $time_in . ' - ' . 'room ' . $room_in;
- echo '</h2>';
- 
- echo '</div>';
- 
- echo '<br>';
- 
- }
- 
-  ?>
