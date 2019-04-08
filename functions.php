@@ -1,5 +1,11 @@
 <?php
 
+ function title_in_head($discipline) {
+ 
+ echo '<title>Seminar in ' . $discipline . ' - Texas Tech University</title>';
+
+ }
+
  function main_banner($discipline) {
 
   echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
@@ -15,7 +21,7 @@
  }
  
  
- function event_default_coords_banner($sem_in, $room_in, $time_in) {
+ function default_coords_banner($sem_in, $room_in, $time_in) {
  
  echo '<div class="container-fluid text-center" id="sem_header">';
  
@@ -165,7 +171,7 @@
  
  
 
-function generate_index_page($sem_mydepth, $sem_in, $room_in, $time_in) {
+function generate_index_page($discipline, $sem_mydepth, $sem_in, $room_in, $time_in) {
 
  
 echo '<!DOCTYPE html>';
@@ -176,7 +182,8 @@ echo '<html>';
 echo '<head>';
 
  include($sem_mydepth . "sem_head_links.php");
- include($sem_mydepth . "sem_title.php");
+
+ title_in_head($discipline);
  
 echo '</head>';
 //==================
@@ -185,14 +192,11 @@ echo '</head>';
 //------------------
 echo '<body>';
 
-
  include($sem_mydepth . "sem_navbar.php");
-
-  $discipline = "Applied Mathematics";
 
  main_banner($discipline);
  
- event_default_coords_banner($sem_in, $room_in, $time_in);
+ default_coords_banner($sem_in, $room_in, $time_in);
  
  events_loop();
 

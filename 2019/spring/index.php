@@ -8,7 +8,9 @@
  $myroom = "MATH 110";
  $mytime = "Wednesday, 4-5 pm";
 
- generate_index_page($sem_mydepth, $mysem, $myroom, $mytime); 
+ $discipline = "Applied Mathematics";
+
+ generate_index_page($discipline, $sem_mydepth, $mysem, $myroom, $mytime); 
  
  ?>
  
