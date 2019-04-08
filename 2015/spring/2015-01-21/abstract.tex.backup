@@ -1,0 +1,106 @@
+\documentclass[oneside]{article}
+
+\usepackage{amssymb,amsfonts}
+\usepackage{amsthm}
+\usepackage{palatino}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{fancyhdr}
+\usepackage[none]{hyphenat} 
+\usepackage[left=.75 in,top=.75 in,right=.75 in,bottom=.75 in,nohead]{geometry}
+
+\pagestyle{fancy}
+\lfoot{}
+\cfoot{\url{http://www.math.ttu.edu/~gbornia/AppliedMath/}}
+\rfoot{}
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+
+\linespread{1.5}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\talktitle}{ Zagier polynomials and\\  modified N\"{o}rlund polynomials}
+
+\newcommand{\talkspeaker}{ \textbf{\sc Atul Dixit} \\ \textit{Tulane University}}
+
+\newcommand{\talkdate}{\textbf{Tuesday, November 11, 2014}}
+
+\newcommand{\timelocation}{\textbf{Room: MATH 114.  Time: 4:00pm.}}
+
+\newcommand{\talkabstract}{
+In 1998, Don Zagier studied the numbers $B_{n}^{*}$ which he
+called the 'modified Bernoulli numbers'. They satisfy amusing variants of the
+properties of the ordinary Bernoulli numbers. Recently, Victor H. Moll,
+Christophe Vignat and I studied an obvious generalization of the modified
+Bernoulli numbers, which we call 'Zagier polynomials'. These polynomials
+are also rich in structure, and we have shown that a theory parallel to that of ordinary
+Bernoulli polynomials exists. Zagier showed that his asymptotic formula for $B_{2n}^{*}$
+can be replaced by an exact formula. In an ongoing joint work with M. L. Glasser and
+K. Mahlburg, we have shown that a similar thing is true for the Zagier 
+polynomials. This exact formula involves Chebyshev polynomials and infinite series of
+Bessel function $Y_{n}(z)$. Through a motivation coming from diffraction theory, 
+C. M. Linton has already proved this, but in a disguised form, and our proof is new
+and gives new results along the way. We also derive Zagier's formula as a limiting case
+of this general formula, which is interesting in itself. In the
+second part of my talk, I will discuss another generalization of the modified Bernoulli 
+numbers that we recently studied along with A. Kabza, namely 'modified N\"{o}rlund polynomials'
+$B_{n}^{(\alpha)*}$ , $\alpha\in\mathbb{N}$, and obtain their generating
+function along with applications.​ The talk will include an interesting mix of special functions, 
+number theory, probability and umbral calculus.
+}
+
+\begin{document}
+
+%\thispagestyle{empty}
+
+\vspace*{-2cm}
+\begin{center}
+{\LARGE Texas Tech University - Department of Mathematics and Statistics }
+
+\vspace{0.2cm}
+{\LARGE Seminar in Applied Mathematics }
+\vspace{0.2cm}
+
+
+\medskip
+
+\textbf{\Huge {\uppercase{\talktitle}} }
+
+{\LARGE
+\talkspeaker\\
+\talkdate\\
+\timelocation
+}
+
+\vspace*{10pt}
+
+% \includegraphics[width=2.5in]{macine-biscotti.jpg}
+\end{center}
+
+%\vspace*{10pt}
+
+
+%\addtolength{\linewidth}{-1cm}
+\begin{center}
+
+\fbox{\parbox{\linewidth}{
+\begin{center}
+\begin{minipage}[c]{.96\linewidth}
+{
+\vspace*{.25cm}
+{\LARGE \textbf{ABSTRACT.}}
+{\large \talkabstract}
+\vspace*{.25cm}
+}
+\end{minipage}
+
+
+
+\end{center}
+}}
+
+\end{center}
+\end{document}

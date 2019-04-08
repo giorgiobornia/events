@@ -1,0 +1,167 @@
+
+/* Body ====================== */
+
+body {
+  
+   font-family: "Trebuchet MS", Helvetica, sans-serif;
+   background-image: url('./img/bg-gray.png');
+  
+}
+
+
+/* Navigation bar ====================== */
+
+#my_nav {
+   background-color: #303030;
+   font-family: "Courier Bold", Courier, monospace;  /*this one acts on the $HOME only*/
+   font-weight: bold;
+/* height: 100px; */
+   border: 0px;
+   color: #00FF00;  /*not working*/
+/*    box-shadow: 10px grey; */
+}
+
+
+#my_navbar {
+ background-color: #303030;
+font-family: "Courier Bold", Courier, monospace;
+font-weight: bold;
+color: #00FF00; /*not working*/
+}
+
+.navbar-inverse .navbar-brand {
+  color: #00FF00;    /*somehow this wins over my_nav and my_navbar... does the class win over the instance?*/
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #00FF00;  /*looking at the inspector I found how to have this override the rest*/
+}
+
+#compensate_navbar_height {
+
+  height: 50px;  /*I should make this dynamic*/
+
+}
+
+/* Banner =============================== */
+
+.my_banner {
+    background-image: url("./img/ttu_tower.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+/*     overflow: hidden; */ /*what is this for?*/
+    color: white;
+     text-shadow: 0 1px 0 white, 0 0 5px white;
+     margin-bottom: 0px;
+     padding-top: 0px;
+     padding-bottom: 0px;
+}
+
+.my_filter {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Coordinates =============================== */
+
+#sem_header {
+ background-color: lightgray; 
+ color:       black;
+}
+
+
+
+/* ============================== */
+/* ============================== */
+/* Item, table ============================== */
+
+table.sem_item {
+  margin-left: auto;
+  margin-right: auto;
+  border: none;
+  border-color: transparent;
+  border-right: 0;
+  border-left: 0;
+  border-top: 0;
+  border-bottom: 0;
+  border-collapse: separate;
+  
+}
+
+table.sem_item td,th,tr  {
+/*   background-color: lightgray; */
+  padding-left:   10px;
+  padding-right:  10px;
+  padding-top:     5px;
+  padding-bottom:  5px;
+  border: none;
+  border-spacing: 0;
+  border-color: transparent;
+}
+
+
+/* Item image  ============================== */
+
+img.sem_image {
+/* clip-path: inset(10px 20px 30px 40px); */
+/*      clip: rect(0px,60px,200px,0px); */
+height: 100px;
+width: 100px;
+/*      margin-left:   10px; */
+/*      margin-right:  10px; */
+/*      margin-top:    10px; */
+/*      margin-bottom: 10px; */
+/*  or, we could place the image inside a div */
+  
+}
+
+/*.image-container {
+  background-image: url('http://i.stack.imgur.com/GA6bB.png');
+  background-size:cover;
+  background-repeat:no-repeat;
+  width:250px;
+  height:250px;
+} */
+/* http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css */
+
+
+/* Item abstract  ============================== */
+
+span.abst {
+  display: none;
+}
+
+.show_hide {
+    display:none;
+}
+.plus:after {
+    content:" +";
+}
+.minus:after {
+    content:" -";
+}
+
+
+
+/* ============================== */
+/* Table (old) ============================== */
+/* ============================== */
+
+
+table.sem_table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.sem_table td,th,tr  {
+  padding-left:   10px;
+  padding-right:  10px;
+  padding-top:     5px;
+  padding-bottom:  5px;
+  border: 1px solid black;
+}
+
+table.sem_table thead {
+ background:maroon;
+ color:white;
+}
+
