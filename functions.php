@@ -1,7 +1,18 @@
 <?php
 
+ function main_banner($discipline) {
 
- 
+  echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
+  echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
+  echo '<div class="container text-center">';
+  echo '      <h1> Seminar in ' . $discipline . ' </h1>';
+  echo '       <h2> Department of Mathematics and Statistics </h2>';  
+  echo '     <h2> Texas Tech University </h2>'; 
+  echo '  </div>';
+  echo '</div>';
+  echo '</div>';
+
+ }
  
  
  function event_default_coords_banner($sem_in, $room_in, $time_in) {
@@ -43,8 +54,10 @@ echo '<body>';
 
 
  include($sem_mydepth . "sem_navbar.php");
- include($sem_mydepth . "sem_banner.php");
 
+  $discipline = "Applied Mathematics";
+
+ main_banner($discipline);
  
  event_default_coords_banner($sem_in, $room_in, $time_in);
  
