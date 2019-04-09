@@ -164,9 +164,10 @@
   $time_idx                = 3;
   $room_idx                = 4;
   $speaker_idx             = 5;
-  $speaker_image_idx       = 6;
-  $title_idx               = 7;
-  $abstract_file_idx       = 8;
+  $speaker_url_idx         = 6;
+  $speaker_image_idx       = 7;
+  $title_idx               = 8;
+  $abstract_file_idx       = 9;
   
   $csv = array_map('str_getcsv', file($events_csv_file));
   
@@ -207,7 +208,13 @@
     echo "</em>";
     echo "<br>";
     
+    ///@todo: see if I can make this be
+      //     - a link if href is non-empty in the csv file 
+      //     - NOT a link otherwise
+    echo '<a   style="cursor:pointer;" href="' .  $csv[$c][$speaker_url_idx]  .  '">';
     echo $csv[$c][$speaker_idx];
+    echo '</a>';
+    
     echo "<br>";
     
     echo '<a  style="cursor:pointer;" ';

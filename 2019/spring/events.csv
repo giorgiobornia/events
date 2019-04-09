@@ -1,10 +1,10 @@
-month, day, week_day, time, room, speaker, speaker_image, title, abstract_file
-January,22,Tuesday,3:30 PM,ELECE 101,Vyron Vellis,DoubleT.jpg,Metric Spaces with Good Parameterizations,jan22.txt
-January,24,Thursday,3:30 PM,ELECE 101,Hung Tran,DoubleT.jpg,Geometric Partial Differential Equations,jan24.txt
-January,30,Wednesday,4:00 PM,MATH 110,Wei Guo,DoubleT.jpg,High Order Methods on Sparse Grids for    High-Dimensional Partial Differential Equations,jan30.txt
-February,6,Wednesday,4:00 PM,MATH 110,Akif Ibraguimov,DoubleT.jpg,Dynamics of Base Line Interaction for Algae-Daphnie Depending on Time Availability,feb06.txt
-March,19,Wednesday,3:30 PM,ELECE 101,W. Brent Lindquist,DoubleT.jpg,A Dynamical System for Gas Phase Cycling in Porous Media,mar19.txt
-April,3,Wednesday,4:00 PM,MATH 110,Joshua Padgett,DoubleT.jpg,Semi-analytic Methods for the Approximation of Abstract Fractional Extension Problems,apr03.txt
-April,10,Wednesday,4:00 PM,MATH 110,Chunmei Wang,DoubleT.jpg,Primal-Dual Weak Galerkin Finite Element Methods for Elliptic Cauchy Problems,apr10.txt
-April,17,Wednesday,4:00 PM,MATH 110,Yuan Liu,DoubleT.jpg,TBA,apr17.txt
-April,24,Wednesday,4:00 PM,MATH 110,Katharine Long,DoubleT.jpg,A Path Integration Approach to Structural Sensitivity for Dynamical Models in Biology and Astronomy,apr24.txt
+month, day, week_day, time, room, speaker,speaker_url, speaker_image, title, abstract_file
+January,22,Tuesday,3:30 PM,ELECE 101,Vyron Vellis,,DoubleT.jpg,Metric Spaces with Good Parameterizations,jan22.txt
+January,24,Thursday,3:30 PM,ELECE 101,Hung Tran,,DoubleT.jpg,Geometric Partial Differential Equations,jan24.txt
+January,30,Wednesday,4:00 PM,MATH 110,Wei Guo,,DoubleT.jpg,High Order Methods on Sparse Grids for    High-Dimensional Partial Differential Equations,jan30.txt
+February,6,Wednesday,4:00 PM,MATH 110,Akif Ibraguimov,,DoubleT.jpg,Dynamics of Base Line Interaction for Algae-Daphnie Depending on Time Availability,feb06.txt
+March,19,Wednesday,3:30 PM,ELECE 101,W. Brent Lindquist,,DoubleT.jpg,A Dynamical System for Gas Phase Cycling in Porous Media,mar19.txt
+April,3,Wednesday,4:00 PM,MATH 110,Joshua Padgett,,DoubleT.jpg,Semi-analytic Methods for the Approximation of Abstract Fractional Extension Problems,apr03.txt
+April,10,Wednesday,4:00 PM,MATH 110,Chunmei Wang,,DoubleT.jpg,Primal-Dual Weak Galerkin Finite Element Methods for Elliptic Cauchy Problems,apr10.txt
+April,17,Wednesday,4:00 PM,MATH 110,Yuan Liu,,DoubleT.jpg,TBA,apr17.txt
+April,24,Wednesday,4:00 PM,MATH 110,Katharine Long,,DoubleT.jpg,A Path Integration Approach to Structural Sensitivity for Dynamical Models in Biology and Astronomy,apr24.txt
