@@ -1,0 +1,13 @@
+ 
+In Part I of the talk, we first review the asymptotic expansions
+of Foias-Saut-type for all Leray-Hopf weak solutions of the three-dimensional
+Navier-Stokes equations of viscous, incompressible fluids with periodic boundary
+conditions, when the body forces decay in time either exponentially or algebraically.
+We then introduce appropriate systems of decaying functions and corresponding
+asymptotic expansions in those systems. We prove that if the force has a large-time
+asymptotic expansion in Gevrey-Sobolev spaces in such a general system, then any
+Leray-Hopf weak solution admits an asymptotic expansion of the same type. In Part
+II, we present recent studies of the generalized Forchheimer isentropic gas flows in
+porous media, and complex flows of mixed regimes, namely, pre-Darcy, Darcy and
+post-Darcy in the same domain. Rigorous estimates, continuous dependence and
+structural stability results are established.

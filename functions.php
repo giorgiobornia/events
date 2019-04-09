@@ -242,7 +242,9 @@
     ///@todo: see if I can make this be
       //     - a link if href is non-empty in the csv file 
       //     - NOT a link otherwise
-    echo '<a   style="cursor:pointer;" target="_blank" href="' .  $csv[$c][$speaker_url_idx]  .  '">';
+    echo '<a   style="cursor:pointer;"';
+//     echo ' target="_blank" ';
+    echo 'href="' .  $csv[$c][$speaker_url_idx]  .  '">';
     echo $csv[$c][$speaker_idx];
     echo '</a>';
     echo "<br>";
