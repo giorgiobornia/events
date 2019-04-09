@@ -119,7 +119,7 @@
 
 
 
- function title_in_head($discipline) {
+ function title_in_browser_toolbar($discipline) {
  
  echo '<title>Seminar in ' . $discipline . ' - Texas Tech University</title>';
 
@@ -140,12 +140,24 @@
  }
  
  
- function default_coords_banner($year_in, $sem_in, $room_in, $weekday_in, $time_in) {
+ function default_coords_banner($csv) {
+ 
+  $discipline_idx          = 0;
+  $year_idx                = 1;
+  $semester_idx            = 2;
+  $week_day_idx            = 3;
+  $time_idx                = 4;
+  $room_idx                = 5;
+ 
+
+ 
+  $row_regular_meeting_data = 1;
+ 
  
  echo '<div class="container-fluid text-center" id="sem_header">';
  
  echo '<h2>';
- echo $sem_in . ' ' . $year_in . ' - ' . $weekday_in . ', ' . $time_in . ' - ' . 'room ' . $room_in;
+ echo $csv[$row_regular_meeting_data][$semester_idx] . ' ' . $csv[$row_regular_meeting_data][$year_idx] . ' - ' . $csv[$row_regular_meeting_data][$week_day_idx] . ', ' . $csv[$row_regular_meeting_data][$time_idx] . ' - ' . 'room ' . $csv[$row_regular_meeting_data][$room_idx];
  echo '</h2>';
  
  echo '</div>';
@@ -155,7 +167,7 @@
  } 
 
  
- function events_loop_flexible($events_csv_file, $abstracts_folder, $images_folder) {
+ function events_loop_flexible($csv, $abstracts_folder, $images_folder) {
 
 
   $month_idx               = 0;  //if this column is empty, it still generates the page
@@ -169,7 +181,6 @@
   $title_idx               = 8;  //if this column is empty, it still generates the page
   $abstract_file_idx       = 9;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
   
-  $csv = array_map('str_getcsv', file($events_csv_file));
   
     $num_rows = count($csv);  
     //TODO: make sure there are no empty lines at the end...
@@ -179,7 +190,7 @@
     //TODO: do not put other rows below in the csv file
     
     
-    $starting_row = 1;  //the first row is for the column fields
+    $starting_row = 3;  //the first row is for the column fields
     
     
     
@@ -291,19 +302,20 @@
   } 
  
  
- function events_loop() {
-   
+
+function generate_index_page($sem_mydepth) {
+
   $events_csv_file = './events.csv';
   $abstracts_folder = "./abstracts/";
   $images_folder = "./images/";
   
-   events_loop_flexible($events_csv_file, $abstracts_folder, $images_folder);
-   
-   }
- 
+  $csv_map = array_map('str_getcsv', file($events_csv_file));
 
-function generate_index_page($discipline, $sem_mydepth, $year_in, $sem_in, $room_in, $weekday_in, $time_in) {
-
+  $row_regular_meeting_data = 1;
+  $discipline_idx = 0;
+  
+  $discipline = $csv_map[$row_regular_meeting_data][$discipline_idx];
+  
  
 echo '<!DOCTYPE html>';
 
@@ -314,7 +326,7 @@ echo '<head>';
 
  include($sem_mydepth . "sem_head_links.php");
 
- title_in_head($discipline);
+ title_in_browser_toolbar($discipline);
  
 echo '</head>';
 //==================
@@ -327,10 +339,9 @@ echo '<body>';
 
  main_banner($discipline);
  
- default_coords_banner($year_in, $sem_in, $room_in, $weekday_in, $time_in);
+ default_coords_banner($csv_map);
  
- events_loop();
-
+ events_loop_flexible($csv_map, $abstracts_folder, $images_folder);
 
 echo '</body>';
 //------------------

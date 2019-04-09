@@ -1,3 +1,5 @@
+discipline,year,semester,weekday,time,room
+Applied Mathematics,2019,Spring,Wednesday,4-5 PM,MATH 110
 month, day, week_day, time, room, speaker,speaker_url, speaker_image, title, abstract_file
 January,22,Tuesday,3:30 PM,ELECE 101,Vyron Vellis,,DoubleT.jpg,Metric Spaces with Good Parameterizations,jan22.txt
 January,24,Thursday,3:30 PM,ELECE 101,Hung Tran,,DoubleT.jpg,Geometric Partial Differential Equations,jan24.txt
