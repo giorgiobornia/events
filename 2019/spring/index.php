@@ -7,6 +7,3 @@
  generate_index_page($sem_mydepth); 
  
  ?>
- 
- 
-

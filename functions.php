@@ -12,28 +12,28 @@
  echo ' <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="my_nav">                                                                    ';
  echo '                                                                                                                                                       ';
  echo '<div class="container">                                                                                                                                ';
- echo '                                                                                                                                                              ';
+ echo '                                                                                                                                                       ';
  echo '<div class="navbar-header">                                                                                                                            ';
- echo '                                                                                                                                                              ';
+ echo '                                                                                                                                                       ';
  echo '<button type="button" class="navbar-toggle collapsed"                                                                                                  ';
- echo '        data-toggle="collapse" data-target="#my_navbar" aria-expanded="false" aria-controls="my_navbar">                                                      ';
- echo '                                                                                                                                                              ';
+ echo '        data-toggle="collapse" data-target="#my_navbar" aria-expanded="false" aria-controls="my_navbar">                                               ';
+ echo '                                                                                                                                                       ';
  echo '<span class="sr-only">Toggle navigation</span> <!--is this needed?-->                                                                                  ';
- echo '                                                                                                                                                              ';
+ echo '                                                                                                                                                       ';
  echo '<span class="icon-bar"></span>                                                                                                                         ';
  echo '<span class="icon-bar"></span>                                                                                                                         ';
  echo '<span class="icon-bar"></span>  <!--these are for the three dashes that look like a button-->                                                          ';
- echo '                                                                                                                                                              ';
+ echo '                                                                                                                                                       ';
  echo '</button>                                                                                                                                              ';
- echo '                                                                                                                                                              ';
+ echo '                                                                                                                                                       ';
  echo '<a class="navbar-brand" href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/">$HOME</a>                                                      ';
  echo '</div>                                                                                                                                                 ';
- echo '                                                                                                                                                              ';
+ echo '                                                                                                                                                       ';
  echo '<div id="my_navbar" class="navbar-collapse collapse" role="navigation">                                                                                ';
- echo '                                                                                                                                                              ';
+ echo '                                                                                                                                                       ';
  echo '<ul class="nav navbar-nav navbar-right">  <!-- <ul class="navbar"> this was my old class -->                                                           ';
  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/about.php">  ./about</a></li>                                                   ';
- echo '                                                                                                                                                              ';
+ echo '                                                                                                                                                       ';
  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2019 </a>                                                            ';
  echo '  <ul class="dropdown-menu">                                                                                                                           ';
  echo '    <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2019/spring/">spring </a></li>                                                ';
@@ -157,7 +157,11 @@
  echo '<div class="container-fluid text-center" id="sem_header">';
  
  echo '<h2>';
- echo $csv[$row_regular_meeting_data][$semester_idx] . ' ' . $csv[$row_regular_meeting_data][$year_idx] . ' - ' . $csv[$row_regular_meeting_data][$week_day_idx] . ', ' . $csv[$row_regular_meeting_data][$time_idx] . ' - ' . 'room ' . $csv[$row_regular_meeting_data][$room_idx];
+ echo $csv[$row_regular_meeting_data][$semester_idx] . ' ' . 
+      $csv[$row_regular_meeting_data][$year_idx] . ' - ' . 
+      $csv[$row_regular_meeting_data][$week_day_idx] . ', ' . 
+      $csv[$row_regular_meeting_data][$time_idx] . ' - ' . 'room ' . 
+      $csv[$row_regular_meeting_data][$room_idx];
  echo '</h2>';
  
  echo '</div>';
@@ -167,7 +171,7 @@
  } 
 
  
- function events_loop_flexible($csv, $abstracts_folder, $images_folder) {
+ function loop_over_events($csv, $abstracts_folder, $images_folder) {
 
 
   $month_idx               = 0;  //if this column is empty, it still generates the page
@@ -176,10 +180,12 @@
   $time_idx                = 3;  //if this column is empty, it still generates the page
   $room_idx                = 4;  //if this column is empty, it still generates the page
   $speaker_idx             = 5;  //if this column is empty, it still generates the page
-  $speaker_url_idx         = 6;  //if this column is empty, it still generates the page
-  $speaker_image_idx       = 7;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
-  $title_idx               = 8;  //if this column is empty, it still generates the page
-  $abstract_file_idx       = 9;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+  $speaker_department_idx  = 6;  //if this column is empty, it still generates the page
+  $speaker_institution_idx = 7;  //if this column is empty, it still generates the page
+  $speaker_url_idx         = 8;  //if this column is empty, it still generates the page
+  $speaker_image_idx       = 9;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+  $title_idx               = 10;  //if this column is empty, it still generates the page
+  $abstract_file_idx       = 11;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
   
   
     $num_rows = count($csv);  
@@ -211,26 +217,39 @@
     echo "<td>";
     
     echo "<strong>";
-    echo  $csv[$c][$week_day_idx] . ", " . $csv[$c][$month_idx] . " " . $csv[$c][$day_idx] . ", " . $csv[$c][$time_idx] . ", " .  "room "  .  $csv[$c][$room_idx] ;
+    echo  $csv[$c][$week_day_idx] . ", " . $csv[$c][$month_idx] . " " . $csv[$c][$day_idx] . ", ";
     echo "</strong>";
+    echo "<em>";
+    echo $csv[$c][$time_idx] . ", ";
+    echo "</em>";
+//     echo "<em>";
+    echo "room "  .  $csv[$c][$room_idx] ;
+//     echo "</em>";
     echo "<br>";
 
+    
+    echo '<a  style="cursor:pointer;" ';
+    echo ' id="toggle_abst_' . $csv[$c][$month_idx] . $csv[$c][$day_idx] . '">'; 
+    
     echo "<em>";
     echo $csv[$c][$title_idx];
     echo "</em>";
+    
+    echo '</a>';
     echo "<br>";
+
     
     ///@todo: see if I can make this be
       //     - a link if href is non-empty in the csv file 
       //     - NOT a link otherwise
-    echo '<a   style="cursor:pointer;" href="' .  $csv[$c][$speaker_url_idx]  .  '">';
+    echo '<a   style="cursor:pointer;" target="_blank" href="' .  $csv[$c][$speaker_url_idx]  .  '">';
     echo $csv[$c][$speaker_idx];
     echo '</a>';
+    echo "<br>";
+    echo  $csv[$c][$speaker_department_idx] . ', ' . $csv[$c][$speaker_institution_idx];
     
     echo "<br>";
     
-    echo '<a  style="cursor:pointer;" ';
-    echo ' id="toggle_abst_' . $csv[$c][$month_idx] . $csv[$c][$day_idx] . '"> abstract </a>';
     
     echo '
       </td>';
@@ -238,7 +257,9 @@
     echo '  
       </tr>
       </table> 
-     ';    
+     ';
+//     echo "<br>";
+   
 // %%%%%%%%%%%%%%%%%%%
 
 
@@ -281,6 +302,7 @@
 
   
    echo '</script>';
+//     echo "<br>";
 // ********************
     
 
@@ -341,7 +363,7 @@ echo '<body>';
  
  default_coords_banner($csv_map);
  
- events_loop_flexible($csv_map, $abstracts_folder, $images_folder);
+ loop_over_events($csv_map, $abstracts_folder, $images_folder);
 
 echo '</body>';
 //------------------
