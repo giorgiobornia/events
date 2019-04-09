@@ -140,12 +140,12 @@
  }
  
  
- function default_coords_banner($year_in, $sem_in, $room_in, $time_in) {
+ function default_coords_banner($year_in, $sem_in, $room_in, $weekday_in, $time_in) {
  
  echo '<div class="container-fluid text-center" id="sem_header">';
  
  echo '<h2>';
- echo $sem_in . ' ' . $year_in . ' - ' . $time_in . ' - ' . 'room ' . $room_in;
+ echo $sem_in . ' ' . $year_in . ' - ' . $weekday_in . ', ' . $time_in . ' - ' . 'room ' . $room_in;
  echo '</h2>';
  
  echo '</div>';
@@ -158,16 +158,16 @@
  function events_loop_flexible($events_csv_file, $abstracts_folder, $images_folder) {
 
 
-  $month_idx               = 0;
-  $day_idx                 = 1;
-  $week_day_idx            = 2;
-  $time_idx                = 3;
-  $room_idx                = 4;
-  $speaker_idx             = 5;
-  $speaker_url_idx         = 6;
-  $speaker_image_idx       = 7;
-  $title_idx               = 8;
-  $abstract_file_idx       = 9;
+  $month_idx               = 0;  //if this column is empty, it still generates the page
+  $day_idx                 = 1;  //if this column is empty, it still generates the page
+  $week_day_idx            = 2;  //if this column is empty, it still generates the page
+  $time_idx                = 3;  //if this column is empty, it still generates the page
+  $room_idx                = 4;  //if this column is empty, it still generates the page
+  $speaker_idx             = 5;  //if this column is empty, it still generates the page
+  $speaker_url_idx         = 6;  //if this column is empty, it still generates the page
+  $speaker_image_idx       = 7;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+  $title_idx               = 8;  //if this column is empty, it still generates the page
+  $abstract_file_idx       = 9;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
   
   $csv = array_map('str_getcsv', file($events_csv_file));
   
@@ -177,6 +177,7 @@
     //TODO: images have to be .jpg
     //TODO: abstract have to be .txt, with the same name of the date
     //TODO: do not put other rows below in the csv file
+    
     
     $starting_row = 1;  //the first row is for the column fields
     
@@ -301,7 +302,7 @@
    }
  
 
-function generate_index_page($discipline, $sem_mydepth, $year_in, $sem_in, $room_in, $time_in) {
+function generate_index_page($discipline, $sem_mydepth, $year_in, $sem_in, $room_in, $weekday_in, $time_in) {
 
  
 echo '<!DOCTYPE html>';
@@ -326,7 +327,7 @@ echo '<body>';
 
  main_banner($discipline);
  
- default_coords_banner($year_in, $sem_in, $room_in, $time_in);
+ default_coords_banner($year_in, $sem_in, $room_in, $weekday_in, $time_in);
  
  events_loop();
 
