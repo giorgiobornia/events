@@ -13,7 +13,7 @@
 <body>
 
  <?php Seminars::navigation_bar(); ?>
- <?php include($sem_mydepth . "sem_banner.php");  ?>
+ <?php Seminars::main_banner("Applied Mathematics"); ?>
  
  <?php $mysem = "Spring 2014"; ?>
  <?php $myroom = "MATH 111"; ?>

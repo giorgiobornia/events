@@ -16,7 +16,7 @@
 
 
  <?php Seminars::navigation_bar(); ?>
- <?php include($sem_mydepth . "sem_banner.php");  ?>
+ <?php Seminars::main_banner("Applied Mathematics"); ?>
 
  <?php $mysem = "Spring 2017"; ?>
  <?php $myroom = "MATH 016"; ?>

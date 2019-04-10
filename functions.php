@@ -1,7 +1,6 @@
 <?php
 
 ///@obsolete: sem_coords.php
-///@obsolete: sem_banner.php
 
 class Seminars {
 
@@ -313,7 +312,7 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
 //----------------    
     $abstract_id = 'abst_' . $events_map[$c][$month_idx] . '_' . $events_map[$c][$day_idx];
 
-    echo '<span class="abst" ';
+    echo '<span class="abst" ';   ///@todo make this span CENTERED
     
     echo ' id="' . $abstract_id . '">';
     
