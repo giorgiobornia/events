@@ -1,6 +1,5 @@
 <?php
 
-///@obsolete: sem_title.php
 ///@obsolete: sem_coords.php
 ///@obsolete: sem_banner.php
 
