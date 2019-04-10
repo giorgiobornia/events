@@ -1,0 +1,29 @@
+ Longevity represents an increasingly important risk for defined benefit
+(DB) pension plans and annuity providers, because life expectancy is dramatically
+increasing in developed countries. In particular, the sponsors of
+DB pension plans are exposed to the risk that unexpected improvements in
+the survival rates of pensioners will increase the cost of pension provisions.
+Longevity swaps are hedging instruments whereby two parties, typically
+a re-insurer or investment bank on one side, and a pension fund or annuity
+provider on the other side, agree to exchange fixed payments against
+variable payments, as in other swaps. The hedge provider is typically the
+investment bank or re-insurer, that pays variable payments based on the
+scheme’s actual mortality rates, or on a reference mortality index, and receives
+fixed payments based on agreed mortality assumptions, whereas the
+hedge buyer is the pension fund or annuity provider, that pays fixed and
+receives variable payments. We propose a multistage stochastic programming
+(MSP) approach to price longevity swap derivatives, i.e. find the
+contract fixed rate, on a risk measure based replication framework. In the
+proposed methodology the current pension fund liability market value is
+firstly estimated: given an asset universe of tradable and liquid securities
+and an investment horizon with discrete rebalancing portfolio periods, we
+look for the least expensive trading strategy to replicate the pension fund
+future obligations. The present cost of such portfolio, under self-financing
+conditions, will provide the current liability value. The pay-off structure
+of the longevity swap is then inserted in the MSP model, where the contract
+variable rates will be given by a discrete stochastic mortality model,
+and the fixed rate of the contract will be set as a variable. In this case we
+seek for the least expensive trading strategy, and the least fixed contract
+rate, which ensure the minimal improvement in the current liability value.
+This fixed rate will be the price of the longevity swap. This procedure
+has been used to price different aged-related longevity swaps. 

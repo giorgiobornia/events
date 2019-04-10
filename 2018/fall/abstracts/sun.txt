@@ -1,0 +1,13 @@
+Statistical inference on the covariance matrix has a variety of applications in many different
+areas, such as gene expression analysis, remote sensing and financial portfolio analysis. As an
+estimate of the population covariance matrix, the sample covariance matrix performs quite well
+in the classical setting. However, it becomes ill-conditioned or even singular and thus behaves
+poorly in high-dimensional setting. Stein-type shrinkage approach is commonly used to tackle
+this difficult problem when the dimensionality is large. A convex combination of the sample
+covariance matrix and a well-conditioned target matrix is considered to estimate the
+covariance matrix. Recent work in the literature has shown that an optimal combinationexists
+undermean-squaredloss,however itmustbe estimatedfromthe data. In this talk, we introduce
+a new set of estimators for the optimal convex combination for three commonly used target
+matrices. A simulation study shows an improvement over those in the literature in cases of
+extreme high-dimensionality of the data. Interestingly, the results can also be applied to some
+testing problems on the high-dimensional covariance matrix. 
