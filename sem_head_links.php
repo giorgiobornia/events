@@ -4,7 +4,7 @@
  <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Meta tags for indexing in search engines -->
- <meta name="description" content="Seminar in Applied Mathematics">
+ <meta name="description" content="Seminars at Texas Tech University">
  <meta name="author" content="Giorgio Bornia">
  <!--  <meta name="robots" content="" >  -->
  <!--  <meta name="keywords" content="" >  they say google doesn't use them anymore -->
@@ -22,7 +22,7 @@
 
  
 <!-- Favicon -->
- <link rel="icon" href="<?php echo $sem_mydepth; ?>./img/favicon.ico">
+ <link rel="icon" href="<?php echo $sem_mydepth; ?>../img/favicon.ico">
  
  
 <!-- MathJax -->
@@ -42,5 +42,5 @@
 
  
  <!-- This goes in the last position to override   -->
-<link rel="stylesheet" href="<?php echo $sem_mydepth; ?>sem_style.css">
+<link rel="stylesheet" href="<?php echo $sem_mydepth; ?>../css/sem_style.css">
 

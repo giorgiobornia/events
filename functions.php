@@ -385,7 +385,7 @@ public static function set_html_head($sem_mydepth, $title_in_toolbar) {
  
 echo '<head>';
 
- include($sem_mydepth . "sem_head_links.php");
+ include($sem_mydepth . "../sem_head_links.php");
 
  Seminars::title_in_browser_toolbar($title_in_toolbar);
  

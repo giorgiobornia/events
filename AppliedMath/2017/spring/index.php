@@ -5,7 +5,7 @@
 <head>
 
  <?php $sem_mydepth = "../../"; ?>
- <?php include($sem_mydepth . "sem_head_links.php");  ?>
+ <?php include($sem_mydepth . "../sem_head_links.php");  ?>
  <?php include($sem_mydepth . "sem_title.php");  ?>
  
 </head>
@@ -84,7 +84,7 @@
 
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="../../img/DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Thursday, February 2, 3:30pm, CHEM 107
@@ -104,7 +104,7 @@
  
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="../../img/DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Thursday, February 9, 3:30pm, CHEM 107
@@ -145,7 +145,7 @@
 
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="../../img/DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Tuesday, February 21, 3:30pm, CHEM 107
@@ -165,7 +165,7 @@
  
    <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="../../img/DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Thursday, February 23, 3:30pm, CHEM 107
@@ -185,7 +185,7 @@
  
     <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="../../img/DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Tuesday, February 28, 3:30pm, CHEM 107
@@ -247,7 +247,7 @@
  
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="../../img/DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Wednesday, March 22
@@ -456,7 +456,7 @@ Numerous natural and engineered systems that consist of ensembles of isolated or
  
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="../../img/DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Friday, April 28, 8:20-18:15, Student Union Building, Senate Room
@@ -475,7 +475,7 @@ Numerous natural and engineered systems that consist of ensembles of isolated or
  
  <!--  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="../../img/DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Wednesday, May 3
