@@ -125,6 +125,7 @@
 
  }
 
+ 
  function main_banner($discipline) {
 
   echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
@@ -173,6 +174,20 @@
  
  function loop_over_events($csv, $abstracts_folder, $images_folder) {
 
+  //array for conversion from number to string
+ $months_conv = array(
+ 1 =>   'January',     /*  'Jan.',  */
+ 2 =>   'February',    /*  'Feb.',  */
+ 3 =>   'March',       /*  'Mar.',  */
+ 4 =>   'April',       /*  'Apr.',  */
+ 5 =>   'May',         /*  'May',   */
+ 6 =>   'June',        /*  'Jun.',  */
+ 7 =>   'July',        /*  'Jul.',  */
+ 8 =>   'August',      /*  'Aug.',  */
+ 9 =>   'September',   /*  'Sep.',  */
+ 10 =>  'October',     /*  'Oct.',  */
+ 11 =>  'November',    /*  'Nov.',  */
+ 12 =>  'December');   /*  'Dec.'); */
 
   $month_idx               = 0;  //if this column is empty, it still generates the page
   $day_idx                 = 1;  //if this column is empty, it still generates the page
@@ -217,7 +232,7 @@
     echo "<td>";
     
     echo "<strong>";
-    echo  $csv[$c][$week_day_idx] . ", " . $csv[$c][$month_idx] . " " . $csv[$c][$day_idx] . ", ";
+    echo  $csv[$c][$week_day_idx] . ", " . $months_conv[ $csv[$c][$month_idx] ] . " " . $csv[$c][$day_idx] . ", ";
     echo "</strong>";
     echo "<em>";
     echo $csv[$c][$time_idx] . ", ";
@@ -326,8 +341,7 @@
   } 
  
  
-
-function generate_index_page($sem_mydepth) {
+ function generate_index_page($sem_mydepth) {
 
   $events_csv_file = './events.csv';
   $abstracts_folder = "./abstracts/";
@@ -372,7 +386,62 @@ echo '</body>';
 
 echo '</html>';
 
-}
+ }
+
+
+ function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
+
+// Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
+// if so, I will store that array and make a map that will be parsed by a loop_over_events function
+
+echo 'I am looking at what happens in ' . $semester . ' ' . $year . ' between ' . $month_begin . ' ' . $day_begin . ' and ' . $month_end . ' ' . $day_end . ' in each seminar file';
+
+
+  $topics = array('AppliedMath');
+
+//   $topics_size = count($topics);
+  
+  
+    for ($i = 0; $i < count($topics); $i++) {
+    
+    echo $topics[$i];
+    
+    $events_csv_file = 'events.csv';
+    $month_idx = 0;
+    $day_idx = 1;
+    
+    $starting_row = 3;
+    
+    $file_to_parse = '../' . $year . '/' . $semester . '/' . $events_csv_file;
+    
+    $csv_map = array_map('str_getcsv', file($file_to_parse));
+    
+    echo '<br>';
+    
+    
+    for ($row = $starting_row; $row < count($csv_map); $row++) {
+    
+    //best thing is to probably convert into an increasing number, to avoid non-monotone behaviors
+    
+    if ( $month_begin <= $csv_map[$row][$month_idx] && $csv_map[$row][$month_idx] <= $month_end /*&&
+         $day_begin   <= $csv_map[$row][$day_idx]   && $csv_map[$row][$day_idx]   <= $day_end */) {
+    
+    echo $csv_map[$row][$month_idx] . ' ' .  $csv_map[$row][$day_idx]; 
+    echo '<br>';
+    
+    }
+    
+    
+    
+    }     
+    
+    
+    }
+
+
+
+ }
+S
 
 
 ?>
