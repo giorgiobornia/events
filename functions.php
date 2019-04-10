@@ -6,9 +6,6 @@
 
 class Seminars {
 
-public static $casa = 'hello';
-
-
 
 public static function navigation_bar() {
 
@@ -176,10 +173,10 @@ public static function default_coords_banner($csv) {
  } 
 
  
-public static function loop_over_events($events_map,  $starting_row,  $absolute_path_link, $abstracts_folder, $images_folder) {
+public static function loop_over_events($events_map,  $starting_row,  $relative_path_to_seminars_base, $abstracts_folder, $images_folder) {
 
  
-//  echo $absolute_path_link; 
+//  echo $relative_path_to_seminars_base; 
 //this is the place from where this function is called
 //actually I would need the absolute path of the seminars folder
  
@@ -236,7 +233,7 @@ public static function loop_over_events($events_map,  $starting_row,  $absolute_
     
     
     
-  echo '<div class="container text-center">';
+  echo '<div class="container ">';  /*text-center*/
 
     
     for ($c = $starting_row; $c < $num_rows; $c++) {
@@ -253,14 +250,14 @@ public static function loop_over_events($events_map,  $starting_row,  $absolute_
     echo '
      <td> 
      <img class="sem_image img-circle" ' .  'src="' .
-     $absolute_path_link . /*'/' .*/ 
+     $relative_path_to_seminars_base . 
      $discipline_conv[ $events_map[$c][$discipline_idx] ] . '/' .  
      $events_map[$c][$year_idx] . '/' . 
      $semester_conv[ $events_map[$c][$semester_idx] ]  . '/' . 
      $images_folder . '/' . 
      $events_map[$c][$speaker_image_idx] . '" alt="image">  </td> ';
      
-    echo "<td>";
+    echo '<td style="text-align: center;">';
     
     echo "<strong>";
     echo  $events_map[$c][$week_day_idx] . ", " . $months_conv[ $events_map[$c][$month_idx] ] . " " . $events_map[$c][$day_idx] . ", ";
@@ -321,8 +318,16 @@ public static function loop_over_events($events_map,  $starting_row,  $absolute_
     
     echo ' id="' . $abstract_id . '">';
     
-    $abstract_path = $abstracts_folder . $events_map[$c][$abstract_file_idx];
+
+    $abstract_path =   
+    $relative_path_to_seminars_base .  
+     $discipline_conv[ $events_map[$c][$discipline_idx] ] . '/' .  
+     $events_map[$c][$year_idx] . '/' . 
+     $semester_conv[ $events_map[$c][$semester_idx] ]  . '/' . 
+ $abstracts_folder . $events_map[$c][$abstract_file_idx];
+
     
+//     include should be of another PHP file, or of a LOCAL address (not http url)
     include($abstract_path);
     
     echo '</span>';
@@ -376,13 +381,13 @@ public static function loop_over_events($events_map,  $starting_row,  $absolute_
   } 
  
  
-public static function set_html_head($sem_mydepth, $discipline) {
+public static function set_html_head($sem_mydepth, $title_in_toolbar) {
  
 echo '<head>';
 
  include($sem_mydepth . "sem_head_links.php");
 
- Seminars::title_in_browser_toolbar($discipline);
+ Seminars::title_in_browser_toolbar($title_in_toolbar);
  
 echo '</head>';
 
@@ -402,15 +407,9 @@ echo '<body>';
  
  $starting_row = 3;  //the first row is for the column fields
  
-    $calling_path_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+ $relative_path_to_seminars_base = '../../../';
     
-    $path_to_seminars_base = '../../../';
-    
-    $absolute_path_link = $calling_path_link .  $path_to_seminars_base;
-    
-//    echo $absolute_path_link;
-
- Seminars::loop_over_events($csv_map, $starting_row, $absolute_path_link, $abstracts_folder, $images_folder);
+ Seminars::loop_over_events($csv_map, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder);
 
 echo '</body>';
  
@@ -474,15 +473,9 @@ public static function set_seminar_by_week_body($week_events, $abstracts_folder,
 
     $starting_row = 0;
     
-    $calling_path_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-    
-    $path_to_seminars_base = '../';
+    $relative_path_to_seminars_base = '../';
 
-    $absolute_path_link = $calling_path_link .  $path_to_seminars_base;
-    
-//    echo $absolute_path_link;
-
-    Seminars::loop_over_events($week_events, $starting_row, $absolute_path_link,  $abstracts_folder, $images_folder);
+    Seminars::loop_over_events($week_events, $starting_row, $relative_path_to_seminars_base,  $abstracts_folder, $images_folder);
  
  
  }
