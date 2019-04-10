@@ -243,8 +243,10 @@
     echo "<br>";
 
     
+    $toggle_abstract_id = 'toggle_abst_' . $csv[$c][$month_idx] . '_' . $csv[$c][$day_idx];
+
     echo '<a  style="cursor:pointer;" ';
-    echo ' id="toggle_abst_' . $csv[$c][$month_idx] . $csv[$c][$day_idx] . '">'; 
+    echo ' id="' .  $toggle_abstract_id . '">'; 
     
     echo "<em>";
     echo $csv[$c][$title_idx];
@@ -282,9 +284,11 @@
 
      
 //----------------    
+    $abstract_id = 'abst_' . $csv[$c][$month_idx] . '_' . $csv[$c][$day_idx];
+
     echo '<span class="abst" ';
     
-    echo ' id="abst_' . $csv[$c][$month_idx] . $csv[$c][$day_idx] . '">';
+    echo ' id="' . $abstract_id . '">';
     
     $abstract_path = $abstracts_folder . $csv[$c][$abstract_file_idx];
     
@@ -304,11 +308,11 @@
         function(){';
       
      echo '
-       $("a#toggle_abst_' .   $csv[$c][$month_idx] . $csv[$c][$day_idx] . '").click(';
+       $("a#' . $toggle_abstract_id . '").click(';
        
      echo '
        function(){
-          $("span#abst_'  .   $csv[$c][$month_idx] . $csv[$c][$day_idx] . '").toggle();
+          $("span#' . $abstract_id . '").toggle();
         }
       );';    //end click
       
