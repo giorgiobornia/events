@@ -393,18 +393,46 @@ echo '</html>';
  }
 
 
+ 
+ function compute_sequential_day($year,$month,$day) { 
+ 
+   $month_days;
+   
+   if($year%4 != 0) $month_days = array(31,28/*29*/,31,30,31,30,31,31,30,31,30,31);
+   else             $month_days = array(31,/*28*/29,31,30,31,30,31,31,30,31,30,31);
+
+   $sequential_day = 0;
+    for ($i = 0; $i < $month - 1; $i++) {
+   $sequential_day += $month_days[$i];
+   }
+   
+   $sequential_day += $day;
+   
+   return    $sequential_day;
+   
+ } 
+ 
+ 
+ 
  function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
 // if so, I will store that array and make a map that will be parsed by a loop_over_events function
 
-  echo 'I am looking at what happens in ' . $semester . ' ' . $year . ' between ' . $month_begin . '/' . $day_begin . ' and ' . $month_end . '/' . $day_end . ' in each seminar file';
 
+    
+    
     $events_csv_file = 'events.csv';
     $month_idx = 0;
     $day_idx = 1;
-
     
+    $starting_row = 3;
+    
+    
+  echo 'I am looking at what happens in ' . $semester . ' ' . $year . ' between ' . $month_begin . '/' . $day_begin . ' and ' . $month_end . '/' . $day_end . ' in each seminar file';
+  echo '<br>';
+
+
   $topics = array('AppliedMath');
 
 //   $topics_size = count($topics);
@@ -415,8 +443,6 @@ echo '</html>';
     echo $topics[$i];
     
     
-    $starting_row = 3;
-    
     $file_to_parse = '../' . $topics[$i] . '/' . $year . '/' . $semester . '/' . $events_csv_file;
     
     $csv_map = array_map('str_getcsv', file($file_to_parse));
@@ -426,10 +452,12 @@ echo '</html>';
     
     for ($row = $starting_row; $row < count($csv_map); $row++) {
     
-    //best thing is to probably convert into an increasing number, to avoid non-monotone behaviors
+    //best thing is probably to convert into an increasing number, to avoid non-monotone behavior
+    $sequential_begin   = compute_sequential_day($year, $month_begin, $day_begin);
+    $sequential_end     = compute_sequential_day($year, $month_end, $day_end);
+    $sequential_current = compute_sequential_day($year, $csv_map[$row][$month_idx], $csv_map[$row][$day_idx]);
     
-    if ( $month_begin <= $csv_map[$row][$month_idx] && $csv_map[$row][$month_idx] <= $month_end /*&&
-         $day_begin   <= $csv_map[$row][$day_idx]   && $csv_map[$row][$day_idx]   <= $day_end */) {
+    if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end ) {
     
     echo $csv_map[$row][$month_idx] . ' ' .  $csv_map[$row][$day_idx]; 
     echo '<br>';
