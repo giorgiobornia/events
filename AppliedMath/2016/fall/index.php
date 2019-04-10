@@ -50,7 +50,7 @@
 
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="hatanaka_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/hatanaka_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Thursday, September 8, 2pm, MATH 014    (Colloquium)
@@ -94,7 +94,7 @@ In this talk, we highlight the role of passivity in human-swarm collaborations a
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="akholodenko_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/akholodenko_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -143,7 +143,7 @@ In this talk, we highlight the role of passivity in human-swarm collaborations a
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="akholodenko_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/akholodenko_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -195,7 +195,7 @@ In this talk, we highlight the role of passivity in human-swarm collaborations a
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="capodaglio_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/capodaglio_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -253,7 +253,7 @@ We conclude with uniform and local refinement applications of the general theory
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="DatCao_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/DatCao_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -319,7 +319,7 @@ is a joint work with Igor Verbitsky.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="Alexander_Solynin_square.png" alt="image">  
+     <img class="sem_image img-circle"  src="./images/Alexander_Solynin_square.png" alt="image">  
    </td>
  <td> 
 
@@ -371,7 +371,7 @@ is a joint work with Igor Verbitsky.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="nural_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/nural_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -425,7 +425,7 @@ is a joint work with Igor Verbitsky.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="corsi_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/corsi_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -473,7 +473,7 @@ is a joint work with Igor Verbitsky.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="egerstedt_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/egerstedt_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -524,7 +524,7 @@ is a joint work with Igor Verbitsky.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="peskin_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/peskin_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -576,7 +576,7 @@ is a joint work with Igor Verbitsky.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="Ke_Guoyi_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/Ke_Guoyi_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -633,7 +633,7 @@ We also offer a characterization of the performance of the Picard system and New
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="clint_dawson_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/clint_dawson_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -681,7 +681,7 @@ We also offer a characterization of the performance of the Picard system and New
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="mary_ann_horn_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/mary_ann_horn_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -730,7 +730,7 @@ We also offer a characterization of the performance of the Picard system and New
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="Engwer_Josh_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/Engwer_Josh_square.jpg" alt="image">  
    </td>
  <td> 
 

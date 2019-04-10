@@ -40,7 +40,7 @@
 
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Thursday, January 28, 11am, MATH 014   
@@ -66,7 +66,7 @@
 
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Thursday, February 4, 11am, MATH 014  
@@ -90,7 +90,7 @@
 
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Tuesday, February 9, 11am, MATH 014  
@@ -131,7 +131,7 @@
  <table class="sem_item">
 <tr>
 <td> 
-<img class="sem_image img-circle"  src="HoangLuan_square.jpg" alt="image">  </td>
+<img class="sem_image img-circle"  src="./images/HoangLuan_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
   Wednesday, February 17<!--, 4pm, MATH tbd-->  
@@ -203,7 +203,7 @@ $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$-->
  <table class="sem_item">
 <tr>
 <td>  
-<img class="sem_image img-circle" src="CelikEmine_square.jpg" alt="image">  
+<img class="sem_image img-circle" src="./images/CelikEmine_square.jpg" alt="image">  
 </td>
  <td> 
  <strong> 
@@ -293,7 +293,7 @@ Asymptotic estimates  are derived even for unbounded boundary data as time tends
 <br>
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="KhaMinh_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/KhaMinh_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Wednesday, March 2 <!--, 4pm, MATH tbd-->  
@@ -345,7 +345,7 @@ deck group plays more important role than the dimension of the manifold.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="AlexeySukhinin_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/AlexeySukhinin_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -402,7 +402,7 @@ trends in this field.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  
    </td>
  <td> 
 
@@ -431,7 +431,7 @@ Spring Break. No talks.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  
    </td>
  <td> 
 
@@ -477,7 +477,7 @@ Spring Break. No talks.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="mondaini_c_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/mondaini_c_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -526,7 +526,7 @@ Spring Break. No talks.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="robcoyne_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/robcoyne_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -579,7 +579,7 @@ Spring Break. No talks.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  
    </td>
  <td> 
 
@@ -628,7 +628,7 @@ Spring Break. No talks.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="JayawardhanaRangana_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/JayawardhanaRangana_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -676,7 +676,7 @@ Spring Break. No talks.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="KeGuoyi_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/KeGuoyi_square.jpg" alt="image">  
    </td>
  <td> 
 
@@ -740,7 +740,7 @@ preconditioned linearization schemes in terms of the Rayleigh number.
  <table class="sem_item">
 <tr>
    <td>
-     <img class="sem_image img-circle"  src="ParagodaThanuja_square.jpg" alt="image">  
+     <img class="sem_image img-circle"  src="./images/ParagodaThanuja_square.jpg" alt="image">  
    </td>
  <td> 
 

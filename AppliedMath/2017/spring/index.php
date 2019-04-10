@@ -50,7 +50,7 @@
 
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="ibraguimov_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/ibraguimov_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Wednesday, January 25
@@ -85,7 +85,7 @@
 
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Thursday, February 2, 3:30pm, CHEM 107
@@ -105,7 +105,7 @@
  
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Thursday, February 9, 3:30pm, CHEM 107
@@ -125,7 +125,7 @@
 
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="ibraguimov_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/ibraguimov_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Wednesday, February 15
@@ -146,7 +146,7 @@
 
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Tuesday, February 21, 3:30pm, CHEM 107
@@ -166,7 +166,7 @@
  
    <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Thursday, February 23, 3:30pm, CHEM 107
@@ -186,7 +186,7 @@
  
     <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Tuesday, February 28, 3:30pm, CHEM 107
@@ -208,7 +208,7 @@
  
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="Zhang_Wenjing_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/Zhang_Wenjing_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Wednesday, March 8
@@ -248,7 +248,7 @@
  
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Wednesday, March 22
@@ -285,7 +285,7 @@ We present numerical simulations of fluid-structure interaction (FSI) problems a
  
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="./Paranamana,Pushpi_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/./Paranamana,Pushpi_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Wednesday, March 29
@@ -327,7 +327,7 @@ Also, we devise a model to address the complexity of the fracture geometry which
   
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="./ruths_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/./ruths_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Thursday, April 6, 3:30pm, CHEM 107 (Colloquium)
@@ -366,7 +366,7 @@ Also, we devise a model to address the complexity of the fracture geometry which
  
 <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="./giorgio_bornia.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/./giorgio_bornia.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Thursday, April 13, 3:30pm, Physics 234
@@ -418,7 +418,7 @@ Also, we devise a model to address the complexity of the fracture geometry which
 
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="./jrshinli_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/./jrshinli_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Tuesday, April 18, 3:30pm, CHEM 107
@@ -457,7 +457,7 @@ Numerous natural and engineered systems that consist of ensembles of isolated or
  
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Friday, April 28, 8:20-18:15, Student Union Building, Senate Room
@@ -476,7 +476,7 @@ Numerous natural and engineered systems that consist of ensembles of isolated or
  
  <!--  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
  Wednesday, May 3

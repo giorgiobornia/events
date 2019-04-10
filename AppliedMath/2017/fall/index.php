@@ -54,7 +54,7 @@
  
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="volchenkov_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/volchenkov_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Wednesday, September 6
@@ -94,7 +94,7 @@ Uncertainty of an element at every data scale (entropy) can be decomposed into a
  
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="putkaradze_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/putkaradze_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Monday, September 11, 4pm, room Math 112
@@ -135,7 +135,7 @@ Uncertainty of an element at every data scale (entropy) can be decomposed into a
 
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="putkaradze_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/putkaradze_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Tuesday, September 12, 3:30pm, room Chem 107 (Colloquium)
@@ -177,7 +177,7 @@ Uncertainty of an element at every data scale (entropy) can be decomposed into a
  
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="rmg_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/rmg_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Wednesday, September 20
@@ -225,7 +225,7 @@ that can be conducted to best refine model dynamics.
  
 <!--   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Tuesday, September 26
@@ -268,7 +268,7 @@ that can be conducted to best refine model dynamics.
  
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="delia_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/delia_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Thursday, September 28, 3:30pm, room Chem 107 (SIAM Colloquium)
@@ -310,7 +310,7 @@ Numerical results for nonlocal diffusion in three-dimensions illustrate key prop
  
  <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Thursday, October 5, 3:30pm, room Chem 107 (Colloquium)
@@ -369,7 +369,7 @@ treatment to delay development of castration resistance.
  
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="hirche_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/hirche_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Wednesday, October 11, 3:30pm, room Chem 107 (Dayawansa Memorial Lecture Series)
@@ -408,7 +408,7 @@ treatment to delay development of castration resistance.
 
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="hirche_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/hirche_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Thursday, October 12, 3:30pm, room Chem 107 (Dayawansa Memorial Lecture Series)
@@ -448,7 +448,7 @@ treatment to delay development of castration resistance.
 
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="hirche_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/hirche_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Friday, October 13, 3:30pm, room Chem 107 (Dayawansa Memorial Lecture Series)
@@ -487,7 +487,7 @@ treatment to delay development of castration resistance.
  
    <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="guo_wei_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/guo_wei_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Wednesday, October 18
@@ -529,7 +529,7 @@ treatment to delay development of castration resistance.
 
    <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Thursday, October 26, 3:30pm, room Chem 107 (Colloquium)
@@ -585,7 +585,7 @@ of	resistance	development	may	help	predict	the	timing	of	androgen	resistance.
 
    <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="padgett_josh_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/padgett_josh_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Wednesday, November 1
@@ -623,7 +623,7 @@ of	resistance	development	may	help	predict	the	timing	of	androgen	resistance.
 
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="dat_cao_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/dat_cao_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Wednesday, November 8
@@ -664,7 +664,7 @@ of	resistance	development	may	help	predict	the	timing	of	androgen	resistance.
 
    <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="yang_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/yang_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Thursday, November 9, 3:30pm
@@ -709,7 +709,7 @@ We then equip this algorithm with the running sum method and show that this newl
 
 <!-- <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="DoubleT.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/DoubleT.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Wednesday, November 15
@@ -731,7 +731,7 @@ We then equip this algorithm with the running sum method and show that this newl
  
   <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="owen_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/owen_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Thursday, November 16 (Colloquium)
@@ -795,7 +795,7 @@ We then equip this algorithm with the running sum method and show that this newl
  
    <table class="sem_item">
 <tr>
-<td> <img class="sem_image img-circle"  src="canic_square.jpg" alt="image">  </td>
+<td> <img class="sem_image img-circle"  src="./images/canic_square.jpg" alt="image">  </td>
  <td> 
  <strong> 
    Thursday, November 30
