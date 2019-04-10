@@ -399,7 +399,7 @@ public static function set_seminar_by_topic_body($sem_mydepth, $discipline, $csv
  
 echo '<body>';
 
- include($sem_mydepth . "sem_navbar.php");
+ Seminars::navigation_bar();
 
  Seminars::main_banner($discipline);
  

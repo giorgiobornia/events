@@ -5,6 +5,8 @@
 <head>
 
  <?php $sem_mydepth = "../../"; ?>
+ <?php   include($sem_mydepth . "../functions.php"); ?>
+
  <?php include($sem_mydepth . "../sem_head_links.php");  ?>
  <?php include($sem_mydepth . "sem_title.php");  ?>
  
@@ -12,7 +14,7 @@
 
 <body>
 
- <?php include($sem_mydepth . "sem_navbar.php");  ?>
+ <?php Seminars::navigation_bar(); ?>
  <?php include($sem_mydepth . "sem_banner.php");  ?>
  
  <?php $mysem = "Fall 2011"; ?>

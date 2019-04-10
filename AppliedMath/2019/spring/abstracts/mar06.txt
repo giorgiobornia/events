@@ -1,0 +1,9 @@
+Multiple recurrent outbreak cycles have been commonly observed in
+infectious diseases such as measles and chicken pox. These complex disease outbreak behaviors are rarely captured by deterministic models. In
+this talk, we investigate a simple 2-dimensional SI model and propose that
+the coexistence of multiple attractors attributes to complex outbreak patterns. We first determine parameter conditions for the existence of an
+isolated center, then properly perturb the model to generate Hopf bifurcation and obtain limit cycles around the center. We further analytically
+prove that the maximum number of the coexisting limit cycles is three,
+and provide a corresponding parameter set for the existence of three limit
+cycles. Simulation results demonstrate three coexisting attractors, which
+contain one unstable endemic equilibrium and two stable limit cycles separated by one unstable limit cycle. Various disease dynamics can be predicted by a single nonlinear deterministic model based on different initial data.
