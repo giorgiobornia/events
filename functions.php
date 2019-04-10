@@ -372,24 +372,8 @@
   } 
  
  
- function generate_seminar_page_by_topic($sem_mydepth) {
-
-  $events_csv_file = './events.csv';
-  $abstracts_folder = "./abstracts/";
-  $images_folder = "./images/";
-  
-  $csv_map = array_map('str_getcsv', file($events_csv_file));
-
-  $row_regular_meeting_data = 1;
-  $discipline_idx = 0;
-  
-  $discipline = $csv_map[$row_regular_meeting_data][$discipline_idx];
-  
+ function set_html_head($sem_mydepth, $discipline) {
  
-echo '<!DOCTYPE html>';
-
-echo '<html>';
-
 //==================
 echo '<head>';
 
@@ -400,7 +384,12 @@ echo '<head>';
 echo '</head>';
 //==================
 
-
+ }
+ 
+ 
+ 
+ function set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder) {
+ 
 //------------------
 echo '<body>';
 
@@ -424,6 +413,33 @@ echo '<body>';
 
 echo '</body>';
 //------------------
+ 
+ 
+ }
+ 
+ 
+ function generate_seminar_page_by_topic($sem_mydepth) {
+
+  $events_csv_file = './events.csv';
+  $abstracts_folder = "./abstracts/";
+  $images_folder = "./images/";
+  
+  $csv_map = array_map('str_getcsv', file($events_csv_file));
+
+  $row_regular_meeting_data = 1;
+  $discipline_idx = 0;
+  
+  $discipline = $csv_map[$row_regular_meeting_data][$discipline_idx];
+  
+ 
+echo '<!DOCTYPE html>';
+
+echo '<html>';
+
+
+  set_html_head($sem_mydepth, $discipline);
+  
+  set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder);
 
 echo '</html>';
 
@@ -451,17 +467,32 @@ echo '</html>';
  
  
  
- function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
-
-// Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
-// if so, I will store that array and make a map that will be parsed by a loop_over_events function
-
-
+ function set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder)  {
+ 
+    echo count($week_events);
     
+
+    $starting_row = 0;
     
-  $events_csv_file = 'events.csv';
-  $abstracts_folder = "./abstracts/";
-  $images_folder = "./images/";
+    $calling_path_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    
+    $path_to_seminars_base = '../';
+
+    $absolute_path_link = $calling_path_link .  $path_to_seminars_base;
+    
+//    echo $absolute_path_link;
+
+    loop_over_events($week_events, $starting_row, $absolute_path_link,  $abstracts_folder, $images_folder);
+ 
+ 
+ }
+ 
+ 
+ function parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end)  {
+ 
+ 
+ 
+   $events_csv_file = 'events.csv';
 
   $month_idx = 3;
     $day_idx = 4;
@@ -513,29 +544,32 @@ echo '</html>';
     
     
   }
-    
-    
-    echo count($week_events);
-    
 
-    $starting_row = 0;
-    
-    $calling_path_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-    
-    $path_to_seminars_base = '../';
+ 
+ return $week_events;
+ 
+ 
+ }
+ 
+ 
+ 
+ function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
 
-    $absolute_path_link = $calling_path_link .  $path_to_seminars_base;
-    
-//    echo $absolute_path_link;
-
-    loop_over_events($week_events, $starting_row, $absolute_path_link,  $abstracts_folder, $images_folder);
-    
-    //now I am ready to generate an index file
-    //if I want to loop over events for arbitrary seminar, I also need to keep track of Discipline, Year, Semester
-    
+// Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
+// if so, I will store that array and make a map that will be parsed by a loop_over_events function
 
 
+    
+   $week_events = parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
+  
+  
+    
+  $abstracts_folder = "./abstracts/";
+  $images_folder = "./images/";
 
+    set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder);  
+
+  
  }
 
 
