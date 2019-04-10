@@ -438,6 +438,8 @@ echo '</html>';
 //   $topics_size = count($topics);
   
   
+  $week_events = array();
+  
     for ($i = 0; $i < count($topics); $i++) {
     
     echo $topics[$i];
@@ -462,14 +464,22 @@ echo '</html>';
     echo $csv_map[$row][$month_idx] . ' ' .  $csv_map[$row][$day_idx]; 
     echo '<br>';
     
-    }
+    array_push($week_events, $csv_map[$row]);
     
+       }
     
     
     }     
     
     
-    }
+  }
+    
+    echo count($week_events);
+    
+    
+    //now I am ready to generate an index file
+    
+    
 
 
 
