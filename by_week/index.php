@@ -10,6 +10,6 @@
  $month_end = 4;
  $day_end = 2;
 
- generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
+ Seminars::generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
 
  ?>

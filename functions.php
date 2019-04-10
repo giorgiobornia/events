@@ -4,9 +4,13 @@
 ///@obsolete: sem_coords.php
 ///@obsolete: sem_banner.php
 
+class Seminars {
+
+public static $casa = 'hello';
 
 
- function navigation_bar() {
+
+public static function navigation_bar() {
 
 
  echo ' <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="my_nav">                                                                    ';
@@ -119,14 +123,14 @@
 
 
 
- function title_in_browser_toolbar($discipline) {
+public static function title_in_browser_toolbar($discipline) {
  
  echo '<title>Seminar in ' . $discipline . ' - Texas Tech University</title>';
 
  }
 
  
- function main_banner($discipline) {
+public static function main_banner($discipline) {
 
   echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
   echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
@@ -141,7 +145,7 @@
  }
  
  
- function default_coords_banner($csv) {
+public static function default_coords_banner($csv) {
  
   $discipline_idx          = 0;
   $year_idx                = 1;
@@ -172,7 +176,7 @@
  } 
 
  
- function loop_over_events($events_map,  $starting_row,  $absolute_path_link, $abstracts_folder, $images_folder) {
+public static function loop_over_events($events_map,  $starting_row,  $absolute_path_link, $abstracts_folder, $images_folder) {
 
  
 //  echo $absolute_path_link; 
@@ -372,32 +376,29 @@
   } 
  
  
- function set_html_head($sem_mydepth, $discipline) {
+public static function set_html_head($sem_mydepth, $discipline) {
  
-//==================
 echo '<head>';
 
  include($sem_mydepth . "sem_head_links.php");
 
- title_in_browser_toolbar($discipline);
+ Seminars::title_in_browser_toolbar($discipline);
  
 echo '</head>';
-//==================
 
  }
  
  
  
- function set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder) {
+public static function set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder) {
  
-//------------------
 echo '<body>';
 
  include($sem_mydepth . "sem_navbar.php");
 
- main_banner($discipline);
+ Seminars::main_banner($discipline);
  
- default_coords_banner($csv_map);
+ Seminars::default_coords_banner($csv_map);
  
  $starting_row = 3;  //the first row is for the column fields
  
@@ -409,16 +410,15 @@ echo '<body>';
     
 //    echo $absolute_path_link;
 
- loop_over_events($csv_map, $starting_row, $absolute_path_link, $abstracts_folder, $images_folder);
+ Seminars::loop_over_events($csv_map, $starting_row, $absolute_path_link, $abstracts_folder, $images_folder);
 
 echo '</body>';
-//------------------
  
  
  }
  
  
- function generate_seminar_page_by_topic($sem_mydepth) {
+public static function generate_seminar_page_by_topic($sem_mydepth) {
 
   $events_csv_file = './events.csv';
   $abstracts_folder = "./abstracts/";
@@ -437,9 +437,9 @@ echo '<!DOCTYPE html>';
 echo '<html>';
 
 
-  set_html_head($sem_mydepth, $discipline);
+  Seminars::set_html_head($sem_mydepth, $discipline);
   
-  set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder);
+  Seminars::set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder);
 
 echo '</html>';
 
@@ -447,7 +447,7 @@ echo '</html>';
 
 
  
- function compute_sequential_day($year,$month,$day) { 
+public static function compute_sequential_day($year,$month,$day) { 
  
    $month_days;
    
@@ -467,7 +467,7 @@ echo '</html>';
  
  
  
- function set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder)  {
+public static function set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder)  {
  
     echo count($week_events);
     
@@ -482,13 +482,13 @@ echo '</html>';
     
 //    echo $absolute_path_link;
 
-    loop_over_events($week_events, $starting_row, $absolute_path_link,  $abstracts_folder, $images_folder);
+    Seminars::loop_over_events($week_events, $starting_row, $absolute_path_link,  $abstracts_folder, $images_folder);
  
  
  }
  
  
- function parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end)  {
+public static function parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end)  {
  
  
  
@@ -526,9 +526,9 @@ echo '</html>';
     for ($row = $starting_row; $row < count($csv_map); $row++) {
     
     //best thing is probably to convert into an increasing number, to avoid non-monotone behavior
-    $sequential_begin   = compute_sequential_day($year, $month_begin, $day_begin);
-    $sequential_end     = compute_sequential_day($year, $month_end, $day_end);
-    $sequential_current = compute_sequential_day($year, $csv_map[$row][$month_idx], $csv_map[$row][$day_idx]);
+    $sequential_begin   = Seminars::compute_sequential_day($year, $month_begin, $day_begin);
+    $sequential_end     = Seminars::compute_sequential_day($year, $month_end, $day_end);
+    $sequential_current = Seminars::compute_sequential_day($year, $csv_map[$row][$month_idx], $csv_map[$row][$day_idx]);
     
     if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end ) {
     
@@ -553,25 +553,26 @@ echo '</html>';
  
  
  
- function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
+public static function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
-// if so, I will store that array and make a map that will be parsed by a loop_over_events function
-
+// if so, I will store that array and make a map that will be parsed by a Seminars::loop_over_events function
 
     
-   $week_events = parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
+   $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
   
   
     
   $abstracts_folder = "./abstracts/";
   $images_folder = "./images/";
 
-    set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder);  
+    Seminars::set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder);  
 
   
  }
 
 
+ 
+ } //end class
 
 ?>
