@@ -398,7 +398,7 @@ echo '</html>';
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
 // if so, I will store that array and make a map that will be parsed by a loop_over_events function
 
-echo 'I am looking at what happens in ' . $semester . ' ' . $year . ' between ' . $month_begin . ' ' . $day_begin . ' and ' . $month_end . ' ' . $day_end . ' in each seminar file';
+  echo 'I am looking at what happens in ' . $semester . ' ' . $year . ' between ' . $month_begin . ' ' . $day_begin . ' and ' . $month_end . ' ' . $day_end . ' in each seminar file';
 
 
   $topics = array('AppliedMath');
@@ -416,7 +416,7 @@ echo 'I am looking at what happens in ' . $semester . ' ' . $year . ' between ' 
     
     $starting_row = 3;
     
-    $file_to_parse = '../' . $year . '/' . $semester . '/' . $events_csv_file;
+    $file_to_parse = '../' . $topics[i] . '/' . $year . '/' . $semester . '/' . $events_csv_file;
     
     $csv_map = array_map('str_getcsv', file($file_to_parse));
     

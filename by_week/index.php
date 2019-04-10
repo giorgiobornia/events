@@ -1,6 +1,6 @@
  <?php
  
- $sem_mydepth = "../";
+ $sem_mydepth = "../AppliedMath";
  
  include($sem_mydepth . "functions.php");
 
