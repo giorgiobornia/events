@@ -172,8 +172,13 @@
  } 
 
  
- function loop_over_events($csv, $abstracts_folder, $images_folder) {
+ function loop_over_events($events_map,  $starting_row,  $absolute_path_link, $abstracts_folder, $images_folder) {
 
+ 
+//  echo $absolute_path_link; 
+//this is the place from where this function is called
+//actually I would need the absolute path of the seminars folder
+ 
   //array for conversion from number to string
  $months_conv = array(
  1 =>   'January',     /*  'Jan.',  */
@@ -189,21 +194,33 @@
  11 =>  'November',    /*  'Nov.',  */
  12 =>  'December');   /*  'Dec.'); */
 
-  $month_idx               = 0;  //if this column is empty, it still generates the page
-  $day_idx                 = 1;  //if this column is empty, it still generates the page
-  $week_day_idx            = 2;  //if this column is empty, it still generates the page
-  $time_idx                = 3;  //if this column is empty, it still generates the page
-  $room_idx                = 4;  //if this column is empty, it still generates the page
-  $speaker_idx             = 5;  //if this column is empty, it still generates the page
-  $speaker_department_idx  = 6;  //if this column is empty, it still generates the page
-  $speaker_institution_idx = 7;  //if this column is empty, it still generates the page
-  $speaker_url_idx         = 8;  //if this column is empty, it still generates the page
-  $speaker_image_idx       = 9;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
-  $title_idx               = 10;  //if this column is empty, it still generates the page
-  $abstract_file_idx       = 11;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+ $discipline_conv = array(
+ "Applied Mathematics" => "AppliedMath");
+
+ $semester_conv = array(
+ "Spring" => "spring",
+ "Fall" => "fall",
+ );
+ 
+ 
+  $discipline_idx          = 0;
+  $year_idx                = 1;
+  $semester_idx            = 2;
+  $month_idx               = 3;  //if this column is empty, it still generates the page
+  $day_idx                 = 4;  //if this column is empty, it still generates the page
+  $week_day_idx            = 5;  //if this column is empty, it still generates the page
+  $time_idx                = 6;  //if this column is empty, it still generates the page
+  $room_idx                = 7;  //if this column is empty, it still generates the page
+  $speaker_idx             = 8;  //if this column is empty, it still generates the page
+  $speaker_department_idx  = 9;  //if this column is empty, it still generates the page
+  $speaker_institution_idx = 10;  //if this column is empty, it still generates the page
+  $speaker_url_idx         = 11;  //if this column is empty, it still generates the page
+  $speaker_image_idx       = 12;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+  $title_idx               = 13;  //if this column is empty, it still generates the page
+  $abstract_file_idx       = 14;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
   
   
-    $num_rows = count($csv);  
+    $num_rows = count($events_map);  
     //TODO: make sure there are no empty lines at the end...
     //TODO: strip away any empty spaces before or after the csv fields
     //TODO: images have to be .jpg
@@ -211,7 +228,7 @@
     //TODO: do not put other rows below in the csv file
     
     
-    $starting_row = 3;  //the first row is for the column fields
+
     
     
     
@@ -219,7 +236,11 @@
 
     
     for ($c = $starting_row; $c < $num_rows; $c++) {
-        
+
+//    echo   $discipline_conv[ $events_map[$c][$discipline_idx] ]  . '/' .  
+//          $events_map[$c][$year_idx] . '/' . 
+//       $semester_conv[ $events_map[$c][$semester_idx] ] . '/'; 
+    
 // %%%%%%%%%%%%%%%%%%%
     echo '
      <table class="sem_item">
@@ -227,29 +248,35 @@
      
     echo '
      <td> 
-     <img class="sem_image img-circle" ' .  'src="' . $images_folder . '/' . $csv[$c][$speaker_image_idx] . '" alt="image">  </td> ';
+     <img class="sem_image img-circle" ' .  'src="' .
+     $absolute_path_link . /*'/' .*/ 
+     $discipline_conv[ $events_map[$c][$discipline_idx] ] . '/' .  
+     $events_map[$c][$year_idx] . '/' . 
+     $semester_conv[ $events_map[$c][$semester_idx] ]  . '/' . 
+     $images_folder . '/' . 
+     $events_map[$c][$speaker_image_idx] . '" alt="image">  </td> ';
      
     echo "<td>";
     
     echo "<strong>";
-    echo  $csv[$c][$week_day_idx] . ", " . $months_conv[ $csv[$c][$month_idx] ] . " " . $csv[$c][$day_idx] . ", ";
+    echo  $events_map[$c][$week_day_idx] . ", " . $months_conv[ $events_map[$c][$month_idx] ] . " " . $events_map[$c][$day_idx] . ", ";
     echo "</strong>";
     echo "<em>";
-    echo $csv[$c][$time_idx] . ", ";
+    echo $events_map[$c][$time_idx] . ", ";
     echo "</em>";
 //     echo "<em>";
-    echo "room "  .  $csv[$c][$room_idx] ;
+    echo "room "  .  $events_map[$c][$room_idx] ;
 //     echo "</em>";
     echo "<br>";
 
     
-    $toggle_abstract_id = 'toggle_abst_' . $csv[$c][$month_idx] . '_' . $csv[$c][$day_idx];
+    $toggle_abstract_id = 'toggle_abst_' . $events_map[$c][$month_idx] . '_' . $events_map[$c][$day_idx];
 
     echo '<a  style="cursor:pointer;" ';
     echo ' id="' .  $toggle_abstract_id . '">'; 
     
     echo "<em>";
-    echo $csv[$c][$title_idx];
+    echo $events_map[$c][$title_idx];
     echo "</em>";
     
     echo '</a>';
@@ -261,11 +288,11 @@
       //     - NOT a link otherwise
     echo '<a   style="cursor:pointer;"';
 //     echo ' target="_blank" ';
-    echo 'href="' .  $csv[$c][$speaker_url_idx]  .  '">';
-    echo $csv[$c][$speaker_idx];
+    echo 'href="' .  $events_map[$c][$speaker_url_idx]  .  '">';
+    echo $events_map[$c][$speaker_idx];
     echo '</a>';
     echo "<br>";
-    echo  $csv[$c][$speaker_department_idx] . ', ' . $csv[$c][$speaker_institution_idx];
+    echo  $events_map[$c][$speaker_department_idx] . ', ' . $events_map[$c][$speaker_institution_idx];
     
     echo "<br>";
     
@@ -284,13 +311,13 @@
 
      
 //----------------    
-    $abstract_id = 'abst_' . $csv[$c][$month_idx] . '_' . $csv[$c][$day_idx];
+    $abstract_id = 'abst_' . $events_map[$c][$month_idx] . '_' . $events_map[$c][$day_idx];
 
     echo '<span class="abst" ';
     
     echo ' id="' . $abstract_id . '">';
     
-    $abstract_path = $abstracts_folder . $csv[$c][$abstract_file_idx];
+    $abstract_path = $abstracts_folder . $events_map[$c][$abstract_file_idx];
     
     include($abstract_path);
     
@@ -345,7 +372,7 @@
   } 
  
  
- function generate_index_page($sem_mydepth) {
+ function generate_seminar_page_by_topic($sem_mydepth) {
 
   $events_csv_file = './events.csv';
   $abstracts_folder = "./abstracts/";
@@ -383,7 +410,17 @@ echo '<body>';
  
  default_coords_banner($csv_map);
  
- loop_over_events($csv_map, $abstracts_folder, $images_folder);
+ $starting_row = 3;  //the first row is for the column fields
+ 
+    $calling_path_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    
+    $path_to_seminars_base = '../../../';
+    
+    $absolute_path_link = $calling_path_link .  $path_to_seminars_base;
+    
+//    echo $absolute_path_link;
+
+ loop_over_events($csv_map, $starting_row, $absolute_path_link, $abstracts_folder, $images_folder);
 
 echo '</body>';
 //------------------
@@ -422,9 +459,12 @@ echo '</html>';
 
     
     
-    $events_csv_file = 'events.csv';
-    $month_idx = 0;
-    $day_idx = 1;
+  $events_csv_file = 'events.csv';
+  $abstracts_folder = "./abstracts/";
+  $images_folder = "./images/";
+
+  $month_idx = 3;
+    $day_idx = 4;
     
     $starting_row = 3;
     
@@ -474,11 +514,24 @@ echo '</html>';
     
   }
     
+    
     echo count($week_events);
     
+
+    $starting_row = 0;
+    
+    $calling_path_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    
+    $path_to_seminars_base = '../';
+
+    $absolute_path_link = $calling_path_link .  $path_to_seminars_base;
+    
+//    echo $absolute_path_link;
+
+    loop_over_events($week_events, $starting_row, $absolute_path_link,  $abstracts_folder, $images_folder);
     
     //now I am ready to generate an index file
-    
+    //if I want to loop over events for arbitrary seminar, I also need to keep track of Discipline, Year, Semester
     
 
 

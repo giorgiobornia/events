@@ -4,6 +4,6 @@
  
  include($sem_mydepth . "../" . "functions.php");
 
- generate_index_page($sem_mydepth); 
+ generate_seminar_page_by_topic($sem_mydepth); 
  
  ?>
