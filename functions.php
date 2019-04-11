@@ -193,19 +193,20 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
  11 =>  'November',    /*  'Nov.',  */
  12 =>  'December');   /*  'Dec.'); */
 
+ //right now it is the identity,  ///@todo later we can strip the folder name from the URL
  $discipline_conv = array(
- "Applied Mathematics" => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
+ "AppliedMath" => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
  "Analysis" => "Analysis", 
- 'Algebra and Number Theory' => 'AlgebraAndNumberTheory', 
+ 'AlgebraAndNumberTheory' => 'AlgebraAndNumberTheory', 
  'Geometry' => 'Geometry',
- 'Math Education' => 'MathEd',
- 'Real-Algebraic Geometry' => 'RealAlgebraicGeometry', 
+ 'MathEd' => 'MathEd',
+ 'RealAlgebraicGeometry' => 'RealAlgebraicGeometry', 
  'Statistics' => 'Statistics' 
  );
 
  
  
- $semester_conv = array(
+ $semester_conv = array( ///@todo later we can strip the folder name from the URL
  "Spring" => "spring",
  "Fall" => "fall",
  );
@@ -245,9 +246,6 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
     
     for ($row = $starting_row; $row < $num_rows; $row++) {
 
-//    echo   $discipline_conv[ $events_map[$row][$discipline_idx] ]  . '/' .  
-//          $events_map[$row][$year_idx] . '/' . 
-//       $semester_conv[ $events_map[$row][$semester_idx] ] . '/'; 
     
 // %%%%%%%%%%%%%%%%%%%
     echo '
@@ -437,8 +435,20 @@ public static function generate_seminar_page_by_topic($sem_mydepth) {
 
   $row_regular_meeting_data = 1;
   $discipline_idx = 0;
+
+ $discipline_conv_inverse = array(
+ "AppliedMath" => "Applied Mathematics",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
+ "Analysis" => "Analysis", 
+ 'AlgebraAndNumberTheory' => 'Algebra and Number Theory', 
+ 'Geometry' => 'Geometry',
+ 'MathEd' => 'Mathematics Education',
+ 'RealAlgebraicGeometry' => 'Real-Algebraic Geometry', 
+ 'Statistics' => 'Statistics' 
+ );
   
-  $discipline = $csv_map[$row_regular_meeting_data][$discipline_idx];
+  
+  
+  $discipline = $discipline_conv_inverse[ $csv_map[$row_regular_meeting_data][$discipline_idx] ];
   
  
 echo '<!DOCTYPE html>';
