@@ -492,8 +492,7 @@ public static function parse_all_event_tables($year, $semester, $month_begin, $d
     $starting_row = 3;
     
     
-  echo 'I am looking at what happens in ' . $semester . ' ' . $year . ' between ' . $month_begin . '/' . $day_begin . ' and ' . $month_end . '/' . $day_end . ' in each seminar file';
-  echo '<br>';
+
 
 
   $topics = array('AppliedMath', 'Analysis');
@@ -505,7 +504,6 @@ public static function parse_all_event_tables($year, $semester, $month_begin, $d
   
     for ($i = 0; $i < count($topics); $i++) {
     
-    echo $topics[$i];
     
     
     $file_to_parse = '../' . $topics[$i] . '/' . $year . '/' . $semester . '/' . $events_csv_file;
@@ -524,9 +522,7 @@ public static function parse_all_event_tables($year, $semester, $month_begin, $d
     
     if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end ) {
     
-    echo $csv_map[$row][$month_idx] . ' ' .  $csv_map[$row][$day_idx]; 
-    echo '<br>';
-    
+
     array_push($week_events, $csv_map[$row]);
     
        }
