@@ -125,14 +125,14 @@ public static function title_in_browser_toolbar($discipline) {
  }
 
  
-public static function main_banner($discipline) {
+public static function main_banner($discipline, $department, $institution) {
 
   echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
   echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
   echo '<div class="container text-center">';
   echo '      <h1> Seminar in ' . $discipline . ' </h1>';
-  echo '       <h2> Department of Mathematics and Statistics </h2>';  
-  echo '     <h2> Texas Tech University </h2>'; 
+  echo '      <h2> ' . $department  . ' </h2>';  
+  echo '      <h2> ' . $institution . ' </h2>'; 
   echo '  </div>';
   echo '</div>';
   echo '</div>';
@@ -404,11 +404,14 @@ echo '</head>';
  
 public static function set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder) {
  
+ $department = 'Department of Mathematics and Statistics';
+ $institution = 'Texas Tech University';
+ 
 echo '<body>';
 
  Seminars::navigation_bar();
-
- Seminars::main_banner($discipline);
+ 
+ Seminars::main_banner($discipline, $department, $institution);
  
  Seminars::default_coords_banner($csv_map);
  
