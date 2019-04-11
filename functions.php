@@ -195,8 +195,16 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
 
  $discipline_conv = array(
  "Applied Mathematics" => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
- "Analysis" => "Analysis");
+ "Analysis" => "Analysis", 
+ 'Algebra and Number Theory' => 'AlgebraAndNumberTheory', 
+ 'Geometry' => 'Geometry',
+ 'Math Education' => 'MathEd',
+ 'Real-Algebraic Geometry' => 'RealAlgebraicGeometry', 
+ 'Statistics' => 'Statistics' 
+ );
 
+ 
+ 
  $semester_conv = array(
  "Spring" => "spring",
  "Fall" => "fall",
@@ -495,7 +503,7 @@ public static function parse_all_event_tables($year, $semester, $month_begin, $d
 
 
 
-  $topics = array('AppliedMath', 'Analysis');
+  $topics = array('AppliedMath', 'Analysis', 'AlgebraAndNumberTheory', 'Geometry', 'MathEd', 'RealAlgebraicGeometry', 'Statistics'); ///@todo this has to match another structure that is now in another function
 
 //   $topics_size = count($topics);
   
