@@ -194,7 +194,8 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
  12 =>  'December');   /*  'Dec.'); */
 
  $discipline_conv = array(
- "Applied Mathematics" => "AppliedMath");
+ "Applied Mathematics" => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
+ "Analysis" => "Analysis");
 
  $semester_conv = array(
  "Spring" => "spring",
@@ -234,11 +235,11 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
   echo '<div class="container ">';  /*text-center*/
 
     
-    for ($c = $starting_row; $c < $num_rows; $c++) {
+    for ($row = $starting_row; $row < $num_rows; $row++) {
 
-//    echo   $discipline_conv[ $events_map[$c][$discipline_idx] ]  . '/' .  
-//          $events_map[$c][$year_idx] . '/' . 
-//       $semester_conv[ $events_map[$c][$semester_idx] ] . '/'; 
+//    echo   $discipline_conv[ $events_map[$row][$discipline_idx] ]  . '/' .  
+//          $events_map[$row][$year_idx] . '/' . 
+//       $semester_conv[ $events_map[$row][$semester_idx] ] . '/'; 
     
 // %%%%%%%%%%%%%%%%%%%
     echo '
@@ -249,33 +250,33 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
      <td> 
      <img class="sem_image img-circle" ' .  'src="' .
      $relative_path_to_seminars_base . 
-     $discipline_conv[ $events_map[$c][$discipline_idx] ] . '/' .  
-     $events_map[$c][$year_idx] . '/' . 
-     $semester_conv[ $events_map[$c][$semester_idx] ]  . '/' . 
+     $discipline_conv[ $events_map[$row][$discipline_idx] ] . '/' .  
+     $events_map[$row][$year_idx] . '/' . 
+     $semester_conv[ $events_map[$row][$semester_idx] ]  . '/' . 
      $images_folder . '/' . 
-     $events_map[$c][$speaker_image_idx] . '" alt="image">  </td> ';
+     $events_map[$row][$speaker_image_idx] . '" alt="image">  </td> ';
      
     echo '<td style="text-align: center;">';
     
     echo "<strong>";
-    echo  $events_map[$c][$week_day_idx] . ", " . $months_conv[ $events_map[$c][$month_idx] ] . " " . $events_map[$c][$day_idx] . ", ";
+    echo  $events_map[$row][$week_day_idx] . ", " . $months_conv[ $events_map[$row][$month_idx] ] . " " . $events_map[$row][$day_idx] . ", ";
     echo "</strong>";
     echo "<em>";
-    echo $events_map[$c][$time_idx] . ", ";
+    echo $events_map[$row][$time_idx] . ", ";
     echo "</em>";
 //     echo "<em>";
-    echo "room "  .  $events_map[$c][$room_idx] ;
+    echo "room "  .  $events_map[$row][$room_idx] ;
 //     echo "</em>";
     echo "<br>";
 
     
-    $toggle_abstract_id = 'toggle_abst_' . $events_map[$c][$month_idx] . '_' . $events_map[$c][$day_idx];
+    $toggle_abstract_id = 'toggle_abst_' . $discipline_conv[ $events_map[$row][$discipline_idx] ] . '_' . $events_map[$row][$month_idx] . '_' . $events_map[$row][$day_idx];
 
     echo '<a  style="cursor:pointer;" ';
     echo ' id="' .  $toggle_abstract_id . '">'; 
     
     echo "<em>";
-    echo $events_map[$c][$title_idx];
+    echo $events_map[$row][$title_idx];
     echo "</em>";
     
     echo '</a>';
@@ -287,11 +288,11 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
       //     - NOT a link otherwise
     echo '<a   style="cursor:pointer;"';
 //     echo ' target="_blank" ';
-    echo 'href="' .  $events_map[$c][$speaker_url_idx]  .  '">';
-    echo $events_map[$c][$speaker_idx];
+    echo 'href="' .  $events_map[$row][$speaker_url_idx]  .  '">';
+    echo $events_map[$row][$speaker_idx];
     echo '</a>';
     echo "<br>";
-    echo  $events_map[$c][$speaker_department_idx] . ', ' . $events_map[$c][$speaker_institution_idx];
+    echo  $events_map[$row][$speaker_department_idx] . ', ' . $events_map[$row][$speaker_institution_idx];
     
     echo "<br>";
     
@@ -310,7 +311,7 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
 
      
 //----------------    
-    $abstract_id = 'abst_' . $events_map[$c][$month_idx] . '_' . $events_map[$c][$day_idx];
+    $abstract_id = 'abst_' . $discipline_conv[ $events_map[$row][$discipline_idx] ] . '_' . $events_map[$row][$month_idx] . '_' . $events_map[$row][$day_idx];
 
     echo '<span class="abst" ';   ///@todo make this span CENTERED
     
@@ -319,10 +320,10 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
 
     $abstract_path =   
     $relative_path_to_seminars_base .  
-     $discipline_conv[ $events_map[$c][$discipline_idx] ] . '/' .  
-     $events_map[$c][$year_idx] . '/' . 
-     $semester_conv[ $events_map[$c][$semester_idx] ]  . '/' . 
- $abstracts_folder . $events_map[$c][$abstract_file_idx];
+     $discipline_conv[ $events_map[$row][$discipline_idx] ] . '/' .  
+     $events_map[$row][$year_idx] . '/' . 
+     $semester_conv[ $events_map[$row][$semester_idx] ]  . '/' . 
+ $abstracts_folder . $events_map[$row][$abstract_file_idx];
 
     
 //     include should be of another PHP file, or of a LOCAL address (not http url)
@@ -466,7 +467,7 @@ public static function compute_sequential_day($year,$month,$day) {
  
 public static function set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder)  {
  
-    echo count($week_events);
+//     echo count($week_events);
     
 
     $starting_row = 0;
@@ -495,7 +496,7 @@ public static function parse_all_event_tables($year, $semester, $month_begin, $d
   echo '<br>';
 
 
-  $topics = array('AppliedMath');
+  $topics = array('AppliedMath', 'Analysis');
 
 //   $topics_size = count($topics);
   
