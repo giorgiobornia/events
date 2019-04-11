@@ -4,6 +4,29 @@
 
 class Seminars {
 
+ //right now it is the identity,  ///@todo later we can strip the folder name from the URL
+ public static $discipline_conv = array(
+ "AppliedMath" => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
+ "Analysis" => "Analysis", 
+ 'AlgebraAndNumberTheory' => 'AlgebraAndNumberTheory', 
+ 'Geometry' => 'Geometry',
+ 'MathEd' => 'MathEd',
+ 'RealAlgebraicGeometry' => 'RealAlgebraicGeometry', 
+ 'Statistics' => 'Statistics' 
+ );
+
+ 
+ public static $discipline_conv_inverse = array(
+ "AppliedMath" => "Applied Mathematics",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
+ "Analysis" => "Analysis", 
+ 'AlgebraAndNumberTheory' => 'Algebra and Number Theory', 
+ 'Geometry' => 'Geometry',
+ 'MathEd' => 'Mathematics Education',
+ 'RealAlgebraicGeometry' => 'Real-Algebraic Geometry', 
+ 'Statistics' => 'Statistics' 
+ );
+ 
+
 
 public static function navigation_bar() {
 
@@ -193,16 +216,7 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
  11 =>  'November',    /*  'Nov.',  */
  12 =>  'December');   /*  'Dec.'); */
 
- //right now it is the identity,  ///@todo later we can strip the folder name from the URL
- $discipline_conv = array(
- "AppliedMath" => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
- "Analysis" => "Analysis", 
- 'AlgebraAndNumberTheory' => 'AlgebraAndNumberTheory', 
- 'Geometry' => 'Geometry',
- 'MathEd' => 'MathEd',
- 'RealAlgebraicGeometry' => 'RealAlgebraicGeometry', 
- 'Statistics' => 'Statistics' 
- );
+
 
  
  
@@ -256,7 +270,7 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
      <td> 
      <img class="sem_image img-circle" ' .  'src="' .
      $relative_path_to_seminars_base . 
-     $discipline_conv[ $events_map[$row][$discipline_idx] ] . '/' .  
+     Seminars::$discipline_conv[ $events_map[$row][$discipline_idx] ] . '/' .  
      $events_map[$row][$year_idx] . '/' . 
      $semester_conv[ $events_map[$row][$semester_idx] ]  . '/' . 
      $images_folder . '/' . 
@@ -276,7 +290,7 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
     echo "<br>";
 
     
-    $toggle_abstract_id = 'toggle_abst_' . $discipline_conv[ $events_map[$row][$discipline_idx] ] . '_' . $events_map[$row][$month_idx] . '_' . $events_map[$row][$day_idx];
+    $toggle_abstract_id = 'toggle_abst_' . Seminars::$discipline_conv[ $events_map[$row][$discipline_idx] ] . '_' . $events_map[$row][$month_idx] . '_' . $events_map[$row][$day_idx];
 
     echo '<a  style="cursor:pointer;" ';
     echo ' id="' .  $toggle_abstract_id . '">'; 
@@ -317,7 +331,7 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
 
      
 //----------------    
-    $abstract_id = 'abst_' . $discipline_conv[ $events_map[$row][$discipline_idx] ] . '_' . $events_map[$row][$month_idx] . '_' . $events_map[$row][$day_idx];
+    $abstract_id = 'abst_' . Seminars::$discipline_conv[ $events_map[$row][$discipline_idx] ] . '_' . $events_map[$row][$month_idx] . '_' . $events_map[$row][$day_idx];
 
     echo '<span class="abst" ';   ///@todo make this span CENTERED
     
@@ -326,7 +340,7 @@ public static function loop_over_events($events_map,  $starting_row,  $relative_
 
     $abstract_path =   
     $relative_path_to_seminars_base .  
-     $discipline_conv[ $events_map[$row][$discipline_idx] ] . '/' .  
+     Seminars::$discipline_conv[ $events_map[$row][$discipline_idx] ] . '/' .  
      $events_map[$row][$year_idx] . '/' . 
      $semester_conv[ $events_map[$row][$semester_idx] ]  . '/' . 
  $abstracts_folder . $events_map[$row][$abstract_file_idx];
@@ -436,19 +450,7 @@ public static function generate_seminar_page_by_topic($sem_mydepth) {
   $row_regular_meeting_data = 1;
   $discipline_idx = 0;
 
- $discipline_conv_inverse = array(
- "AppliedMath" => "Applied Mathematics",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
- "Analysis" => "Analysis", 
- 'AlgebraAndNumberTheory' => 'Algebra and Number Theory', 
- 'Geometry' => 'Geometry',
- 'MathEd' => 'Mathematics Education',
- 'RealAlgebraicGeometry' => 'Real-Algebraic Geometry', 
- 'Statistics' => 'Statistics' 
- );
-  
-  
-  
-  $discipline = $discipline_conv_inverse[ $csv_map[$row_regular_meeting_data][$discipline_idx] ];
+  $discipline = Seminars::$discipline_conv_inverse[ $csv_map[$row_regular_meeting_data][$discipline_idx] ];
   
  
 echo '<!DOCTYPE html>';
