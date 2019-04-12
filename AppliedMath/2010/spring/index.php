@@ -14,12 +14,9 @@
 <body>
 
  <?php Seminars::navigation_bar(); ?>
-  <?php Seminars::main_banner("Applied Mathematics"); ?>
+ <?php Seminars::main_banner("Applied Mathematics"); ?>
+ <?php Seminars::default_coords_banner("Spring","2010","Wednesday","4-5 PM","MATH 016");  ?>
  
- <?php $mysem = "Spring 2010"; ?>
- <?php $myroom = "MATH 016"; ?>
- <?php $mytime = "Wednesday, 4-5 pm"; ?>
- <?php include($sem_mydepth . "sem_coords.php");  ?>
 
 <div class="container">
 

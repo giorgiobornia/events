@@ -1,6 +1,5 @@
 <?php
 
-///@obsolete: sem_coords.php
 
 class Seminars {
 
@@ -293,7 +292,27 @@ private static function title_in_browser_toolbar($discipline) {
 
 
  
-private static function default_coords_banner($csv) {
+public static function default_coords_banner($semester, $year, $week_day, $time, $room) {
+
+ echo '<div class="container-fluid text-center" id="sem_header">';
+ 
+ echo '<h2>';
+ echo $semester . ' ' . 
+      $year     . ' - ' . 
+      $week_day . ', ' . 
+      $time . ' - ' . 'room ' . 
+      $room;
+ echo '</h2>';
+ 
+ echo '</div>';
+ 
+ echo '<br>'; 
+ 
+ }
+ 
+ 
+ 
+private static function default_coords_banner_map($csv) {
  
   $discipline_default_meeting_idx          = 0;
   $year_default_meeting_idx                = 1;
@@ -302,20 +321,14 @@ private static function default_coords_banner($csv) {
   $time_default_meeting_idx                = 4;
   $room_default_meeting_idx                = 5;
  
- 
- echo '<div class="container-fluid text-center" id="sem_header">';
- 
- echo '<h2>';
- echo $csv[Seminars::$row_default_meeting_data][$semester_default_meeting_idx] . ' ' . 
-      $csv[Seminars::$row_default_meeting_data][$year_default_meeting_idx] . ' - ' . 
-      $csv[Seminars::$row_default_meeting_data][$week_default_meeting_day_idx] . ', ' . 
-      $csv[Seminars::$row_default_meeting_data][$time_default_meeting_idx] . ' - ' . 'room ' . 
-      $csv[Seminars::$row_default_meeting_data][$room_default_meeting_idx];
- echo '</h2>';
- 
- echo '</div>';
- 
- echo '<br>';
+
+  Seminars::default_coords_banner(
+      $csv[Seminars::$row_default_meeting_data][$semester_default_meeting_idx],
+      $csv[Seminars::$row_default_meeting_data][    $year_default_meeting_idx],
+      $csv[Seminars::$row_default_meeting_data][$week_day_default_meeting_idx],
+      $csv[Seminars::$row_default_meeting_data][    $time_default_meeting_idx],
+      $csv[Seminars::$row_default_meeting_data][    $room_default_meeting_idx]
+      );
  
  } 
 
@@ -492,7 +505,7 @@ echo '<body>';
  
  Seminars::main_banner($discipline, $department, $institution);
  
- Seminars::default_coords_banner($csv_map);
+ Seminars::default_coords_banner_map($csv_map);
  
  $starting_row = 3;  //the first row is for the column fields
  

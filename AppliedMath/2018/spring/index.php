@@ -14,16 +14,9 @@
 <body>
 
 
-
  <?php Seminars::navigation_bar(); ?>
  <?php Seminars::main_banner("Applied Mathematics"); ?>
 
- <?php $mysem = "Spring 2018"; ?>
- <?php $myroom = "MATH 112"; ?>
- <?php $mytime = "Wednesday, 4-5 pm"; ?>
- <?php include($sem_mydepth . "sem_coords.php");  ?>
-<!-- Maybe I should make a database for the seminar coords -->
- 
  
  <div class="container text-center">
 

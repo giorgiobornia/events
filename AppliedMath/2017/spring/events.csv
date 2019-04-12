@@ -1,0 +1,4 @@
+discipline,year,semester,week_day,time,room,,,,,,,,,
+AppliedMath,2017,Spring,Wednesday,4-5 PM,MATH 016,,,,,,,,,
+discipline,year,semester,month, day, week_day, time, room, speaker,speaker_department,speaker_institution,speaker_url, speaker_image, title, abstract_file
+AppliedMath,2008,Fall,4,3,Wednesday,4-5 PM,MATH 112,John Doe,Dept. Math,TTU,http://www.math.ttu.edu,DoubleT.jpg,Hello,empty.txt
