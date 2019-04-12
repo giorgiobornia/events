@@ -13,45 +13,55 @@ class Seminars {
  
  //array for conversion from month number to string
  private static $months_conv = array(
- 1 =>   'January',     /*  'Jan.',  */
- 2 =>   'February',    /*  'Feb.',  */
- 3 =>   'March',       /*  'Mar.',  */
- 4 =>   'April',       /*  'Apr.',  */
- 5 =>   'May',         /*  'May',   */
- 6 =>   'June',        /*  'Jun.',  */
- 7 =>   'July',        /*  'Jul.',  */
- 8 =>   'August',      /*  'Aug.',  */
- 9 =>   'September',   /*  'Sep.',  */
+ 1  =>  'January',     /*  'Jan.',  */
+ 2  =>  'February',    /*  'Feb.',  */
+ 3  =>  'March',       /*  'Mar.',  */
+ 4  =>  'April',       /*  'Apr.',  */
+ 5  =>  'May',         /*  'May',   */
+ 6  =>  'June',        /*  'Jun.',  */
+ 7  =>  'July',        /*  'Jul.',  */
+ 8  =>  'August',      /*  'Aug.',  */
+ 9  =>  'September',   /*  'Sep.',  */
  10 =>  'October',     /*  'Oct.',  */
  11 =>  'November',    /*  'Nov.',  */
  12 =>  'December');   /*  'Dec.'); */
 
+
+ private static  $discipline = array(
+  'AppliedMath', 
+  'Analysis', 
+  'AlgebraAndNumberTheory', 
+  'Geometry', 
+  'MathEd', 
+  'RealAlgebraicGeometry', 
+  'Statistics');
+
  
 //right now it is the identity,  ///@todo later we can strip the folder name from the URL
- private static $discipline_conv = array(
- "AppliedMath" => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
- "Analysis" => "Analysis", 
+ private static $discipline_identity = array(
+ "AppliedMath"            => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
+ "Analysis"               => "Analysis", 
  'AlgebraAndNumberTheory' => 'AlgebraAndNumberTheory', 
- 'Geometry' => 'Geometry',
- 'MathEd' => 'MathEd',
- 'RealAlgebraicGeometry' => 'RealAlgebraicGeometry', 
- 'Statistics' => 'Statistics' 
+ 'Geometry'               => 'Geometry',
+ 'MathEd'                 => 'MathEd',
+ 'RealAlgebraicGeometry'  => 'RealAlgebraicGeometry', 
+ 'Statistics'             => 'Statistics' 
  );
 
  
  private static $discipline_conv_inverse = array(
- "AppliedMath" => "Applied Mathematics",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
- "Analysis" => "Analysis", 
+ "AppliedMath"            => "Applied Mathematics",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
+ "Analysis"               => "Analysis", 
  'AlgebraAndNumberTheory' => 'Algebra and Number Theory', 
- 'Geometry' => 'Geometry',
- 'MathEd' => 'Mathematics Education',
- 'RealAlgebraicGeometry' => 'Real-Algebraic Geometry', 
- 'Statistics' => 'Statistics' 
+ 'Geometry'               => 'Geometry',
+ 'MathEd'                 => 'Mathematics Education',
+ 'RealAlgebraicGeometry'  => 'Real-Algebraic Geometry', 
+ 'Statistics'             => 'Statistics' 
  );
  
+  
  
- 
-   private static $row_default_meeting_data = 1;
+  private static $row_default_meeting_data = 1;
 
 // =====
    private static   $discipline_idx          = 0;
@@ -76,9 +86,14 @@ class Seminars {
  
 
 
-public static function navigation_bar() {
+public static function navigation_bar($discipline) {
 
 
+  $discipline_conv_direct = array_flip(Seminars::$discipline_conv_inverse);
+
+  $discipline_folder = $discipline_conv_direct[$discipline];
+  
+  
  echo ' <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="my_nav">                                                                    ';
  echo '                                                                                                                                                       ';
  echo '<div class="container">                                                                                                                                ';
@@ -96,7 +111,7 @@ public static function navigation_bar() {
  echo '                                                                                                                                                       ';
  echo '</button>                                                                                                                                              ';
  echo '                                                                                                                                                       ';
- echo '<a class="navbar-brand" href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/">$HOME</a>                                                      ';
+ echo '<a class="navbar-brand" href="http://www.math.ttu.edu/Department/Seminars/'. $discipline_folder . '/">$HOME</a>                                                      ';
  echo '</div>                                                                                                                                                 ';
  echo '                                                                                                                                                       ';
  echo '<div id="my_navbar" class="navbar-collapse collapse" role="navigation">                                                                                ';
@@ -188,13 +203,6 @@ public static function navigation_bar() {
 }
 
 
-
-private static function title_in_browser_toolbar($discipline) {
- 
- echo '<title>Seminar in ' . $discipline . ' - Texas Tech University</title>';
-
- }
-
  
 public static function main_banner($discipline, $department, $institution) {
 
@@ -210,6 +218,80 @@ public static function main_banner($discipline, $department, $institution) {
 
  }
  
+
+ public static function set_html_head($sem_mydepth, $title_in_toolbar) {
+ 
+echo '<head>';
+
+ include($sem_mydepth . "../sem_head_links.php");
+
+ Seminars::title_in_browser_toolbar($title_in_toolbar);
+ 
+echo '</head>';
+
+ }
+ 
+
+  
+public static function generate_seminar_page_by_topic($sem_mydepth) {
+
+  $events_csv_file = './events.csv';
+  $abstracts_folder = "./abstracts/";
+  $images_folder = "./images/";
+  
+  $csv_map = array_map('str_getcsv', file($events_csv_file));
+
+
+  $discipline = Seminars::$discipline_conv_inverse[ $csv_map[Seminars::$row_default_meeting_data][Seminars::$discipline_idx] ];
+  
+ 
+echo '<!DOCTYPE html>';
+
+echo '<html>';
+
+
+  Seminars::set_html_head($sem_mydepth, $discipline);
+  
+  Seminars::set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder);
+
+echo '</html>';
+
+ }
+ 
+
+ 
+ 
+ 
+public static function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
+
+// Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
+// if so, I will store that array and make a map that will be parsed by a Seminars::loop_over_events function
+
+    
+   $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
+  
+  
+    
+  $abstracts_folder = "./abstracts/";
+  $images_folder = "./images/";
+
+    Seminars::set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder);  
+
+  
+ }
+
+ 
+
+
+ 
+
+private static function title_in_browser_toolbar($discipline) {
+ 
+ echo '<title>Seminar in ' . $discipline . ' - Texas Tech University</title>';
+
+ }
+
+
  
 private static function default_coords_banner($csv) {
  
@@ -267,7 +349,7 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
      <td> 
      <img class="sem_image img-circle" ' .  'src="' .
      $relative_path_to_seminars_base . 
-     Seminars::$discipline_conv[ $events_map[$row][Seminars::$discipline_idx] ] . '/' .  
+     Seminars::$discipline_identity[ $events_map[$row][Seminars::$discipline_idx] ] . '/' .  
      $events_map[$row][Seminars::$year_idx] . '/' . 
      Seminars::$semester_conv[ $events_map[$row][Seminars::$semester_idx] ]  . '/' . 
      $images_folder . '/' . 
@@ -287,7 +369,7 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
     echo "<br>";
 
     
-    $toggle_abstract_id = 'toggle_abst_' . Seminars::$discipline_conv[ $events_map[$row][Seminars::$discipline_idx] ] . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
+    $toggle_abstract_id = 'toggle_abst_' . Seminars::$discipline_identity[ $events_map[$row][Seminars::$discipline_idx] ] . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
 
     echo '<a  style="cursor:pointer;" ';
     echo ' id="' .  $toggle_abstract_id . '">'; 
@@ -328,7 +410,7 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
 
      
 //----------------    
-    $abstract_id = 'abst_' . Seminars::$discipline_conv[ $events_map[$row][Seminars::$discipline_idx] ] . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
+    $abstract_id = 'abst_' . Seminars::$discipline_identity[ $events_map[$row][Seminars::$discipline_idx] ] . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
 
     echo '<span class="abst" ';   ///@todo make this span CENTERED
     
@@ -337,7 +419,7 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
 
     $abstract_path =   
     $relative_path_to_seminars_base .  
-     Seminars::$discipline_conv[ $events_map[$row][Seminars::$discipline_idx] ] . '/' .  
+     Seminars::$discipline_identity[ $events_map[$row][Seminars::$discipline_idx] ] . '/' .  
      $events_map[$row][Seminars::$year_idx] . '/' . 
      Seminars::$semester_conv[ $events_map[$row][Seminars::$semester_idx] ]  . '/' . 
  $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
@@ -397,19 +479,7 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
   } 
  
  
-public static function set_html_head($sem_mydepth, $title_in_toolbar) {
- 
-echo '<head>';
 
- include($sem_mydepth . "../sem_head_links.php");
-
- Seminars::title_in_browser_toolbar($title_in_toolbar);
- 
-echo '</head>';
-
- }
- 
- 
  
 private static function set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder) {
  
@@ -418,7 +488,7 @@ private static function set_seminar_by_topic_body($sem_mydepth, $discipline, $cs
  
 echo '<body>';
 
- Seminars::navigation_bar();
+ Seminars::navigation_bar($discipline);
  
  Seminars::main_banner($discipline, $department, $institution);
  
@@ -435,32 +505,6 @@ echo '</body>';
  
  }
  
- 
-public static function generate_seminar_page_by_topic($sem_mydepth) {
-
-  $events_csv_file = './events.csv';
-  $abstracts_folder = "./abstracts/";
-  $images_folder = "./images/";
-  
-  $csv_map = array_map('str_getcsv', file($events_csv_file));
-
-
-  $discipline = Seminars::$discipline_conv_inverse[ $csv_map[Seminars::$row_default_meeting_data][Seminars::$discipline_idx] ];
-  
- 
-echo '<!DOCTYPE html>';
-
-echo '<html>';
-
-
-  Seminars::set_html_head($sem_mydepth, $discipline);
-  
-  Seminars::set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder);
-
-echo '</html>';
-
- }
-
 
  
 private static function compute_sequential_day($year,$month,$day) { 
@@ -510,19 +554,14 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
     
 
 
-
-  $topics = array('AppliedMath', 'Analysis', 'AlgebraAndNumberTheory', 'Geometry', 'MathEd', 'RealAlgebraicGeometry', 'Statistics'); ///@todo this has to match another structure that is now in another function
-
-//   $topics_size = count($topics);
-  
   
   $week_events = array();
   
-    for ($i = 0; $i < count($topics); $i++) {
+    for ($i = 0; $i < count(Seminars::$discipline); $i++) {
     
     
     
-    $file_to_parse = '../' . $topics[$i] . '/' . $year . '/' . $semester . '/' . $events_csv_file;
+    $file_to_parse = '../' . Seminars::$discipline[$i] . '/' . $year . '/' . $semester . '/' . $events_csv_file;
     
     $csv_map = array_map('str_getcsv', file($file_to_parse));
     
@@ -555,26 +594,6 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
  
  }
  
- 
- 
-public static function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
-
-// Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
-// if so, I will store that array and make a map that will be parsed by a Seminars::loop_over_events function
-
-    
-   $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
-  
-  
-    
-  $abstracts_folder = "./abstracts/";
-  $images_folder = "./images/";
-
-    Seminars::set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder);  
-
-  
- }
-
 
  
  } //end class
