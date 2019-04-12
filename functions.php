@@ -196,7 +196,7 @@ echo '<html>';
 
   Seminars::set_html_head($sem_mydepth, $discipline);
   
-  Seminars::set_seminar_by_topic_body($sem_mydepth, $discipline, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
+  Seminars::set_seminar_by_topic_body($discipline, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
 
 echo '</html>';
 
@@ -435,7 +435,7 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
  
 
  
-private static function set_seminar_by_topic_body($sem_mydepth, $discipline, $discipline_folder, $csv_map, $abstracts_folder, $images_folder) {
+private static function set_seminar_by_topic_body($discipline, $discipline_folder, $csv_map, $abstracts_folder, $images_folder) {
  
  $department = 'Department of Mathematics and Statistics';
  $institution = 'Texas Tech University';

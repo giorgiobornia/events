@@ -10,3 +10,7 @@
 <!-- Redirecting -->
 </body>
 </html>
+
+ <?php
+//  include("../functions.php");
+ ?>
