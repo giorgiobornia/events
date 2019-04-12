@@ -139,7 +139,7 @@ public static function main_banner($discipline, $department, $institution) {
  }
  
 
- public static function set_html_head($sem_mydepth, $title_in_toolbar) {
+public static function set_html_head($sem_mydepth, $title_in_toolbar) {
  
 echo '<head>';
 
@@ -174,21 +174,13 @@ echo '<html>';
 
   Seminars::set_html_head($sem_mydepth, $discipline);
   
-  Seminars::set_seminar_by_topic_body($institution, $department, $discipline, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
+  Seminars::set_seminar_by_topic_body($institution, $department, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
 
 echo '</html>';
 
  }
  
 
-private static function get_discipline_folder_name_from_file($csv_map) {
-
-  $discipline_folder =  $csv_map[ Seminars::$row_default_meeting_data ][ Seminars::$discipline_idx ];
-
-  return $discipline_folder;
-  
-}
- 
  
  
 public static function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
@@ -251,6 +243,14 @@ private static function default_coords_banner_map($csv) {
 
 
  
+ 
+private static function get_discipline_folder_name_from_file($csv_map) {
+
+  $discipline_folder =  $csv_map[ Seminars::$row_default_meeting_data ][ Seminars::$discipline_idx ];
+
+  return $discipline_folder;
+  
+}
  
 
 private static function title_in_browser_toolbar($discipline) {
@@ -449,8 +449,10 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
  
 
  
-private static function set_seminar_by_topic_body($institution, $department, $discipline, $discipline_folder, $csv_map, $abstracts_folder, $images_folder) {
+private static function set_seminar_by_topic_body($institution, $department, $discipline_folder, $csv_map, $abstracts_folder, $images_folder) {
  
+
+ $discipline = Seminars::$discipline_conv_inverse[ $discipline_folder ];
 
  
 echo '<body>';
