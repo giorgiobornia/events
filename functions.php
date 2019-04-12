@@ -39,7 +39,6 @@ public static function navigation_bar($discipline) {
  echo '<div id="my_navbar" class="navbar-collapse collapse" role="navigation">                                                                                ';
  echo '                                                                                                                                                       ';
  echo '<ul class="nav navbar-nav navbar-right">  <!-- <ul class="navbar"> this was my old class -->                                                           ';
- echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/about.php">  ./about</a></li>                                                   ';
  echo '                                                                                                                                                       ';
  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2019 </a>                                                            ';
  echo '  <ul class="dropdown-menu">                                                                                                                           ';
@@ -125,7 +124,34 @@ public static function navigation_bar($discipline) {
 }
 
 
+
+private static function about($discipline) {
+
+
+ if ($discipline == "AppliedMath") {
  
+  echo '<div class="container ">';
+  
+ echo ' Since Fall 2008, the seminar provides a venue for researchers and students 
+        to present and discuss mathematical approaches for the investigation of challenging real-life problems.
+        Topics range from pure mathematical subjects to applications.';
+ echo '<br>';       
+ echo 'The seminar also aims to encourage students to develop their own research projects.';
+ echo '<br>';       
+ echo 'We welcome all those who want to broaden their perspective on the mathematical methods used in contemporary research.';
+ echo '<br>';       
+ echo '<br>';       
+
+   echo '<div>';
+   ///@todo mention organizers
+ }
+
+ 
+}
+
+
+
+
 public static function main_banner($discipline, $department, $institution) {
 
   echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
@@ -157,14 +183,10 @@ echo '</head>';
   
 public static function generate_seminar_page_by_topic($sem_mydepth) {
 
-  $events_csv_file = './events.csv';
-  $abstracts_folder = "./abstracts/";
-  $images_folder = "./images/";
-  
-  $csv_map = array_map('str_getcsv', file($events_csv_file));
+  $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
 
-
-  $discipline = Seminars::$discipline_conv_inverse[ $csv_map[Seminars::$row_default_meeting_data][Seminars::$discipline_idx] ];
+  $discipline_folder =  $csv_map[Seminars::$row_default_meeting_data][Seminars::$discipline_idx];
+  $discipline = Seminars::$discipline_conv_inverse[ $discipline_folder ];
   
  
 echo '<!DOCTYPE html>';
@@ -174,7 +196,7 @@ echo '<html>';
 
   Seminars::set_html_head($sem_mydepth, $discipline);
   
-  Seminars::set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder);
+  Seminars::set_seminar_by_topic_body($sem_mydepth, $discipline, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
 
 echo '</html>';
 
@@ -192,12 +214,7 @@ public static function generate_seminar_page_by_week($year, $semester, $month_be
     
    $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
   
-  
-    
-  $abstracts_folder = "./abstracts/";
-  $images_folder = "./images/";
-
-    Seminars::set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder);  
+    Seminars::set_seminar_by_week_body($week_events, Seminars::$abstracts_folder, Seminars::$images_folder);  
 
   
  }
@@ -359,7 +376,7 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
      Seminars::$discipline_identity[ $events_map[$row][Seminars::$discipline_idx] ] . '/' .  
      $events_map[$row][Seminars::$year_idx] . '/' . 
      Seminars::$semester_conv[ $events_map[$row][Seminars::$semester_idx] ]  . '/' . 
- $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
+    $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
 
     
 //     include should be of another PHP file, or of a LOCAL address (not http url)
@@ -418,7 +435,7 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
  
 
  
-private static function set_seminar_by_topic_body($sem_mydepth, $discipline, $csv_map, $abstracts_folder, $images_folder) {
+private static function set_seminar_by_topic_body($sem_mydepth, $discipline, $discipline_folder, $csv_map, $abstracts_folder, $images_folder) {
  
  $department = 'Department of Mathematics and Statistics';
  $institution = 'Texas Tech University';
@@ -430,6 +447,8 @@ echo '<body>';
  Seminars::main_banner($discipline, $department, $institution);
  
  Seminars::default_coords_banner_map($csv_map);
+ 
+ Seminars::about($discipline_folder);
  
  $starting_row = 3;  //the first row is for the column fields
  
@@ -466,8 +485,6 @@ private static function compute_sequential_day($year,$month,$day) {
  
 private static function set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder)  {
  
-//     echo count($week_events);
-    
 
     $starting_row = 0;
     
@@ -483,7 +500,6 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
  
  
  
-   $events_csv_file = 'events.csv';
 
     
     $starting_row = 3;
@@ -498,7 +514,7 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
     
     
     
-    $file_to_parse = '../' . Seminars::$discipline[$i] . '/' . $year . '/' . $semester . '/' . $events_csv_file;
+    $file_to_parse = '../' . Seminars::$discipline[$i] . '/' . $year . '/' . $semester . '/' . Seminars::$events_csv_file;
     
     $csv_map = array_map('str_getcsv', file($file_to_parse));
     
@@ -535,7 +551,10 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
  
  
  //============== private data ===============
- 
+   private static $abstracts_folder = "./abstracts/";
+   private static $images_folder    = "./images/";
+   private static $events_csv_file = './events.csv';
+
  
  private static $semester_conv = array( ///@todo later we can strip the folder name from the URL
  "Spring" => "spring",
