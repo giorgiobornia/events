@@ -5,84 +5,7 @@ class Seminars {
 
  
  
- private static $semester_conv = array( ///@todo later we can strip the folder name from the URL
- "Spring" => "spring",
- "Fall" => "fall",
- );
- 
- //array for conversion from month number to string
- private static $months_conv = array(
- 1  =>  'January',     /*  'Jan.',  */
- 2  =>  'February',    /*  'Feb.',  */
- 3  =>  'March',       /*  'Mar.',  */
- 4  =>  'April',       /*  'Apr.',  */
- 5  =>  'May',         /*  'May',   */
- 6  =>  'June',        /*  'Jun.',  */
- 7  =>  'July',        /*  'Jul.',  */
- 8  =>  'August',      /*  'Aug.',  */
- 9  =>  'September',   /*  'Sep.',  */
- 10 =>  'October',     /*  'Oct.',  */
- 11 =>  'November',    /*  'Nov.',  */
- 12 =>  'December');   /*  'Dec.'); */
-
-
- private static  $discipline = array(
-  'AppliedMath', 
-  'Analysis', 
-  'AlgebraAndNumberTheory', 
-  'Geometry', 
-  'MathEd', 
-  'RealAlgebraicGeometry', 
-  'Statistics');
-
- 
-//right now it is the identity,  ///@todo later we can strip the folder name from the URL
- private static $discipline_identity = array(
- "AppliedMath"            => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
- "Analysis"               => "Analysis", 
- 'AlgebraAndNumberTheory' => 'AlgebraAndNumberTheory', 
- 'Geometry'               => 'Geometry',
- 'MathEd'                 => 'MathEd',
- 'RealAlgebraicGeometry'  => 'RealAlgebraicGeometry', 
- 'Statistics'             => 'Statistics' 
- );
-
- 
- private static $discipline_conv_inverse = array(
- "AppliedMath"            => "Applied Mathematics",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
- "Analysis"               => "Analysis", 
- 'AlgebraAndNumberTheory' => 'Algebra and Number Theory', 
- 'Geometry'               => 'Geometry',
- 'MathEd'                 => 'Mathematics Education',
- 'RealAlgebraicGeometry'  => 'Real-Algebraic Geometry', 
- 'Statistics'             => 'Statistics' 
- );
- 
   
- 
-  private static $row_default_meeting_data = 1;
-
-// =====
-   private static   $discipline_idx          = 0;
-   private static   $year_idx                = 1;
-   private static   $semester_idx            = 2;
-   private static   $month_idx               = 3;  //if this column is empty, it still generates the page
-   private static   $day_idx                 = 4;  //if this column is empty, it still generates the page
-   private static   $week_day_idx            = 5;  //if this column is empty, it still generates the page
-   private static   $time_idx                = 6;  //if this column is empty, it still generates the page
-   private static   $room_idx                = 7;  //if this column is empty, it still generates the page
-   private static   $speaker_idx             = 8;  //if this column is empty, it still generates the page
-   private static   $speaker_department_idx  = 9;  //if this column is empty, it still generates the page
-   private static   $speaker_institution_idx = 10;  //if this column is empty, it still generates the page
-   private static   $speaker_url_idx         = 11;  //if this column is empty, it still generates the page
-   private static   $speaker_image_idx       = 12;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
-   private static   $title_idx               = 13;  //if this column is empty, it still generates the page
-   private static   $abstract_file_idx       = 14;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
-  
- 
-   
- 
- 
 
 
 public static function navigation_bar($discipline) {
@@ -222,7 +145,7 @@ public static function main_banner($discipline, $department, $institution) {
  
 echo '<head>';
 
- include($sem_mydepth . "../sem_head_links.php");
+ include($sem_mydepth . "sem_head_links.php");
 
  Seminars::title_in_browser_toolbar($title_in_toolbar);
  
@@ -280,6 +203,7 @@ public static function generate_seminar_page_by_week($year, $semester, $month_be
  }
 
  
+
 
 
  
@@ -606,6 +530,93 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
  
  
  }
+
+ 
+ 
+ 
+ //============== private data ===============
+ 
+ 
+ private static $semester_conv = array( ///@todo later we can strip the folder name from the URL
+ "Spring" => "spring",
+ "Fall" => "fall",
+ );
+ 
+ //array for conversion from month number to string
+ private static $months_conv = array(
+ 1  =>  'January',     /*  'Jan.',  */
+ 2  =>  'February',    /*  'Feb.',  */
+ 3  =>  'March',       /*  'Mar.',  */
+ 4  =>  'April',       /*  'Apr.',  */
+ 5  =>  'May',         /*  'May',   */
+ 6  =>  'June',        /*  'Jun.',  */
+ 7  =>  'July',        /*  'Jul.',  */
+ 8  =>  'August',      /*  'Aug.',  */
+ 9  =>  'September',   /*  'Sep.',  */
+ 10 =>  'October',     /*  'Oct.',  */
+ 11 =>  'November',    /*  'Nov.',  */
+ 12 =>  'December');   /*  'Dec.'); */
+
+
+ private static  $discipline = array(
+  'AppliedMath', 
+  'Analysis', 
+  'AlgebraAndNumberTheory', 
+  'Geometry', 
+  'MathEd', 
+  'RealAlgebraicGeometry', 
+  'Statistics');
+
+ 
+//right now it is the identity,  ///@todo later we can strip the folder name from the URL
+ private static $discipline_identity = array(
+ "AppliedMath"            => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
+ "Analysis"               => "Analysis", 
+ 'AlgebraAndNumberTheory' => 'AlgebraAndNumberTheory', 
+ 'Geometry'               => 'Geometry',
+ 'MathEd'                 => 'MathEd',
+ 'RealAlgebraicGeometry'  => 'RealAlgebraicGeometry', 
+ 'Statistics'             => 'Statistics' 
+ );
+
+ 
+ private static $discipline_conv_inverse = array(
+ "AppliedMath"            => "Applied Mathematics",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
+ "Analysis"               => "Analysis", 
+ 'AlgebraAndNumberTheory' => 'Algebra and Number Theory', 
+ 'Geometry'               => 'Geometry',
+ 'MathEd'                 => 'Mathematics Education',
+ 'RealAlgebraicGeometry'  => 'Real-Algebraic Geometry', 
+ 'Statistics'             => 'Statistics' 
+ );
+ 
+  
+ 
+  private static $row_default_meeting_data = 1;
+
+// =====
+   private static   $discipline_idx          = 0;
+   private static   $year_idx                = 1;
+   private static   $semester_idx            = 2;
+   private static   $month_idx               = 3;  //if this column is empty, it still generates the page
+   private static   $day_idx                 = 4;  //if this column is empty, it still generates the page
+   private static   $week_day_idx            = 5;  //if this column is empty, it still generates the page
+   private static   $time_idx                = 6;  //if this column is empty, it still generates the page
+   private static   $room_idx                = 7;  //if this column is empty, it still generates the page
+   private static   $speaker_idx             = 8;  //if this column is empty, it still generates the page
+   private static   $speaker_department_idx  = 9;  //if this column is empty, it still generates the page
+   private static   $speaker_institution_idx = 10;  //if this column is empty, it still generates the page
+   private static   $speaker_url_idx         = 11;  //if this column is empty, it still generates the page
+   private static   $speaker_image_idx       = 12;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+   private static   $title_idx               = 13;  //if this column is empty, it still generates the page
+   private static   $abstract_file_idx       = 14;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+  
+ 
+   
+ 
+
+ 
+ 
  
 
  

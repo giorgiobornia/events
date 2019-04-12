@@ -4,7 +4,7 @@
 
  $title_in_toolbar = 'Seminars by week';
  
- $sem_mydepth = "./";
+ $sem_mydepth = "../";
  
  
  Seminars::set_html_head($sem_mydepth, $title_in_toolbar);

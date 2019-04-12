@@ -22,7 +22,7 @@
 
  
 <!-- Favicon -->
- <link rel="icon" href="<?php echo $sem_mydepth; ?>../img/favicon.ico">
+ <link rel="icon" href="<?php echo $sem_mydepth; ?>./img/favicon.ico">
  
  
 <!-- MathJax -->
@@ -42,5 +42,5 @@
 
  
  <!-- This goes in the last position to override   -->
-<link rel="stylesheet" href="<?php echo $sem_mydepth; ?>../css/sem_style.css">
+<link rel="stylesheet" href="<?php echo $sem_mydepth; ?>./css/sem_style.css">
 
