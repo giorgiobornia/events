@@ -124,34 +124,6 @@ public static function navigation_bar($discipline) {
 }
 
 
-
-private static function about($discipline) {
-
-
- if ($discipline == "AppliedMath") {
- 
-  echo '<div class="container ">';
-  
- echo ' Since Fall 2008, the seminar provides a venue for researchers and students 
-        to present and discuss mathematical approaches for the investigation of challenging real-life problems.
-        Topics range from pure mathematical subjects to applications.';
- echo '<br>';       
- echo 'The seminar also aims to encourage students to develop their own research projects.';
- echo '<br>';       
- echo 'We welcome all those who want to broaden their perspective on the mathematical methods used in contemporary research.';
- echo '<br>';       
- echo '<br>';       
-
-   echo '<div>';
-   ///@todo mention organizers
- }
-
- 
-}
-
-
-
-
 public static function main_banner($discipline, $department, $institution) {
 
   echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
@@ -183,9 +155,15 @@ echo '</head>';
   
 public static function generate_seminar_page_by_topic($sem_mydepth) {
 
-  $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
+  $institution = 'Texas Tech University';
+  $department = 'Department of Mathematics and Statistics';
 
-  $discipline_folder =  $csv_map[Seminars::$row_default_meeting_data][Seminars::$discipline_idx];
+  
+  $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
+  
+  
+  $discipline_folder = Seminars::get_discipline_folder_name_from_file($csv_map);
+  
   $discipline = Seminars::$discipline_conv_inverse[ $discipline_folder ];
   
  
@@ -196,13 +174,20 @@ echo '<html>';
 
   Seminars::set_html_head($sem_mydepth, $discipline);
   
-  Seminars::set_seminar_by_topic_body($discipline, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
+  Seminars::set_seminar_by_topic_body($institution, $department, $discipline, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
 
 echo '</html>';
 
  }
  
 
+private static function get_discipline_folder_name_from_file($csv_map) {
+
+  $discipline_folder =  $csv_map[ Seminars::$row_default_meeting_data ][ Seminars::$discipline_idx ];
+
+  return $discipline_folder;
+  
+}
  
  
  
@@ -221,15 +206,6 @@ public static function generate_seminar_page_by_week($year, $semester, $month_be
 
  
 
-
-
- 
-
-private static function title_in_browser_toolbar($discipline) {
- 
- echo '<title>Seminar in ' . $discipline . ' - Texas Tech University</title>';
-
- }
 
 
  
@@ -273,6 +249,44 @@ private static function default_coords_banner_map($csv) {
  
  } 
 
+
+ 
+ 
+
+private static function title_in_browser_toolbar($discipline) {
+ 
+ echo '<title>Seminar in ' . $discipline . ' - Texas Tech University</title>';
+
+ }
+
+
+
+private static function about($discipline) {
+
+
+ if ($discipline == "AppliedMath") {
+ 
+  echo '<div class="container ">';
+  
+ echo ' Since Fall 2008, the seminar provides a venue for researchers and students 
+        to present and discuss mathematical approaches for the investigation of challenging real-life problems.
+        Topics range from pure mathematical subjects to applications.';
+ echo '<br>';       
+ echo 'The seminar also aims to encourage students to develop their own research projects.';
+ echo '<br>';       
+ echo 'We welcome all those who want to broaden their perspective on the mathematical methods used in contemporary research.';
+ echo '<br>';       
+ echo '<br>';       
+
+   echo '<div>';
+   ///@todo mention organizers
+ }
+
+ 
+}
+
+
+ 
  
 private static function loop_over_events($events_map,  $starting_row,  $relative_path_to_seminars_base, $abstracts_folder, $images_folder) {
 
@@ -435,10 +449,9 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
  
 
  
-private static function set_seminar_by_topic_body($discipline, $discipline_folder, $csv_map, $abstracts_folder, $images_folder) {
+private static function set_seminar_by_topic_body($institution, $department, $discipline, $discipline_folder, $csv_map, $abstracts_folder, $images_folder) {
  
- $department = 'Department of Mathematics and Statistics';
- $institution = 'Texas Tech University';
+
  
 echo '<body>';
 
@@ -551,6 +564,7 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
  
  
  //============== private data ===============
+
    private static $abstracts_folder = "./abstracts/";
    private static $images_folder    = "./images/";
    private static $events_csv_file = './events.csv';
