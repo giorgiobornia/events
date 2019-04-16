@@ -9,7 +9,7 @@ class Seminars {
 
 
   
-public static function generate_seminar_page_by_topic($model_path, $institution, $department, $toolbar_image) {
+public static function generate_seminar_page_by_topic($model_path, $institution, $department, $icon_in_toolbar) {
 
 
   $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
@@ -23,7 +23,7 @@ echo '<!DOCTYPE html>';
 
 echo '<html>';
 
-  Seminars::set_html_head($model_path, $discipline, $toolbar_image);
+  Seminars::set_html_head($model_path, $discipline, $icon_in_toolbar);
   
   Seminars::set_seminar_by_topic_body($institution, $department, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
 
@@ -34,12 +34,14 @@ echo '</html>';
 
  
  
-public static function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
+public static function generate_seminar_page_by_week($model_path, $title_in_toolbar, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
 // if so, I will store that array and make a map that will be parsed by a Seminars::loop_over_events function
 
-    
+   Seminars::set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar);
+   
+
    $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
   
     Seminars::set_seminar_by_week_body($week_events, Seminars::$abstracts_folder, Seminars::$images_folder);  
@@ -53,11 +55,14 @@ public static function generate_seminar_page_by_week($year, $semester, $month_be
 
 
 
-public static function set_html_head($model_path, $title_in_toolbar, $toolbar_image) {
+private static function set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar) {
 
 // the disadvantage of doing echo instead of including the file with a php include is just when you have to handle single quotes vs double quotes; also, a little lack of readability
 // However, the great advantage is that it is very clear what is passed! Previously, the variable coming from the file had to be set, and with the EXACT SAME NAME!
 //So it is muuuuch better in the end to use the function!
+
+$description = "Seminars";
+$author = "Giorgio Bornia";
 
 
 echo '<head>';
@@ -68,10 +73,8 @@ echo '<head>';
  echo ' <meta name="viewport" content="width=device-width, initial-scale=1">                                                                                                                ';
 
  echo '<!-- Meta tags for indexing in search engines -->                                                                                                                                    ';
- echo ' <meta name="description" content="Seminars at Texas Tech University">                                                                                                               ';
- echo ' <meta name="author"      content="Giorgio Bornia">                                                                                                                                       ';
- echo ' <!--  <meta name="robots" content="" >  -->                                                                                                                                         ';
- echo ' <!--  <meta name="keywords" content="" >  they say google does not use them anymore -->                                                                                              ';
+ echo ' <meta name="description" content="' . $description . '">                                                                                                               ';
+ echo ' <meta name="author"      content="' . $author . '">                                                                                                                                       ';
 
  echo ' <!-- BOOTSTRAP -->                                                                                                                                                                  ';
  echo ' <!-- Latest compiled and minified CSS -->                                                                                                                                           ';
@@ -83,8 +86,6 @@ echo '<head>';
  echo '<!-- Latest compiled JavaScript -->                                                                                                                                                  ';
  echo '<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>                                                                                           ';
 
- echo '<!-- Favicon -->                                                                                                                                                                     ';
- echo ' <link rel="icon" href="' .  $toolbar_image . '">                                                                                                               ';
 
  echo '<!-- MathJax -->                                                                                                                                                                     ';
  echo ' <script type="text/x-mathjax-config">                                                                                                                                               ';
@@ -112,7 +113,7 @@ echo '<head>';
                                                                                                                                                                                             
 
 
- Seminars::title_in_browser_toolbar($title_in_toolbar);
+ Seminars::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
  
 echo '</head>';
 
@@ -304,9 +305,12 @@ private static function get_discipline_folder_name_from_file($csv_map) {
 }
  
 
-private static function title_in_browser_toolbar($discipline) {
+private static function set_browser_toolbar($title, $icon_in_toolbar) {
  
- echo '<title>Seminar in ' . $discipline . ' - Texas Tech University</title>';
+ echo '<!-- Favicon -->                                                                                                                                                                     ';
+ echo ' <link rel="icon" href="' .  $icon_in_toolbar . '">                                                                                                               ';
+
+ echo '<title> ' . $title . ' </title>';
 
  }
 
