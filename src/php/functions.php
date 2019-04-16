@@ -9,7 +9,7 @@ class Seminars {
 
 
   
-public static function generate_seminar_page_by_topic($sem_mydepth, $institution, $department) {
+public static function generate_seminar_page_by_topic($model_path, $institution, $department, $toolbar_image) {
 
 
   $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
@@ -23,7 +23,7 @@ echo '<!DOCTYPE html>';
 
 echo '<html>';
 
-  Seminars::set_html_head($sem_mydepth, $discipline);
+  Seminars::set_html_head($model_path, $discipline, $toolbar_image);
   
   Seminars::set_seminar_by_topic_body($institution, $department, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
 
@@ -53,7 +53,7 @@ public static function generate_seminar_page_by_week($year, $semester, $month_be
 
 
 
-public static function set_html_head($model_path, $title_in_toolbar) {
+public static function set_html_head($model_path, $title_in_toolbar, $toolbar_image) {
 
 // the disadvantage of doing echo instead of including the file with a php include is just when you have to handle single quotes vs double quotes; also, a little lack of readability
 // However, the great advantage is that it is very clear what is passed! Previously, the variable coming from the file had to be set, and with the EXACT SAME NAME!
@@ -84,7 +84,7 @@ echo '<head>';
  echo '<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>                                                                                           ';
 
  echo '<!-- Favicon -->                                                                                                                                                                     ';
- echo ' <link rel="icon" href="' .  $model_path . './src/img/favicon.ico">                                                                                                               ';
+ echo ' <link rel="icon" href="' .  $toolbar_image . '">                                                                                                               ';
 
  echo '<!-- MathJax -->                                                                                                                                                                     ';
  echo ' <script type="text/x-mathjax-config">                                                                                                                                               ';
