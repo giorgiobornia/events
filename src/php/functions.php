@@ -8,7 +8,126 @@ class Seminars {
   
 
 
-public static function navigation_bar($discipline) {
+  
+public static function generate_seminar_page_by_topic($sem_mydepth) {
+
+  $institution = 'Texas Tech University';
+  $department = 'Department of Mathematics and Statistics';
+
+  
+  $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
+  
+  
+  $discipline_folder = Seminars::get_discipline_folder_name_from_file($csv_map);
+  
+  $discipline = Seminars::$discipline_conv_inverse[ $discipline_folder ];
+  
+ 
+echo '<!DOCTYPE html>';
+
+echo '<html>';
+
+
+  Seminars::set_html_head($sem_mydepth, $discipline);
+  
+  Seminars::set_seminar_by_topic_body($institution, $department, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
+
+echo '</html>';
+
+ }
+ 
+
+ 
+ 
+public static function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
+
+// Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
+// if so, I will store that array and make a map that will be parsed by a Seminars::loop_over_events function
+
+    
+   $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
+  
+    Seminars::set_seminar_by_week_body($week_events, Seminars::$abstracts_folder, Seminars::$images_folder);  
+
+  
+ }
+
+ 
+
+
+
+
+
+public static function set_html_head($model_path, $title_in_toolbar) {
+
+// the disadvantage of doing echo instead of including the file with a php include is just when you have to handle single quotes vs double quotes; also, a little lack of readability
+// However, the great advantage is that it is very clear what is passed! Previously, the variable coming from the file had to be set, and with the EXACT SAME NAME!
+//So it is muuuuch better in the end to use the function!
+
+
+//  include($model_path . "src/php/sem_head_links.php");
+
+// alternative to the include -------------------
+
+echo '<head>';
+
+
+ echo '<!-- These metas must be first in the head, so we must include this file before any other line in head -->                                                                            ';
+ echo ' <meta charset="utf-8">                                                                                                                                                              ';
+ echo ' <meta name="viewport" content="width=device-width, initial-scale=1">                                                                                                                ';
+
+ echo '<!-- Meta tags for indexing in search engines -->                                                                                                                                    ';
+ echo ' <meta name="description" content="Seminars at Texas Tech University">                                                                                                               ';
+ echo ' <meta name="author"      content="Giorgio Bornia">                                                                                                                                       ';
+ echo ' <!--  <meta name="robots" content="" >  -->                                                                                                                                         ';
+ echo ' <!--  <meta name="keywords" content="" >  they say google does not use them anymore -->                                                                                              ';
+
+ echo ' <!-- BOOTSTRAP -->                                                                                                                                                                  ';
+ echo ' <!-- Latest compiled and minified CSS -->                                                                                                                                           ';
+ echo '<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">                                                                                  ';
+
+ echo '<!-- jQuery library -->                                                                                                                                                              ';
+ echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>                                                                                            ';
+
+ echo '<!-- Latest compiled JavaScript -->                                                                                                                                                  ';
+ echo '<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>                                                                                           ';
+
+ echo '<!-- Favicon -->                                                                                                                                                                     ';
+ echo ' <link rel="icon" href="' .  $model_path . './src/img/favicon.ico">                                                                                                               ';
+
+ echo '<!-- MathJax -->                                                                                                                                                                     ';
+ echo ' <script type="text/x-mathjax-config">                                                                                                                                               ';
+//  echo ' MathJax.Hub.Config({                                                                                                                                                                ';
+//  echo ' tex2jax: {                                                                                                                                                                          ';
+//  echo " inlineMath: [['$','$'], ['\\(','\\)']],                                                                                                                                             ";
+//  echo " displayMath: [ ['$$','$$'], ["\\[","\\]"] ],                                                                                                                                        ";
+//  echo ' processEscapes: true                                                                                                                                                                ';
+//  echo ' }});                                                                                                                                                                                ';
+
+echo ' </script>                                                                                                                                                                           ';
+ 
+ echo '<script type="text/javascript" async                                                                                                                                                 ';
+ echo '  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">                                                                                ';
+ echo '</script>                                                                                                                                                                            ';
+// //  <!--<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>--> <!--THIS WAS DISCONTINUED-->          
+
+ echo ' <!-- This goes in the last position to override   -->                                                                                                                               ';
+ echo '<link rel="stylesheet" href="'  .  $model_path . './src/css/sem_style.css">                                                                                                        ';
+                                                                                                                                                                                            
+// alternative to the include - end ---------------
+ 
+ 
+ 
+ Seminars::title_in_browser_toolbar($title_in_toolbar);
+ 
+echo '</head>';
+
+ }
+ 
+ 
+ 
+ 
+private static function navigation_bar($discipline) {
 
 
   $discipline_conv_direct = array_flip(Seminars::$discipline_conv_inverse);
@@ -124,7 +243,7 @@ public static function navigation_bar($discipline) {
 }
 
 
-public static function main_banner($discipline, $department, $institution) {
+private static function main_banner($discipline, $department, $institution) {
 
   echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
   echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
@@ -138,121 +257,8 @@ public static function main_banner($discipline, $department, $institution) {
 
  }
  
-
-public static function set_html_head($sem_mydepth, $title_in_toolbar) {
-
-// the disadvantage of doing echo instead of including the file is just when you have to handle single quotes vs double quotes, and some lack of readability
-
- include($sem_mydepth . "../seminars_model/src/php/sem_head_links.php");
-
-// alternative to the include -------------------
-
-// echo '<head>';
-// 
-// 
-//  echo '<!-- These metas must be first in the head, so we must include this file before any other line in head -->                                                                            ';
-//  echo ' <meta charset="utf-8">                                                                                                                                                              ';
-//  echo ' <meta name="viewport" content="width=device-width, initial-scale=1">                                                                                                                ';
-// 
-//  echo '<!-- Meta tags for indexing in search engines -->                                                                                                                                    ';
-//  echo ' <meta name="description" content="Seminars at Texas Tech University">                                                                                                               ';
-//  echo ' <meta name="author"      content="Giorgio Bornia">                                                                                                                                       ';
-//  echo ' <!--  <meta name="robots" content="" >  -->                                                                                                                                         ';
-//  echo ' <!--  <meta name="keywords" content="" >  they say google does not use them anymore -->                                                                                              ';
-// 
-//  echo ' <!-- BOOTSTRAP -->                                                                                                                                                                  ';
-//  echo ' <!-- Latest compiled and minified CSS -->                                                                                                                                           ';
-//  echo '<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">                                                                                  ';
-// 
-//  echo '<!-- jQuery library -->                                                                                                                                                              ';
-//  echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>                                                                                            ';
-// 
-//  echo '<!-- Latest compiled JavaScript -->                                                                                                                                                  ';
-//  echo '<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>                                                                                           ';
-// 
-//  echo '<!-- Favicon -->                                                                                                                                                                     ';
-//  echo ' <link rel="icon" href="' .  $sem_mydepth . './img/favicon.ico">                                                                                                               ';
-// 
-//  echo '<!-- MathJax -->                                                                                                                                                                     ';
-//  echo ' <script type="text/x-mathjax-config">                                                                                                                                               ';
-// //  echo ' MathJax.Hub.Config({                                                                                                                                                                ';
-// //  echo ' tex2jax: {                                                                                                                                                                          ';
-// //  echo " inlineMath: [['$','$'], ['\\(','\\)']],                                                                                                                                             ";
-// //  echo " displayMath: [ ['$$','$$'], ["\\[","\\]"] ],                                                                                                                                        ";
-// //  echo ' processEscapes: true                                                                                                                                                                ';
-// //  echo ' }});                                                                                                                                                                                ';
-// 
-// echo ' </script>                                                                                                                                                                           ';
-//  
-//  echo '<script type="text/javascript" async                                                                                                                                                 ';
-//  echo '  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">                                                                                ';
-//  echo '</script>                                                                                                                                                                            ';
-// // //  <!--<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>--> <!--THIS WAS DISCONTINUED-->          
-// 
-//  echo ' <!-- This goes in the last position to override   -->                                                                                                                               ';
-//  echo '<link rel="stylesheet" href="'  .  $sem_mydepth . './css/sem_style.css">                                                                                                        ';
-                                                                                                                                                                                            
-// alternative to the include - end ---------------
  
- 
- 
- Seminars::title_in_browser_toolbar($title_in_toolbar);
- 
-echo '</head>';
-
- }
- 
-
-  
-public static function generate_seminar_page_by_topic($sem_mydepth) {
-
-  $institution = 'Texas Tech University';
-  $department = 'Department of Mathematics and Statistics';
-
-  
-  $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
-  
-  
-  $discipline_folder = Seminars::get_discipline_folder_name_from_file($csv_map);
-  
-  $discipline = Seminars::$discipline_conv_inverse[ $discipline_folder ];
-  
- 
-echo '<!DOCTYPE html>';
-
-echo '<html>';
-
-
-  Seminars::set_html_head($sem_mydepth, $discipline);
-  
-  Seminars::set_seminar_by_topic_body($institution, $department, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
-
-echo '</html>';
-
- }
- 
-
- 
- 
-public static function generate_seminar_page_by_week($year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
-
-// Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
-// if so, I will store that array and make a map that will be parsed by a Seminars::loop_over_events function
-
-    
-   $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
-  
-    Seminars::set_seminar_by_week_body($week_events, Seminars::$abstracts_folder, Seminars::$images_folder);  
-
-  
- }
-
- 
-
-
-
- 
-public static function default_coords_banner($semester, $year, $week_day, $time, $room) {
+private static function default_coords_banner($semester, $year, $week_day, $time, $room) {
 
  echo '<div class="container-fluid text-center" id="sem_header">';
  
