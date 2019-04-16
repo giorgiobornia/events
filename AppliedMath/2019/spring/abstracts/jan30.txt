@@ -1,9 +1,0 @@
- In this talk, we present our recent development of high order numerical methods on sparse grids. We first review
-the sparse grid discontinuous Galerkin (DG) scheme for transport
-equations and apply it to kinetic simulations. The method uses the weak formulations
-of traditional Runge-Kutta DG schemes for hyperbolic problems and is proven to be $L^2$
-stable and convergent. A major advantage of the scheme lies in its low computational
-and storage cost due to the employed sparse finite element approximation space. This
-attractive feature is explored in simulating linear and nonlinear transport problems including the celebrated Vlasov-Poisson/Maxwell System. We then discuss our very recent development on another novel high order sparse grid method, which is as effective and
-efficient as the DG counterpart for box-shaped domains, but more flexible and easier to implement on
-unstructured meshes. Some preliminary results are presented to demonstrate the efficiency of our new method.

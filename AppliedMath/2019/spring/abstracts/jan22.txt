@@ -1,6 +1,0 @@
- This talk is concerned with the Uniformization problem: which intrinsic qualities of a metric space allow a good parameterization by a
-Euclidean space? In the first part of the talk, we consider geometrically good (conformal, quasiconformal) parameterizations. While
-including a wide range of fractal examples, spaces as such enjoy geometric and analytic properties and a great amount of first-order
-calculus can be performed on them. In the second part of the talk, we discuss measure-theoretically good (Lipschitz, Holder)
-parameterizations. The problem of classifying spaces admitting such parameterizations is is one of the most important problems
-in geometric measure theory and it is associated to the famous Traveling Salesman Problem.

@@ -1,4 +1,0 @@
-Stochastic counterparts of nonlinear dynamics problems might be studied by 
-non-perturbative functional methods developed in the framework of quantum
-field theory. Keywords: Kolmogorov’ 1941 (Navier-Stokes turbulence), transport through
-porous media, waterspouts, tsunami waves, stochastic magnetohydrodynamics, self-organized criticality, etc. 
