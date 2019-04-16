@@ -65,10 +65,6 @@ public static function set_html_head($model_path, $title_in_toolbar) {
 //So it is muuuuch better in the end to use the function!
 
 
-//  include($model_path . "src/php/sem_head_links.php");
-
-// alternative to the include -------------------
-
 echo '<head>';
 
 
@@ -97,14 +93,19 @@ echo '<head>';
 
  echo '<!-- MathJax -->                                                                                                                                                                     ';
  echo ' <script type="text/x-mathjax-config">                                                                                                                                               ';
-//  echo ' MathJax.Hub.Config({                                                                                                                                                                ';
-//  echo ' tex2jax: {                                                                                                                                                                          ';
-//  echo " inlineMath: [['$','$'], ['\\(','\\)']],                                                                                                                                             ";
-//  echo " displayMath: [ ['$$','$$'], ["\\[","\\]"] ],                                                                                                                                        ";
-//  echo ' processEscapes: true                                                                                                                                                                ';
-//  echo ' }});                                                                                                                                                                                ';
-
-echo ' </script>                                                                                                                                                                           ';
+ echo ' MathJax.Hub.Config({                                                                                                                                                                ';
+ echo ' tex2jax: {                                                                                                                                                                          ';
+//how it should be printed
+//  inlineMath:  [ ['$','$'],   ['\\(','\\)'] ],
+//  displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+//how it should be printed - end
+//how to get it
+ echo ' inlineMath:  [ [\'$\',\'$\'],   [\'\\\(\',\'\\\)\'] ],                                                                                                                    ';  //some escaping is needed for the ' and \ fonts
+ echo ' displayMath: [ [\'$$\',\'$$\'], ["\\\[","\\\]"]     ],                                                                                                                    '; //some escaping is needed for the ' and \ fonts
+//how to get it - end
+ echo ' processEscapes: true                                                                                                                                                                ';
+ echo ' }});                                                                                                                                                                                ';
+ echo ' </script>                                                                                                                                                                           ';
  
  echo '<script type="text/javascript" async                                                                                                                                                 ';
  echo '  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">                                                                                ';
@@ -114,10 +115,8 @@ echo ' </script>                                                                
  echo ' <!-- This goes in the last position to override   -->                                                                                                                               ';
  echo '<link rel="stylesheet" href="'  .  $model_path . './src/css/sem_style.css">                                                                                                        ';
                                                                                                                                                                                             
-// alternative to the include - end ---------------
- 
- 
- 
+
+
  Seminars::title_in_browser_toolbar($title_in_toolbar);
  
 echo '</head>';
