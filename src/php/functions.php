@@ -9,21 +9,21 @@ class Seminars {
 
 
   
-public static function generate_seminar_page_by_topic($model_path, $institution, $department, $icon_in_toolbar) {
+public static function generate_seminar_page_by_topic($model_path, $institution, $department, $topic, $year, $semester, $icon_in_toolbar) {
 
 
   $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
   
   $discipline_folder = Seminars::get_discipline_folder_name_from_file($csv_map);
   
-  $discipline = Seminars::$discipline_conv_inverse[ $discipline_folder ];
+  $title_in_toolbar = Seminars::$discipline_conv_inverse[ $discipline_folder ];
   
  
 echo '<!DOCTYPE html>';
 
 echo '<html>';
 
-  Seminars::set_html_head($model_path, $discipline, $icon_in_toolbar);
+  Seminars::set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar);
   
   Seminars::set_seminar_by_topic_body($institution, $department, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
 
@@ -533,7 +533,7 @@ echo '</body>';
  
 
  
-private static function compute_sequential_day($year,$month,$day) { 
+private static function compute_sequential_day($year, $month, $day) { 
  
    $month_days;
    
