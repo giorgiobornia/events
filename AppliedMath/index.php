@@ -12,5 +12,5 @@
 </html>
 
  <?php
-//  include("../functions.php");
+//  include("../php/functions.php");
  ?>

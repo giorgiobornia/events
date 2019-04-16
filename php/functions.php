@@ -143,7 +143,7 @@ public static function set_html_head($sem_mydepth, $title_in_toolbar) {
 
 // the disadvantage of doing echo instead of including the file is just when you have to handle single quotes vs double quotes, and some lack of readability
 
- include($sem_mydepth . "sem_head_links.php");
+ include($sem_mydepth . "php/sem_head_links.php");
 
 // alternative to the include -------------------
 
