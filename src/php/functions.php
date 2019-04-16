@@ -9,14 +9,10 @@ class Seminars {
 
 
   
-public static function generate_seminar_page_by_topic($sem_mydepth) {
+public static function generate_seminar_page_by_topic($sem_mydepth, $institution, $department) {
 
-  $institution = 'Texas Tech University';
-  $department = 'Department of Mathematics and Statistics';
 
-  
   $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
-  
   
   $discipline_folder = Seminars::get_discipline_folder_name_from_file($csv_map);
   
@@ -26,7 +22,6 @@ public static function generate_seminar_page_by_topic($sem_mydepth) {
 echo '<!DOCTYPE html>';
 
 echo '<html>';
-
 
   Seminars::set_html_head($sem_mydepth, $discipline);
   
