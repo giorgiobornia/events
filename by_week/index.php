@@ -1,6 +1,6 @@
  <?php
  
-  include("../php/functions.php");
+  include("../src/php/functions.php");
 
  $title_in_toolbar = 'Seminars by week';
  
