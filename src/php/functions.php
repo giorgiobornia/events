@@ -9,7 +9,7 @@ class Seminars {
 
 
   
-public static function generate_seminar_page_by_topic($model_path, $institution, $department, $topic, $year, $semester, $icon_in_toolbar, $discipline_conv_inverse) {
+public static function generate_seminar_page_by_topic($library_path, $institution, $department, $topic, $year, $semester, $icon_in_toolbar, $discipline_array) {
 
  
 echo '<!DOCTYPE html>';
@@ -17,13 +17,13 @@ echo '<!DOCTYPE html>';
 echo '<html>';
 
 
-  $title_in_toolbar = $discipline_conv_inverse[ $topic ];
+  $title_in_toolbar = $discipline_array[ $topic ];
   
-  Seminars::set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar);
+  Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
   
-  $csv_map = Seminars::read_file_and_attach_topic_year_semester(Seminars::$events_csv_file, $topic, $year, $semester);
+  $events_map = Seminars::read_file_and_attach_topic_year_semester(Seminars::$events_csv_file, $topic, $year, $semester);
 
-  Seminars::set_seminars_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_conv_inverse);
+  Seminars::set_seminars_by_topic_body($institution, $department, $topic, $year, $semester, $events_map, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);
 
 
 echo '</html>';
@@ -33,10 +33,10 @@ echo '</html>';
 
  
  
-public static function generate_seminar_page_by_week($model_path, $institution, $department, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array) {
+public static function generate_seminar_page_by_week($library_path, $institution, $department, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array) {
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
-// if so, I will store that array and make a map that will be parsed by a Seminars::loop_over_events function
+// if so, I will store that array and make a map that will be parsed by a function
 
 echo '<!DOCTYPE html>';
 
@@ -44,11 +44,11 @@ echo '<html>';
 
    $title_in_toolbar = 'Seminars by week';
 
-   Seminars::set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar);
+   Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
 
-   $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
+   $events_in_week =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
   
-    Seminars::set_seminars_by_week_body($institution, $department, $week_events, Seminars::$abstracts_folder, Seminars::$images_folder);  
+    Seminars::set_seminars_by_week_body($institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $events_in_week, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);  
 
 
 echo '</html>';
@@ -75,7 +75,7 @@ private static function read_file_and_attach_topic_year_semester($file, $topic, 
  }
 
 
-private static function set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar) {
+private static function set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar) {
 
 // the disadvantage of doing echo instead of including the file with a php include is just when you have to handle single quotes vs double quotes; also, a little lack of readability
 // However, the great advantage is that it is very clear what is passed! Previously, the variable coming from the file had to be set, and with the EXACT SAME NAME!
@@ -129,7 +129,7 @@ echo '<head>';
 // //  <!--<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>--> <!--THIS WAS DISCONTINUED-->          
 
  echo ' <!-- This goes in the last position to override   -->                                                                                                                               ';
- echo '<link rel="stylesheet" href="'  .  $model_path . './src/css/sem_style.css">                                                                                                        ';
+ echo '<link rel="stylesheet" href="'  .  $library_path . './src/css/sem_style.css">                                                                                                        ';
                                                                                                                                                                                             
 
 
@@ -342,31 +342,11 @@ private static function about($discipline) {
 }
 
 
+private static function event_details($events_map, $row, $discipline_array) {
+                                      
+//     echo $discipline_array[ $events_map[$row][Seminars::$discipline_idx] ];
+//     echo "<br>";
 
-
-
-private static function event_item($relative_path_to_seminars_base,
-                                   $events_map, 
-                                   $row,
-                                   $images_folder) {
-
-
-    echo '
-     <table class="sem_item">
-     <tr>';
-     
-    echo '
-     <td> 
-     <img class="sem_image img-circle" ' .  'src="' .
-     $relative_path_to_seminars_base . 
-     $events_map[$row][Seminars::$discipline_idx_new] . '/' .  
-     $events_map[$row][Seminars::$year_idx_new] . '/' . 
-     $events_map[$row][Seminars::$semester_idx_new]  . '/' . 
-     $images_folder . '/' . 
-     $events_map[$row][Seminars::$speaker_image_idx] . '" alt="image">  </td> ';
-     
-    echo '<td style="text-align: center;">';
-    
     echo "<strong>";
     echo  $events_map[$row][Seminars::$week_day_idx] . ", " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx] . ", ";
     echo "</strong>";
@@ -379,7 +359,7 @@ private static function event_item($relative_path_to_seminars_base,
     echo "<br>";
 
     
-    $toggle_abstract_id = 'toggle_abst_' .  $events_map[$row][Seminars::$discipline_idx_new]  . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
+    $toggle_abstract_id = 'toggle_abst_' .  $events_map[$row][Seminars::$discipline_idx]  . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
 
     echo '<a  style="cursor:pointer;" ';
     echo ' id="' .  $toggle_abstract_id . '">'; 
@@ -409,11 +389,52 @@ private static function event_item($relative_path_to_seminars_base,
     echo '
       </td>';
       
+      return $toggle_abstract_id;
+
+}
+
+
+private static function set_event_image($relative_path_to_seminars_base,
+                                       $images_folder,
+                                       $events_map, 
+                                       $row)  {
+                                   
+   echo '
+     <td> 
+     <img class="sem_image img-circle" ' .  'src="' .
+     $relative_path_to_seminars_base . 
+     $events_map[$row][Seminars::$discipline_idx] . '/' .  
+     $events_map[$row][Seminars::$year_idx] . '/' . 
+     $events_map[$row][Seminars::$semester_idx]  . '/' . 
+     $images_folder . '/' . 
+     $events_map[$row][Seminars::$speaker_image_idx] . '" alt="image">  </td> ';
+     
+    echo '<td style="text-align: center;">';
+    
+    
+    }
+
+
+private static function set_event_image_and_details($relative_path_to_seminars_base,
+                                   $images_folder,
+                                   $events_map, 
+                                   $row,
+                                   $discipline_array) {
+
+
+    echo '
+     <table class="sem_item">
+     <tr>';
+     
+     Seminars::set_event_image($relative_path_to_seminars_base, $images_folder, $events_map, $row);
+    
+    $toggle_abstract_id = Seminars::event_details($events_map, $row, $discipline_array);
+    
+    
     echo '  
       </tr>
       </table> 
      ';
-//     echo "<br>";
 
   return $toggle_abstract_id;
   
@@ -422,13 +443,13 @@ private static function event_item($relative_path_to_seminars_base,
 
 
 private static function set_abstract($relative_path_to_seminars_base,
+                                     $abstracts_folder,
                                      $events_map,
                                      $row,
-                                     $abstracts_folder,
                                      $toggle_abstract_id) {
                                      
 //----------------    
-    $abstract_id = 'abst_' . $events_map[$row][Seminars::$discipline_idx_new]  . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
+    $abstract_id = 'abst_' . $events_map[$row][Seminars::$discipline_idx]  . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
 
     echo '<span class="abst" ';   ///@todo make this span CENTERED
     
@@ -437,9 +458,9 @@ private static function set_abstract($relative_path_to_seminars_base,
 
     $abstract_path =   
     $relative_path_to_seminars_base .  
-    $events_map[$row][Seminars::$discipline_idx_new] . '/' .  
-    $events_map[$row][Seminars::$year_idx_new] . '/' . 
-    $events_map[$row][Seminars::$semester_idx_new] . '/' . 
+    $events_map[$row][Seminars::$discipline_idx] . '/' .  
+    $events_map[$row][Seminars::$year_idx] . '/' . 
+    $events_map[$row][Seminars::$semester_idx] . '/' . 
     $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
 
     
@@ -481,7 +502,7 @@ private static function set_abstract($relative_path_to_seminars_base,
  }
  
  
-private static function loop_over_events($events_map,  $starting_row,  $relative_path_to_seminars_base, $abstracts_folder, $images_folder) {
+private static function loop_over_events($events_map,  $starting_row,  $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array) {
 
  
     ///@todo: make sure there are no empty lines at the end of a csv file...
@@ -500,9 +521,9 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
     for ($row = $starting_row; $row < $num_rows; $row++) {
 
     
-    $toggle_abstract_id = Seminars::event_item($relative_path_to_seminars_base, $events_map, $row, $images_folder);
+    $toggle_abstract_id = Seminars::set_event_image_and_details($relative_path_to_seminars_base, $images_folder, $events_map, $row, $discipline_array);
     
-                        Seminars::set_abstract($relative_path_to_seminars_base, $events_map, $row, $abstracts_folder, $toggle_abstract_id);
+                        Seminars::set_abstract($relative_path_to_seminars_base, $abstracts_folder, $events_map, $row, $toggle_abstract_id);
     
     }
     
@@ -540,7 +561,15 @@ private static function compute_sequential_day($year, $month, $day) {
  
  
  
-private static function set_seminars_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, $abstracts_folder, $images_folder, $discipline_conv_inverse) {
+private static function set_seminars_by_topic_body($institution,
+                                                   $department,
+                                                   $topic,
+                                                   $year,
+                                                   $semester, 
+                                                   $events_in_seminar, 
+                                                   $abstracts_folder,
+                                                   $images_folder,
+                                                   $discipline_array) {
  
 
 echo '<body>';
@@ -549,19 +578,19 @@ echo '<body>';
  Seminars::navigation_bar($topic);
  
  
- $title = 'Seminar in ' . $discipline_conv_inverse[ $topic ];
+ $title = 'Seminar in ' . $discipline_array[ $topic ];
 
  Seminars::main_banner($title, $department, $institution);
  
- Seminars::default_coords_banner_map($csv_map, $year, $semester);
+ Seminars::default_coords_banner_map($events_in_seminar, $year, $semester);
  
  Seminars::about($topic);
  
- $starting_row = 3;  //the first row is for the column fields
+ $starting_row = Seminars::$row_events_begin;
  
  $relative_path_to_seminars_base = '../../../';
     
- Seminars::loop_over_events($csv_map, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder);
+ Seminars::loop_over_events($events_in_seminar, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array);
 
 echo '</body>';
  
@@ -572,7 +601,18 @@ echo '</body>';
  
 
  
-private static function set_seminars_by_week_body($institution, $department, $week_events, $abstracts_folder, $images_folder)  {
+private static function set_seminars_by_week_body($institution, 
+                                                  $department, 
+                                                  $year,
+                                                  $semester, 
+                                                  $month_begin,
+                                                  $day_begin, 
+                                                  $month_end, 
+                                                  $day_end, 
+                                                  $events_in_week, 
+                                                  $abstracts_folder,
+                                                  $images_folder,
+                                                  $discipline_array)  {
  
 
 echo '<body>';
@@ -585,7 +625,7 @@ $starting_row = 0;
     
     $relative_path_to_seminars_base = '../';
 
-    Seminars::loop_over_events($week_events, $starting_row, $relative_path_to_seminars_base,  $abstracts_folder, $images_folder);
+    Seminars::loop_over_events($events_in_week, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array);
  
 echo '</body>';
 
@@ -593,15 +633,15 @@ echo '</body>';
  }
  
  
-private static function parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_conv_inverse)  {
+private static function parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array)  {
  
  
-    $starting_row = 3;
+    $starting_row = Seminars::$row_events_begin;
 
   
-  $week_events = array();
+  $events_in_week = array();
   
-    foreach ($discipline_conv_inverse as $topic => $topic_string) {
+    foreach ($discipline_array as $topic => $topic_string) {
     
     
     $file_to_parse = '../' . $topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_csv_file;
@@ -619,7 +659,7 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
     if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end ) {
     
 
-    array_push($week_events, $csv_map[$row]);
+    array_push($events_in_week, $csv_map[$row]);
     
        }
     
@@ -630,7 +670,7 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
   }
 
  
- return $week_events;
+ return $events_in_week;
  
  
  }
@@ -682,15 +722,17 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
    private static   $speaker_image_idx       = 9;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
    private static   $title_idx               = 10;  //if this column is empty, it still generates the page
    private static   $abstract_file_idx       = 11;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
-   private static   $discipline_idx_new      = 12;
-   private static   $year_idx_new            = 13;
-   private static   $semester_idx_new        = 14;
+   private static   $discipline_idx      = 12;
+   private static   $year_idx            = 13;
+   private static   $semester_idx        = 14;
   
    private static     $week_day_default_meeting_idx            = 0;
    private static     $time_default_meeting_idx                = 1;
    private static     $room_default_meeting_idx                = 2;
 
   private static $row_default_meeting_data = 1;
+  
+  private static $row_events_begin = 3;
  
  } //end class
 
