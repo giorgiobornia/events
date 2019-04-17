@@ -11,21 +11,20 @@ class Seminars {
   
 public static function generate_seminar_page_by_topic($model_path, $institution, $department, $topic, $year, $semester, $icon_in_toolbar) {
 
-
-  $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
-  
-  $discipline_folder = Seminars::get_discipline_folder_name_from_file($csv_map);
-  
-  $title_in_toolbar = Seminars::$discipline_conv_inverse[ $discipline_folder ];
-  
  
 echo '<!DOCTYPE html>';
 
 echo '<html>';
 
+
+  $title_in_toolbar = Seminars::$discipline_conv_inverse[ $topic ];
+  
   Seminars::set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar);
   
-  Seminars::set_seminar_by_topic_body($institution, $department, $discipline_folder, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
+  
+  $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
+
+  Seminars::set_seminar_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
 
 echo '</html>';
 
@@ -295,7 +294,7 @@ private static function default_coords_banner_map($csv) {
 
 
  
- 
+///@obsolete 
 private static function get_discipline_folder_name_from_file($csv_map) {
 
   $discipline_folder =  $csv_map[ Seminars::$row_default_meeting_data ][ Seminars::$discipline_idx ];
@@ -504,13 +503,12 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
  
 
  
-private static function set_seminar_by_topic_body($institution, $department, $discipline_folder, $csv_map, $abstracts_folder, $images_folder) {
+private static function set_seminar_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, $abstracts_folder, $images_folder) {
  
 
- $discipline = Seminars::$discipline_conv_inverse[ $discipline_folder ];
-
- 
 echo '<body>';
+
+ $discipline = Seminars::$discipline_conv_inverse[ $topic ];
 
  Seminars::navigation_bar($discipline);
  
@@ -518,7 +516,7 @@ echo '<body>';
  
  Seminars::default_coords_banner_map($csv_map);
  
- Seminars::about($discipline_folder);
+ Seminars::about($topic);
  
  $starting_row = 3;  //the first row is for the column fields
  
@@ -569,22 +567,16 @@ private static function set_seminar_by_week_body($week_events, $abstracts_folder
 private static function parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end)  {
  
  
- 
-
-    
     $starting_row = 3;
-    
-    
-
 
   
   $week_events = array();
   
-    for ($i = 0; $i < count(Seminars::$discipline); $i++) {
+//     for ($i = 0; $i < count(Seminars::$discipline_conv_inverse); $i++) {
+    foreach (Seminars::$discipline_conv_inverse as $key => $value) {
     
     
-    
-    $file_to_parse = '../' . Seminars::$discipline[$i] . '/' . $year . '/' . $semester . '/' . Seminars::$events_csv_file;
+    $file_to_parse = '../' . $key . '/' . $year . '/' . $semester . '/' . Seminars::$events_csv_file;
     
     $csv_map = array_map('str_getcsv', file($file_to_parse));
     
@@ -648,38 +640,6 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
  12 =>  'December');   /*  'Dec.'); */
 
 
- private static  $discipline = array(
-  'AppliedMath', 
-  'Analysis', 
-  'AlgebraAndNumberTheory', 
-  'Geometry', 
-  'MathEd', 
-  'RealAlgebraicGeometry', 
-  'Statistics');
-
- 
-//right now it is the identity,  ///@todo later we can strip the folder name from the URL
- private static $discipline_identity = array(
- "AppliedMath"            => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
- "Analysis"               => "Analysis", 
- 'AlgebraAndNumberTheory' => 'AlgebraAndNumberTheory', 
- 'Geometry'               => 'Geometry',
- 'MathEd'                 => 'MathEd',
- 'RealAlgebraicGeometry'  => 'RealAlgebraicGeometry', 
- 'Statistics'             => 'Statistics' 
- );
-
- 
- private static $discipline_conv_inverse = array(
- "AppliedMath"            => "Applied Mathematics",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
- "Analysis"               => "Analysis", 
- 'AlgebraAndNumberTheory' => 'Algebra and Number Theory', 
- 'Geometry'               => 'Geometry',
- 'MathEd'                 => 'Mathematics Education',
- 'RealAlgebraicGeometry'  => 'Real-Algebraic Geometry', 
- 'Statistics'             => 'Statistics' 
- );
- 
   
  
   private static $row_default_meeting_data = 1;
@@ -703,6 +663,28 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
   
  
    
+//right now it is the identity,  ///@todo later we can strip the folder name from the URL
+ private static $discipline_identity = array(
+ "AppliedMath"            => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
+ "Analysis"               => "Analysis", 
+ 'AlgebraAndNumberTheory' => 'AlgebraAndNumberTheory', 
+ 'Geometry'               => 'Geometry',
+ 'MathEd'                 => 'MathEd',
+ 'RealAlgebraicGeometry'  => 'RealAlgebraicGeometry', 
+ 'Statistics'             => 'Statistics' 
+ );
+
+ 
+ private static $discipline_conv_inverse = array(
+ "AppliedMath"            => "Applied Mathematics",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
+ "Analysis"               => "Analysis", 
+ 'AlgebraAndNumberTheory' => 'Algebra and Number Theory', 
+ 'Geometry'               => 'Geometry',
+ 'MathEd'                 => 'Mathematics Education',
+ 'RealAlgebraicGeometry'  => 'Real-Algebraic Geometry', 
+ 'Statistics'             => 'Statistics' 
+ );
+ 
  
 
  
