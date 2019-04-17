@@ -290,37 +290,21 @@ private static function default_coords_banner($semester, $year, $week_day, $time
  
  
  
-private static function default_coords_banner_map($csv) {
+private static function default_coords_banner_map($csv, $year, $semester) {
  
-  $discipline_default_meeting_idx          = 0;
-  $year_default_meeting_idx                = 1;
-  $semester_default_meeting_idx            = 2;
-  $week_day_default_meeting_idx            = 3;
-  $time_default_meeting_idx                = 4;
-  $room_default_meeting_idx                = 5;
  
-
   Seminars::default_coords_banner(
-      $csv[Seminars::$row_default_meeting_data][$semester_default_meeting_idx],
-      $csv[Seminars::$row_default_meeting_data][    $year_default_meeting_idx],
-      $csv[Seminars::$row_default_meeting_data][$week_day_default_meeting_idx],
-      $csv[Seminars::$row_default_meeting_data][    $time_default_meeting_idx],
-      $csv[Seminars::$row_default_meeting_data][    $room_default_meeting_idx]
+      Seminars::$semester_conv[$semester],
+      $year,
+      $csv[Seminars::$row_default_meeting_data][Seminars::$week_day_default_meeting_idx],
+      $csv[Seminars::$row_default_meeting_data][    Seminars::$time_default_meeting_idx],
+      $csv[Seminars::$row_default_meeting_data][    Seminars::$room_default_meeting_idx]
       );
  
  } 
 
 
- 
-///@obsolete 
-private static function get_discipline_folder_name_from_file($csv_map) {
 
-  $discipline_folder =  $csv_map[ Seminars::$row_default_meeting_data ][ Seminars::$discipline_idx ];
-
-  return $discipline_folder;
-  
-}
- 
 
 private static function set_browser_toolbar($title, $icon_in_toolbar) {
  
@@ -375,9 +359,9 @@ private static function event_item($relative_path_to_seminars_base,
      <td> 
      <img class="sem_image img-circle" ' .  'src="' .
      $relative_path_to_seminars_base . 
-     $events_map[$row][Seminars::$discipline_idx] . '/' .  
-     $events_map[$row][Seminars::$year_idx] . '/' . 
-     Seminars::$semester_conv[ $events_map[$row][Seminars::$semester_idx] ]  . '/' . 
+     $events_map[$row][Seminars::$discipline_idx_new] . '/' .  
+     $events_map[$row][Seminars::$year_idx_new] . '/' . 
+     $events_map[$row][Seminars::$semester_idx_new]  . '/' . 
      $images_folder . '/' . 
      $events_map[$row][Seminars::$speaker_image_idx] . '" alt="image">  </td> ';
      
@@ -395,7 +379,7 @@ private static function event_item($relative_path_to_seminars_base,
     echo "<br>";
 
     
-    $toggle_abstract_id = 'toggle_abst_' .  $events_map[$row][Seminars::$discipline_idx]  . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
+    $toggle_abstract_id = 'toggle_abst_' .  $events_map[$row][Seminars::$discipline_idx_new]  . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
 
     echo '<a  style="cursor:pointer;" ';
     echo ' id="' .  $toggle_abstract_id . '">'; 
@@ -444,7 +428,7 @@ private static function set_abstract($relative_path_to_seminars_base,
                                      $toggle_abstract_id) {
                                      
 //----------------    
-    $abstract_id = 'abst_' . $events_map[$row][Seminars::$discipline_idx]  . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
+    $abstract_id = 'abst_' . $events_map[$row][Seminars::$discipline_idx_new]  . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
 
     echo '<span class="abst" ';   ///@todo make this span CENTERED
     
@@ -453,9 +437,9 @@ private static function set_abstract($relative_path_to_seminars_base,
 
     $abstract_path =   
     $relative_path_to_seminars_base .  
-    $events_map[$row][Seminars::$discipline_idx] . '/' .  
-    $events_map[$row][Seminars::$year_idx] . '/' . 
-     Seminars::$semester_conv[ $events_map[$row][Seminars::$semester_idx] ]  . '/' . 
+    $events_map[$row][Seminars::$discipline_idx_new] . '/' .  
+    $events_map[$row][Seminars::$year_idx_new] . '/' . 
+    $events_map[$row][Seminars::$semester_idx_new] . '/' . 
     $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
 
     
@@ -569,7 +553,7 @@ echo '<body>';
 
  Seminars::main_banner($title, $department, $institution);
  
- Seminars::default_coords_banner_map($csv_map);
+ Seminars::default_coords_banner_map($csv_map, $year, $semester);
  
  Seminars::about($topic);
  
@@ -626,13 +610,6 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
 
     
     for ($row = $starting_row; $row < count($csv_map); $row++) {
-    
-//     $csv_map[$row][Seminars::$discipline_idx] = $topic; 
-//     $csv_map[$row][Seminars::$year_idx] = $year; 
-//     $csv_map[$row][Seminars::$semester_idx] = $semester; 
-    
-//     echo     $csv_map[$row][Seminars::$semester_idx] ;
-
 
     //best thing is probably to convert into an increasing number, to avoid non-monotone behavior
     $sequential_begin   = Seminars::compute_sequential_day($year, $month_begin, $day_begin);
@@ -669,8 +646,8 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
 
  
  private static $semester_conv = array( ///@todo later we can strip the folder name from the URL
- "Spring" => "spring",
- "Fall" => "fall",
+ "spring" => "Spring",
+ "fall" => "Fall",
  );
  
  //array for conversion from month number to string
@@ -691,29 +668,29 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
 
   
  
-  private static $row_default_meeting_data = 1;
 
 // =====
-   private static   $discipline_idx          = 0;
-   private static   $year_idx                = 1;
-   private static   $semester_idx            = 2;
-   private static   $month_idx               = 3;  //if this column is empty, it still generates the page
-   private static   $day_idx                 = 4;  //if this column is empty, it still generates the page
-   private static   $week_day_idx            = 5;  //if this column is empty, it still generates the page
-   private static   $time_idx                = 6;  //if this column is empty, it still generates the page
-   private static   $room_idx                = 7;  //if this column is empty, it still generates the page
-   private static   $speaker_idx             = 8;  //if this column is empty, it still generates the page
-   private static   $speaker_department_idx  = 9;  //if this column is empty, it still generates the page
-   private static   $speaker_institution_idx = 10;  //if this column is empty, it still generates the page
-   private static   $speaker_url_idx         = 11;  //if this column is empty, it still generates the page
-   private static   $speaker_image_idx       = 12;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
-   private static   $title_idx               = 13;  //if this column is empty, it still generates the page
-   private static   $abstract_file_idx       = 14;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
-   private static   $discipline_idx_new      = 15;
-   private static   $year_idx_new            = 16;
-   private static   $semester_idx_new        = 17;
+   private static   $month_idx               = 0;  //if this column is empty, it still generates the page
+   private static   $day_idx                 = 1;  //if this column is empty, it still generates the page
+   private static   $week_day_idx            = 2;  //if this column is empty, it still generates the page
+   private static   $time_idx                = 3;  //if this column is empty, it still generates the page
+   private static   $room_idx                = 4;  //if this column is empty, it still generates the page
+   private static   $speaker_idx             = 5;  //if this column is empty, it still generates the page
+   private static   $speaker_department_idx  = 6;  //if this column is empty, it still generates the page
+   private static   $speaker_institution_idx = 7;  //if this column is empty, it still generates the page
+   private static   $speaker_url_idx         = 8;  //if this column is empty, it still generates the page
+   private static   $speaker_image_idx       = 9;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+   private static   $title_idx               = 10;  //if this column is empty, it still generates the page
+   private static   $abstract_file_idx       = 11;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+   private static   $discipline_idx_new      = 12;
+   private static   $year_idx_new            = 13;
+   private static   $semester_idx_new        = 14;
   
+   private static     $week_day_default_meeting_idx            = 0;
+   private static     $time_default_meeting_idx                = 1;
+   private static     $room_default_meeting_idx                = 2;
 
+  private static $row_default_meeting_data = 1;
  
  } //end class
 
