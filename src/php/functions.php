@@ -24,7 +24,7 @@ echo '<html>';
   
   $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
 
-  Seminars::set_seminar_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_conv_inverse);
+  Seminars::set_seminars_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_conv_inverse);
 
 
 echo '</html>';
@@ -49,7 +49,7 @@ echo '<html>';
 
    $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
   
-    Seminars::set_seminar_by_week_body($institution, $department, $week_events, Seminars::$abstracts_folder, Seminars::$images_folder);  
+    Seminars::set_seminars_by_week_body($institution, $department, $week_events, Seminars::$abstracts_folder, Seminars::$images_folder);  
 
 
 echo '</html>';
@@ -345,29 +345,15 @@ private static function about($discipline) {
 }
 
 
- 
- 
-private static function loop_over_events($events_map,  $starting_row,  $relative_path_to_seminars_base, $abstracts_folder, $images_folder) {
 
- 
- 
-  
-    $num_rows = count($events_map);  
-    //TODO: make sure there are no empty lines at the end...
-    //TODO: strip away any empty spaces before or after the csv fields
-    //TODO: images have to be .jpg
-    //TODO: abstract have to be .txt, with the same name of the date
-    //TODO: do not put other rows below in the csv file
-    
-    
-    
-  echo '<div class="container ">';  /*text-center*/
 
-    
-    for ($row = $starting_row; $row < $num_rows; $row++) {
 
-    
-// %%%%%%%%%%%%%%%%%%%
+private static function event_item($relative_path_to_seminars_base,
+                                   $events_map, 
+                                   $row,
+                                   $images_folder) {
+
+
     echo '
      <table class="sem_item">
      <tr>';
@@ -431,11 +417,19 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
       </table> 
      ';
 //     echo "<br>";
-   
-// %%%%%%%%%%%%%%%%%%%
+
+  return $toggle_abstract_id;
+  
+
+}
 
 
-     
+private static function set_abstract($relative_path_to_seminars_base,
+                                     $events_map,
+                                     $row,
+                                     $abstracts_folder,
+                                     $toggle_abstract_id) {
+                                     
 //----------------    
     $abstract_id = 'abst_' . Seminars::$discipline_identity[ $events_map[$row][Seminars::$discipline_idx] ] . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
 
@@ -486,10 +480,34 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
    echo '</script>';
 //     echo "<br>";
 // ********************
+ 
+ }
+ 
+ 
+private static function loop_over_events($events_map,  $starting_row,  $relative_path_to_seminars_base, $abstracts_folder, $images_folder) {
+
+ 
+ 
+  
+    $num_rows = count($events_map);  
+    ///@todo: make sure there are no empty lines at the end...
+    ///@todo: strip away any empty spaces before or after the csv fields
+    ///@todo: images have to be .jpg
+    ///@todo: abstract have to be .txt, with the same name of the date
+    ///@todo: do not put other rows below in the csv file
     
+    
+    
+  echo '<div class="container ">';  /*text-center*/
 
+    
+    for ($row = $starting_row; $row < $num_rows; $row++) {
 
-        
+    
+    $toggle_abstract_id = Seminars::event_item($relative_path_to_seminars_base, $events_map, $row, $images_folder);
+    
+                        Seminars::set_abstract($relative_path_to_seminars_base, $events_map, $row, $abstracts_folder, $toggle_abstract_id);
+    
     }
     
     
@@ -526,7 +544,7 @@ private static function compute_sequential_day($year, $month, $day) {
  
  
  
-private static function set_seminar_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, $abstracts_folder, $images_folder, $discipline_conv_inverse) {
+private static function set_seminars_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, $abstracts_folder, $images_folder, $discipline_conv_inverse) {
  
 
 echo '<body>';
@@ -558,7 +576,7 @@ echo '</body>';
  
 
  
-private static function set_seminar_by_week_body($institution, $department, $week_events, $abstracts_folder, $images_folder)  {
+private static function set_seminars_by_week_body($institution, $department, $week_events, $abstracts_folder, $images_folder)  {
  
 
 echo '<body>';
