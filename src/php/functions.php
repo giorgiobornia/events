@@ -375,7 +375,7 @@ private static function event_item($relative_path_to_seminars_base,
      <td> 
      <img class="sem_image img-circle" ' .  'src="' .
      $relative_path_to_seminars_base . 
-     Seminars::$discipline_identity[ $events_map[$row][Seminars::$discipline_idx] ] . '/' .  
+     $events_map[$row][Seminars::$discipline_idx] . '/' .  
      $events_map[$row][Seminars::$year_idx] . '/' . 
      Seminars::$semester_conv[ $events_map[$row][Seminars::$semester_idx] ]  . '/' . 
      $images_folder . '/' . 
@@ -395,7 +395,7 @@ private static function event_item($relative_path_to_seminars_base,
     echo "<br>";
 
     
-    $toggle_abstract_id = 'toggle_abst_' . Seminars::$discipline_identity[ $events_map[$row][Seminars::$discipline_idx] ] . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
+    $toggle_abstract_id = 'toggle_abst_' .  $events_map[$row][Seminars::$discipline_idx]  . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
 
     echo '<a  style="cursor:pointer;" ';
     echo ' id="' .  $toggle_abstract_id . '">'; 
@@ -444,7 +444,7 @@ private static function set_abstract($relative_path_to_seminars_base,
                                      $toggle_abstract_id) {
                                      
 //----------------    
-    $abstract_id = 'abst_' . Seminars::$discipline_identity[ $events_map[$row][Seminars::$discipline_idx] ] . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
+    $abstract_id = 'abst_' . $events_map[$row][Seminars::$discipline_idx]  . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
 
     echo '<span class="abst" ';   ///@todo make this span CENTERED
     
@@ -453,8 +453,8 @@ private static function set_abstract($relative_path_to_seminars_base,
 
     $abstract_path =   
     $relative_path_to_seminars_base .  
-     Seminars::$discipline_identity[ $events_map[$row][Seminars::$discipline_idx] ] . '/' .  
-     $events_map[$row][Seminars::$year_idx] . '/' . 
+    $events_map[$row][Seminars::$discipline_idx] . '/' .  
+    $events_map[$row][Seminars::$year_idx] . '/' . 
      Seminars::$semester_conv[ $events_map[$row][Seminars::$semester_idx] ]  . '/' . 
     $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
 
@@ -713,22 +713,6 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
    private static   $year_idx_new            = 16;
    private static   $semester_idx_new        = 17;
   
- 
-   
-//right now it is the identity,  ///@todo later we can strip the folder name from the URL
- private static $discipline_identity = array(
- "AppliedMath"            => "AppliedMath",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
- "Analysis"               => "Analysis", 
- 'AlgebraAndNumberTheory' => 'AlgebraAndNumberTheory', 
- 'Geometry'               => 'Geometry',
- 'MathEd'                 => 'MathEd',
- 'RealAlgebraicGeometry'  => 'RealAlgebraicGeometry', 
- 'Statistics'             => 'Statistics' 
- );
-
- 
- 
- 
 
  
  } //end class
