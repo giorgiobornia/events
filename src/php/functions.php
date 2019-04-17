@@ -9,7 +9,7 @@ class Seminars {
 
 
   
-public static function generate_seminar_page_by_topic($model_path, $institution, $department, $topic, $year, $semester, $icon_in_toolbar) {
+public static function generate_seminar_page_by_topic($model_path, $institution, $department, $topic, $year, $semester, $icon_in_toolbar, $discipline_conv_inverse) {
 
  
 echo '<!DOCTYPE html>';
@@ -17,14 +17,14 @@ echo '<!DOCTYPE html>';
 echo '<html>';
 
 
-  $title_in_toolbar = Seminars::$discipline_conv_inverse[ $topic ];
+  $title_in_toolbar = $discipline_conv_inverse[ $topic ];
   
   Seminars::set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar);
   
   
   $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
 
-  Seminars::set_seminar_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
+  Seminars::set_seminar_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_conv_inverse);
 
 
 echo '</html>';
@@ -34,7 +34,7 @@ echo '</html>';
 
  
  
-public static function generate_seminar_page_by_week($model_path, $institution, $department, $title_in_toolbar, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
+public static function generate_seminar_page_by_week($model_path, $institution, $department, $title_in_toolbar, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array) {
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
 // if so, I will store that array and make a map that will be parsed by a Seminars::loop_over_events function
@@ -47,7 +47,7 @@ echo '<html>';
    Seminars::set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar);
    
 
-   $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
+   $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
   
     Seminars::set_seminar_by_week_body($institution, $department, $week_events, Seminars::$abstracts_folder, Seminars::$images_folder);  
 
@@ -526,7 +526,7 @@ private static function compute_sequential_day($year, $month, $day) {
  
  
  
-private static function set_seminar_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, $abstracts_folder, $images_folder) {
+private static function set_seminar_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, $abstracts_folder, $images_folder, $discipline_conv_inverse) {
  
 
 echo '<body>';
@@ -535,7 +535,7 @@ echo '<body>';
  Seminars::navigation_bar($topic);
  
  
- $title = 'Seminar in ' . Seminars::$discipline_conv_inverse[ $topic ];
+ $title = 'Seminar in ' . $discipline_conv_inverse[ $topic ];
 
  Seminars::main_banner($title, $department, $institution);
  
@@ -579,7 +579,7 @@ echo '</body>';
  }
  
  
-private static function parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end)  {
+private static function parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_conv_inverse)  {
  
  
     $starting_row = 3;
@@ -587,7 +587,7 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
   
   $week_events = array();
   
-    foreach (Seminars::$discipline_conv_inverse as $key => $value) {
+    foreach ($discipline_conv_inverse as $key => $value) {
     
     
     $file_to_parse = '../' . $key . '/' . $year . '/' . $semester . '/' . Seminars::$events_csv_file;
@@ -685,19 +685,6 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
  'RealAlgebraicGeometry'  => 'RealAlgebraicGeometry', 
  'Statistics'             => 'Statistics' 
  );
-
- 
- private static $discipline_conv_inverse = array(
- "AppliedMath"            => "Applied Mathematics",  ///@todo these second arguments CANNOT have SPACES, because they are used for some id below
- "Analysis"               => "Analysis", 
- 'AlgebraAndNumberTheory' => 'Algebra and Number Theory', 
- 'Geometry'               => 'Geometry',
- 'MathEd'                 => 'Mathematics Education',
- 'RealAlgebraicGeometry'  => 'Real-Algebraic Geometry', 
- 'Statistics'             => 'Statistics' 
- );
- 
- 
 
  
  
