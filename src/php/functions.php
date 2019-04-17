@@ -26,6 +26,7 @@ echo '<html>';
 
   Seminars::set_seminar_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder);
 
+
 echo '</html>';
 
  }
@@ -33,18 +34,25 @@ echo '</html>';
 
  
  
-public static function generate_seminar_page_by_week($model_path, $title_in_toolbar, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
+public static function generate_seminar_page_by_week($model_path, $institution, $department, $title_in_toolbar, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end) {
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
 // if so, I will store that array and make a map that will be parsed by a Seminars::loop_over_events function
+
+echo '<!DOCTYPE html>';
+
+echo '<html>';
+
 
    Seminars::set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar);
    
 
    $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end);
   
-    Seminars::set_seminar_by_week_body($week_events, Seminars::$abstracts_folder, Seminars::$images_folder);  
+    Seminars::set_seminar_by_week_body($institution, $department, $week_events, Seminars::$abstracts_folder, Seminars::$images_folder);  
 
+
+echo '</html>';
   
  }
 
@@ -121,13 +129,9 @@ echo '</head>';
  
  
  
-private static function navigation_bar($discipline) {
+private static function navigation_bar($discipline_folder) {
 
 
-  $discipline_conv_direct = array_flip(Seminars::$discipline_conv_inverse);
-
-  $discipline_folder = $discipline_conv_direct[$discipline];
-  
   
  echo ' <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="my_nav">                                                                    ';
  echo '                                                                                                                                                       ';
@@ -237,12 +241,13 @@ private static function navigation_bar($discipline) {
 }
 
 
-private static function main_banner($discipline, $department, $institution) {
+private static function main_banner($title, $department, $institution) {
+
 
   echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
   echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
   echo '<div class="container text-center">';
-  echo '      <h1> Seminar in ' . $discipline . ' </h1>';
+  echo '      <h1> ' . $title . ' </h1>';
   echo '      <h2> ' . $department  . ' </h2>';  
   echo '      <h2> ' . $institution . ' </h2>'; 
   echo '  </div>';
@@ -501,36 +506,6 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
   } 
  
  
-
- 
-private static function set_seminar_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, $abstracts_folder, $images_folder) {
- 
-
-echo '<body>';
-
- $discipline = Seminars::$discipline_conv_inverse[ $topic ];
-
- Seminars::navigation_bar($discipline);
- 
- Seminars::main_banner($discipline, $department, $institution);
- 
- Seminars::default_coords_banner_map($csv_map);
- 
- Seminars::about($topic);
- 
- $starting_row = 3;  //the first row is for the column fields
- 
- $relative_path_to_seminars_base = '../../../';
-    
- Seminars::loop_over_events($csv_map, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder);
-
-echo '</body>';
- 
- 
- }
- 
-
- 
 private static function compute_sequential_day($year, $month, $day) { 
  
    $month_days;
@@ -551,16 +526,56 @@ private static function compute_sequential_day($year, $month, $day) {
  
  
  
-private static function set_seminar_by_week_body($week_events, $abstracts_folder, $images_folder)  {
+private static function set_seminar_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, $abstracts_folder, $images_folder) {
  
 
-    $starting_row = 0;
+echo '<body>';
+
+
+ Seminars::navigation_bar($topic);
+ 
+ 
+ $title = 'Seminar in ' . Seminars::$discipline_conv_inverse[ $topic ];
+
+ Seminars::main_banner($title, $department, $institution);
+ 
+ Seminars::default_coords_banner_map($csv_map);
+ 
+ Seminars::about($topic);
+ 
+ $starting_row = 3;  //the first row is for the column fields
+ 
+ $relative_path_to_seminars_base = '../../../';
+    
+ Seminars::loop_over_events($csv_map, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder);
+
+echo '</body>';
+ 
+ 
+ }
+ 
+
+ 
+
+ 
+private static function set_seminar_by_week_body($institution, $department, $week_events, $abstracts_folder, $images_folder)  {
+ 
+
+echo '<body>';
+
+ $title = "Seminars by week";
+ 
+ Seminars::main_banner($title, $department, $institution);
+
+$starting_row = 0;
     
     $relative_path_to_seminars_base = '../';
 
     Seminars::loop_over_events($week_events, $starting_row, $relative_path_to_seminars_base,  $abstracts_folder, $images_folder);
  
- 
+echo '</body>';
+
+
  }
  
  
@@ -572,15 +587,12 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
   
   $week_events = array();
   
-//     for ($i = 0; $i < count(Seminars::$discipline_conv_inverse); $i++) {
     foreach (Seminars::$discipline_conv_inverse as $key => $value) {
     
     
     $file_to_parse = '../' . $key . '/' . $year . '/' . $semester . '/' . Seminars::$events_csv_file;
     
     $csv_map = array_map('str_getcsv', file($file_to_parse));
-    
-    echo '<br>';
     
     
     for ($row = $starting_row; $row < count($csv_map); $row++) {
