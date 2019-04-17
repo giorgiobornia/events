@@ -21,8 +21,7 @@ echo '<html>';
   
   Seminars::set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar);
   
-  
-  $csv_map = array_map('str_getcsv', file(Seminars::$events_csv_file));
+  $csv_map = Seminars::read_file_and_attach_topic_year_semester(Seminars::$events_csv_file, $topic, $year, $semester);
 
   Seminars::set_seminars_by_topic_body($institution, $department, $topic, $year, $semester, $csv_map, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_conv_inverse);
 
@@ -34,7 +33,7 @@ echo '</html>';
 
  
  
-public static function generate_seminar_page_by_week($model_path, $institution, $department, $title_in_toolbar, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array) {
+public static function generate_seminar_page_by_week($model_path, $institution, $department, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array) {
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
 // if so, I will store that array and make a map that will be parsed by a Seminars::loop_over_events function
@@ -43,9 +42,9 @@ echo '<!DOCTYPE html>';
 
 echo '<html>';
 
+   $title_in_toolbar = 'Seminars by week';
 
    Seminars::set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar);
-   
 
    $week_events =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
   
@@ -57,9 +56,23 @@ echo '</html>';
  }
 
  
+private static function read_file_and_attach_topic_year_semester($file, $topic, $year, $semester) {
 
+  $csv_map = array_map('str_getcsv', file($file));
+  
+  for ($row = 0; $row < count($csv_map); $row++) {
+  
+  array_push($csv_map[$row], $topic);
+  array_push($csv_map[$row], $year);
+  array_push($csv_map[$row], $semester);
+//   echo  $csv_map[$row][count($csv_map[$row])-2];
+  
+  }
 
+  
+  return $csv_map;
 
+ }
 
 
 private static function set_html_head($model_path, $title_in_toolbar, $icon_in_toolbar) {
@@ -487,15 +500,14 @@ private static function set_abstract($relative_path_to_seminars_base,
 private static function loop_over_events($events_map,  $starting_row,  $relative_path_to_seminars_base, $abstracts_folder, $images_folder) {
 
  
+    ///@todo: make sure there are no empty lines at the end of a csv file...
+    ///@todo: strip away any empty spaces before or after the csv fields
+    ///@todo: images have to be .jpg, don't they?
+    ///@todo: abstract have to be .txt, with a name specified in the csv file
+    ///@todo: do not put other nonempty rows below in the csv file
  
   
     $num_rows = count($events_map);  
-    ///@todo: make sure there are no empty lines at the end...
-    ///@todo: strip away any empty spaces before or after the csv fields
-    ///@todo: images have to be .jpg
-    ///@todo: abstract have to be .txt, with the same name of the date
-    ///@todo: do not put other rows below in the csv file
-    
     
     
   echo '<div class="container ">';  /*text-center*/
@@ -605,16 +617,23 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
   
   $week_events = array();
   
-    foreach ($discipline_conv_inverse as $key => $value) {
+    foreach ($discipline_conv_inverse as $topic => $topic_string) {
     
     
-    $file_to_parse = '../' . $key . '/' . $year . '/' . $semester . '/' . Seminars::$events_csv_file;
+    $file_to_parse = '../' . $topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_csv_file;
     
-    $csv_map = array_map('str_getcsv', file($file_to_parse));
-    
+   $csv_map = Seminars::read_file_and_attach_topic_year_semester($file_to_parse, $topic, $year, $semester);
+
     
     for ($row = $starting_row; $row < count($csv_map); $row++) {
     
+//     $csv_map[$row][Seminars::$discipline_idx] = $topic; 
+//     $csv_map[$row][Seminars::$year_idx] = $year; 
+//     $csv_map[$row][Seminars::$semester_idx] = $semester; 
+    
+//     echo     $csv_map[$row][Seminars::$semester_idx] ;
+
+
     //best thing is probably to convert into an increasing number, to avoid non-monotone behavior
     $sequential_begin   = Seminars::compute_sequential_day($year, $month_begin, $day_begin);
     $sequential_end     = Seminars::compute_sequential_day($year, $month_end, $day_end);
@@ -690,6 +709,9 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
    private static   $speaker_image_idx       = 12;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
    private static   $title_idx               = 13;  //if this column is empty, it still generates the page
    private static   $abstract_file_idx       = 14;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+   private static   $discipline_idx_new      = 15;
+   private static   $year_idx_new            = 16;
+   private static   $semester_idx_new        = 17;
   
  
    
