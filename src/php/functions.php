@@ -342,11 +342,15 @@ private static function about($discipline) {
 }
 
 
-private static function event_details($events_map, $row, $discipline_array) {
-                                      
-//     echo $discipline_array[ $events_map[$row][Seminars::$discipline_idx] ];
-//     echo "<br>";
+private static function event_details($events_map, $row, $discipline_array, $bool_print_discipline) {
 
+   if ( $bool_print_discipline == true ) {                                
+      echo "<strong>";
+        echo $discipline_array[ $events_map[$row][Seminars::$discipline_idx] ];
+      echo "</strong>";
+      echo "<br>";
+    }
+    
     echo "<strong>";
     echo  $events_map[$row][Seminars::$week_day_idx] . ", " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx] . ", ";
     echo "</strong>";
@@ -419,7 +423,8 @@ private static function set_event_image_and_details($relative_path_to_seminars_b
                                    $images_folder,
                                    $events_map, 
                                    $row,
-                                   $discipline_array) {
+                                   $discipline_array,
+                                   $bool_print_discipline) {
 
 
     echo '
@@ -428,7 +433,7 @@ private static function set_event_image_and_details($relative_path_to_seminars_b
      
      Seminars::set_event_image($relative_path_to_seminars_base, $images_folder, $events_map, $row);
     
-    $toggle_abstract_id = Seminars::event_details($events_map, $row, $discipline_array);
+    $toggle_abstract_id = Seminars::event_details($events_map, $row, $discipline_array, $bool_print_discipline);
     
     
     echo '  
@@ -502,7 +507,7 @@ private static function set_abstract($relative_path_to_seminars_base,
  }
  
  
-private static function loop_over_events($events_map,  $starting_row,  $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array) {
+private static function loop_over_events($events_map, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline) {
 
  
     ///@todo: make sure there are no empty lines at the end of a csv file...
@@ -521,7 +526,7 @@ private static function loop_over_events($events_map,  $starting_row,  $relative
     for ($row = $starting_row; $row < $num_rows; $row++) {
 
     
-    $toggle_abstract_id = Seminars::set_event_image_and_details($relative_path_to_seminars_base, $images_folder, $events_map, $row, $discipline_array);
+    $toggle_abstract_id = Seminars::set_event_image_and_details($relative_path_to_seminars_base, $images_folder, $events_map, $row, $discipline_array, $bool_print_discipline);
     
                         Seminars::set_abstract($relative_path_to_seminars_base, $abstracts_folder, $events_map, $row, $toggle_abstract_id);
     
@@ -589,8 +594,10 @@ echo '<body>';
  $starting_row = Seminars::$row_events_begin;
  
  $relative_path_to_seminars_base = '../../../';
+ 
+ $bool_print_discipline = false;
     
- Seminars::loop_over_events($events_in_seminar, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array);
+ Seminars::loop_over_events($events_in_seminar, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
 
 echo '</body>';
  
@@ -625,7 +632,9 @@ $starting_row = 0;
     
     $relative_path_to_seminars_base = '../';
 
-    Seminars::loop_over_events($events_in_week, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array);
+ $bool_print_discipline = true;
+ 
+  Seminars::loop_over_events($events_in_week, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
  
 echo '</body>';
 
