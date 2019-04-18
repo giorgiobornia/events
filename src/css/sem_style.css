@@ -4,7 +4,7 @@
 body {
   
    font-family: "Trebuchet MS", Helvetica, sans-serif;
-   background-image: url('../img/bg-gray.png');
+   background-image: url('../img/bg_gray.png');
   
 }
 
@@ -46,7 +46,7 @@ color: #00FF00; /*not working*/
 /* Banner =============================== */
 
 .my_banner {
-    background-image: url("../img/ttu_tower.jpg");
+    background-image: url("../img/field_bright_sky.jpg");
     background-repeat: no-repeat;
     background-size: cover;
 /*     overflow: hidden; */ /*what is this for?*/
