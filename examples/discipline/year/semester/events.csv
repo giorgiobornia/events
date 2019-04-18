@@ -1,4 +1,4 @@
 week_day,time,room,,,,,,,,,
-Monday,4-5 PM,default room 111,,,,,,,,,
+Monday,4-5 PM, Building 111,,,,,,,,,
 month, day, week_day, time, room, speaker,speaker_department,speaker_institution,speaker_url, speaker_image, title, abstract_file
-4,3,Monday,4:00 PM,actual room 110,John Doe,Department of Nothing,University of Nowhere,https://www.google.com,blank_face.png,Title,empty.txt
+4,3,Monday,4:00 PM,Another Building 110,John Doe,Department of Nothing,University of Nowhere,https://www.google.com,blank_face.png,Title,empty.txt

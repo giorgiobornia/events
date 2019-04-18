@@ -33,7 +33,7 @@ echo '</html>';
 
  
  
-public static function generate_seminar_page_by_week($library_path, $institution, $department, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array) {
+public static function generate_all_seminars_page_by_time_range($library_path, $institution, $department, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array) {
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
 // if so, I will store that array and make a map that will be parsed by a function
@@ -48,7 +48,7 @@ echo '<html>';
 
    $events_in_week =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
   
-    Seminars::set_seminars_by_week_body($institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $events_in_week, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);  
+    Seminars::set_seminars_by_time_range_body($institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $events_in_week, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);  
 
 
 echo '</html>';
@@ -287,14 +287,21 @@ private static function default_meeting_coords_banner($semester, $year, $week_da
  
  }
  
+private static function capitalize($string) {
+
+  $string_cap = ucfirst($string);
+  
+  return $string_cap;
+
+ }
  
  
 private static function default_meeting_coords_banner_map($csv, $year, $semester) {
  
  
   Seminars::default_meeting_coords_banner(
-      Seminars::$semester_conv[$semester],
-      $year,
+      Seminars::capitalize($semester),
+      Seminars::capitalize($year),
       $csv[Seminars::$row_default_meeting_data][Seminars::$week_day_default_meeting_idx],
       $csv[Seminars::$row_default_meeting_data][    Seminars::$time_default_meeting_idx],
       $csv[Seminars::$row_default_meeting_data][    Seminars::$room_default_meeting_idx]
@@ -605,7 +612,7 @@ private static function set_seminars_by_topic_body($institution,
  
 
  
-private static function set_seminars_by_week_body($institution, 
+private static function set_seminars_by_time_range_body($institution, 
                                                   $department, 
                                                   $year,
                                                   $semester, 
@@ -692,10 +699,6 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
    private static $about_file = './about.txt';
 
  
- private static $semester_conv = array( ///@todo later we can strip the folder name from the URL
- "spring" => "Spring",
- "fall" => "Fall",
- );
  
  //array for conversion from month number to string
  private static $months_conv = array(
