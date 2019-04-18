@@ -101,8 +101,8 @@ echo '<head>';
  echo ' <meta name="viewport" content="width=device-width, initial-scale=1">                                                                                                                ';
 
  echo '<!-- Meta tags for indexing in search engines -->                                                                                                                                    ';
- echo ' <meta name="description" content="' . $description . '">                                                                                                               ';
- echo ' <meta name="author"      content="' . $author . '">                                                                                                                                       ';
+ echo ' <meta name="description" content="' . $description . '">                                                                                                                            ';
+ echo ' <meta name="author"      content="' . $author . '">                                                                                                                                ';
 
  echo ' <!-- BOOTSTRAP -->                                                                                                                                                                  ';
  echo ' <!-- Latest compiled and minified CSS -->                                                                                                                                           ';
@@ -153,6 +153,13 @@ echo '</head>';
 private static function navigation_bar($discipline_folder) {
 
 
+ $past_years = array(2019,2018);
+
+ $semesters = array('spring','fall');
+ 
+ $sem_current_depth = '../../';
+
+
   
  echo ' <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="my_nav">                                                                    ';
  echo '                                                                                                                                                       ';
@@ -171,92 +178,34 @@ private static function navigation_bar($discipline_folder) {
  echo '                                                                                                                                                       ';
  echo '</button>                                                                                                                                              ';
  echo '                                                                                                                                                       ';
- echo '<a class="navbar-brand" href="http://www.math.ttu.edu/Department/Seminars/'. $discipline_folder . '/">$HOME</a>                                                      ';
+ echo '<a class="navbar-brand" href="'. $sem_current_depth . '">$HOME</a>                                                                 ';
  echo '</div>                                                                                                                                                 ';
  echo '                                                                                                                                                       ';
  echo '<div id="my_navbar" class="navbar-collapse collapse" role="navigation">                                                                                ';
  echo '                                                                                                                                                       ';
- echo '<ul class="nav navbar-nav navbar-right">  <!-- <ul class="navbar"> this was my old class -->                                                           ';
- echo '                                                                                                                                                       ';
- echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2019 </a>                                                            ';
+ echo '<ul class="nav navbar-nav navbar-right">                                                           ';
+ 
+ echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' . './' . '2019' . ' </a>                                                            ';
  echo '  <ul class="dropdown-menu">                                                                                                                           ';
- echo '    <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2019/spring/">spring </a></li>                                                ';
+ echo '    <li><a href="' . $sem_current_depth . './2019/' . 'spring/"> spring </a></li>                                                ';
  echo '  </ul>                                                                                                                                                ';
  echo '</li>                                                                                                                                                  ';
- echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2018 </a>                                                            ';
+
+ echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' . './' . '2018' . ' </a>                                                            ';
  echo '  <ul class="dropdown-menu">                                                                                                                           ';
- echo '    <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2018/fall/">fall </a></li>                                                    ';
-//  echo '    <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2018/spring/">spring </a></li>                                                ';
+ echo '    <li><a href="' . $sem_current_depth . './2018/' . 'fall/"> fall </a></li>                                                    ';
+
  echo '  </ul>                                                                                                                                                ';
  echo '</li>                                                                                                                                                  ';
-//  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2017 <!--<b class="caret"></b>--></a>                                ';
-//  echo '  <ul class="dropdown-menu">                                                                                                                           ';
-//  echo '    <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2017/fall/">fall </a></li>                                                    ';
-//  echo '    <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2017/spring/">spring </a></li>                                                ';
-//  echo '  </ul>                                                                                                                                                ';
-//  echo '</li>                                                                                                                                                  ';
-//  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2016 <!--<b class="caret"></b>--></a>                                ';
-//  echo '  <ul class="dropdown-menu">                                                                                                                           ';
-//  echo '    <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2016/fall/">fall </a></li>                                                    ';
-//  echo '    <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2016/spring/">spring </a></li>                                                ';
-//  echo '  </ul>                                                                                                                                                ';
-//  echo '</li>                                                                                                                                                  ';
-//  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2015 <!--<b class="caret"></b>--></a>                                ';
-//  echo '  <ul class="dropdown-menu">                                                                                                                           ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2015/fall/">  fall   </a></li>                                                  ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2015/spring/">spring </a></li>                                                  ';
-//  echo '  </ul>                                                                                                                                                ';
-//  echo '</li>                                                                                                                                                  ';
-//  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2014 <!--<b class="caret"></b>--></a>                                ';
-//  echo '  <ul class="dropdown-menu">                                                                                                                           ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2014/fall/">  fall </a></li>                                                    ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2014/spring/">spring </a></li>                                                  ';
-//  echo '  </ul>                                                                                                                                                ';
-//  echo '</li>                                                                                                                                                  ';
-//  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2013 <!--<b class="caret"></b>--></a>                                ';
-//  echo '  <ul class="dropdown-menu">                                                                                                                           ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2013/fall">     fall </a></li>                                                  ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2013/spring">   spring </a></li>                                                ';
-//  echo '  </ul>                                                                                                                                                ';
-//  echo '</li>                                                                                                                                                  ';
-//  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2012 <!--<b class="caret"></b>--></a>                                ';
-//  echo '  <ul class="dropdown-menu">                                                                                                                           ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2012/fall">     fall </a></li>                                                  ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2012/spring">   spring </a></li>                                                ';
-//  echo '  </ul>                                                                                                                                                ';
-//  echo '</li>                                                                                                                                                  ';
-//  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2011 <!--<b class="caret"></b>--></a>                                ';
-//  echo '  <ul class="dropdown-menu">                                                                                                                           ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2011/fall">     fall </a></li>                                                  ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2011/spring">   spring </a></li>                                                ';
-//  echo '  </ul>                                                                                                                                                ';
-//  echo '</li>                                                                                                                                                  ';
-//  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2010 <!--<b class="caret"></b>--></a>                                ';
-//  echo '  <ul class="dropdown-menu">                                                                                                                           ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2010/fall">     fall </a></li>                                                  ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2010/spring">   spring </a></li>                                                ';
-//  echo '  </ul>                                                                                                                                                ';
-//  echo '</li>                                                                                                                                                  ';
-//  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2009 <!--<b class="caret"></b>--></a>                                ';
-//  echo '  <ul class="dropdown-menu">                                                                                                                           ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2009/fall">     fall </a></li>                                                  ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2009/spring">   spring </a></li>                                                ';
-//  echo '  </ul>                                                                                                                                                ';
-//  echo '</li>                                                                                                                                                  ';
-//  echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">./2008 <!--<b class="caret"></b>--></a>                                ';
-//  echo '  <ul class="dropdown-menu">                                                                                                                           ';
-//  echo '  <li><a href="http://www.math.ttu.edu/Department/Seminars/AppliedMath/2008/fall">     fall </a></li>                                                  ';
-//  echo '  </ul>                                                                                                                                                ';
-//  echo '</li>                                                                                                                                                  ';
- echo '                                                                                                                                                       ';
+
  echo '</ul>                                                                                                                                                  ';
- echo '                                                                                                                                                       ';
+
  echo '</div>                                                                                                                                                 ';
- echo '                                                                                                                                                       ';
+
  echo '</div>                                                                                                                                                 ';
- echo '                                                                                                                                                       ';
+
  echo '</nav>                                                                                                                                                 ';
- echo '                                                                                                                                                       ';
+
  echo '<div class="container" id="compensate_navbar_height"></div>                                                                                            ';
 
 }
