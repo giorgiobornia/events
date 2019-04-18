@@ -8,7 +8,11 @@ Features:
     
     - by a specified time range (e.g., a week), for a given list of disciplines
 
-- Latex is typeset directly on the webpage through the MathJax libraries (very convenient for math formulas)
+- LaTeX is typeset directly on the webpage through the MathJax libraries (very convenient for math formulas)
+
+    - Titles can contain LaTeX formulas
+
+    - Abstracts can contain LaTeX formulas and are embedded in the webpage (no annoying separate PDF or separate page opening)
 
 - Responsive web design through Bootstrap
 

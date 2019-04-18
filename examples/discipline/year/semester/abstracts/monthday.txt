@@ -1,0 +1,1 @@
+Abstracts can have math symbols too. They can be both inline, like $ H^1(\Omega) $, or as separate lines, such as \[ u''(x) + u'(x) + u(x) = 0 \]
