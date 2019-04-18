@@ -55,10 +55,19 @@ echo '</html>';
   
  }
 
+
+private static function read_csv_file($file) {
  
+  $csv_map = array_map('str_getcsv', file($file));  ///@todo this command seems to work only with CSV files coming from Linux/Mac, but not from Windows
+
+  return $csv_map;
+  
+}
+
+
 private static function read_file_and_attach_topic_year_semester($file, $topic, $year, $semester) {
 
-  $csv_map = array_map('str_getcsv', file($file));
+  $csv_map = Seminars::read_csv_file($file);
   
   for ($row = 0; $row < count($csv_map); $row++) {
   
