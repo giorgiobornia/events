@@ -21,7 +21,7 @@ echo '<html>';
   
   Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
   
-  $events_map = Seminars::read_file_and_attach_topic_year_semester(Seminars::$events_csv_file, $topic, $year, $semester);
+  $events_map = Seminars::read_file_and_attach_topic_year_semester(Seminars::$events_file, $topic, $year, $semester);
 
   Seminars::set_seminars_by_topic_body($institution, $department, $topic, $year, $semester, $events_map, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);
 
@@ -65,7 +65,6 @@ private static function read_file_and_attach_topic_year_semester($file, $topic, 
   array_push($csv_map[$row], $topic);
   array_push($csv_map[$row], $year);
   array_push($csv_map[$row], $semester);
-//   echo  $csv_map[$row][count($csv_map[$row])-2];
   
   }
 
@@ -270,7 +269,7 @@ private static function main_banner($title, $department, $institution) {
  }
  
  
-private static function default_coords_banner($semester, $year, $week_day, $time, $room) {
+private static function default_meeting_coords_banner($semester, $year, $week_day, $time, $room) {
 
  echo '<div class="container-fluid text-center" id="sem_header">';
  
@@ -290,10 +289,10 @@ private static function default_coords_banner($semester, $year, $week_day, $time
  
  
  
-private static function default_coords_banner_map($csv, $year, $semester) {
+private static function default_meeting_coords_banner_map($csv, $year, $semester) {
  
  
-  Seminars::default_coords_banner(
+  Seminars::default_meeting_coords_banner(
       Seminars::$semester_conv[$semester],
       $year,
       $csv[Seminars::$row_default_meeting_data][Seminars::$week_day_default_meeting_idx],
@@ -317,27 +316,24 @@ private static function set_browser_toolbar($title, $icon_in_toolbar) {
 
 
 
-private static function about($discipline) {
+private static function about($discipline, $relative_path_to_seminars_base) {
 
+    $about_txt_file =   
+    $relative_path_to_seminars_base .  
+    $discipline . '/' .  
+    Seminars::$about_file;
 
- if ($discipline == "AppliedMath") {
- 
   echo '<div class="container ">';
   
- echo ' Since Fall 2008, the seminar provides a venue for researchers and students 
-        to present and discuss mathematical approaches for the investigation of challenging real-life problems.
-        Topics range from pure mathematical subjects to applications.';
- echo '<br>';       
- echo 'The seminar also aims to encourage students to develop their own research projects.';
- echo '<br>';       
- echo 'We welcome all those who want to broaden their perspective on the mathematical methods used in contemporary research.';
- echo '<br>';       
- echo '<br>';       
+    include($about_txt_file);
+  
+  echo '<br>';       
+  echo '<br>';       
 
-   echo '<div>';
+  echo '<div>';
+  
    ///@todo mention organizers
- }
-
+   
  
 }
 
@@ -577,7 +573,9 @@ private static function set_seminars_by_topic_body($institution,
                                                    $discipline_array) {
  
 
-echo '<body>';
+ $relative_path_to_seminars_base = '../../../';
+ 
+ echo '<body>';
 
 
  Seminars::navigation_bar($topic);
@@ -587,19 +585,18 @@ echo '<body>';
 
  Seminars::main_banner($title, $department, $institution);
  
- Seminars::default_coords_banner_map($events_in_seminar, $year, $semester);
+ Seminars::default_meeting_coords_banner_map($events_in_seminar, $year, $semester);
  
- Seminars::about($topic);
+ Seminars::about($topic, $relative_path_to_seminars_base);
  
  $starting_row = Seminars::$row_events_begin;
  
- $relative_path_to_seminars_base = '../../../';
  
  $bool_print_discipline = false;
     
  Seminars::loop_over_events($events_in_seminar, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
 
-echo '</body>';
+ echo '</body>';
  
  
  }
@@ -653,7 +650,7 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
     foreach ($discipline_array as $topic => $topic_string) {
     
     
-    $file_to_parse = '../' . $topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_csv_file;
+    $file_to_parse = '../' . $topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
     
    $csv_map = Seminars::read_file_and_attach_topic_year_semester($file_to_parse, $topic, $year, $semester);
 
@@ -691,7 +688,8 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
 
    private static $abstracts_folder = "./abstracts/";
    private static $images_folder    = "./images/";
-   private static $events_csv_file = './events.csv';
+   private static $events_file = './events.csv';
+   private static $about_file = './about.txt';
 
  
  private static $semester_conv = array( ///@todo later we can strip the folder name from the URL
