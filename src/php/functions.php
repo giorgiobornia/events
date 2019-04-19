@@ -58,7 +58,7 @@ echo '</html>';
 
 private static function read_csv_file($file) {
  
-  $csv_map = array_map('str_getcsv', file($file));  ///@todo this command seems to work only with CSV files coming from Linux/Mac, but not from Windows
+  $csv_map = array_map('str_getcsv', file($file));  ///@todo this command seems to work only with CSV files coming from Linux/Mac, but not from Windows... the diff command says files are equal...!
 
   return $csv_map;
   
@@ -152,63 +152,65 @@ echo '</head>';
  
 private static function navigation_bar($discipline_folder) {
 
+$sem_current_depth = '../../';
 
- $past_years = array(2019,2018);
+ //this must be passed by the general seminar, not by its year/semester instances, if possible
+$past_years = array(
+ 2019 => array('spring'),
+ 2018 => array('fall'),
+//  2017 => array('fall'),
+ );
 
- $semesters = array('spring','fall');
+ $home_name = '$HOME';
  
- $sem_current_depth = '../../';
-
-
   
- echo ' <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="my_nav">                                                                    ';
- echo '                                                                                                                                                       ';
- echo '<div class="container">                                                                                                                                ';
- echo '                                                                                                                                                       ';
- echo '<div class="navbar-header">                                                                                                                            ';
- echo '                                                                                                                                                       ';
- echo '<button type="button" class="navbar-toggle collapsed"                                                                                                  ';
- echo '        data-toggle="collapse" data-target="#my_navbar" aria-expanded="false" aria-controls="my_navbar">                                               ';
- echo '                                                                                                                                                       ';
- echo '<span class="sr-only">Toggle navigation</span> <!--is this needed?-->                                                                                  ';
- echo '                                                                                                                                                       ';
- echo '<span class="icon-bar"></span>                                                                                                                         ';
- echo '<span class="icon-bar"></span>                                                                                                                         ';
- echo '<span class="icon-bar"></span>  <!--these are for the three dashes that look like a button-->                                                          ';
- echo '                                                                                                                                                       ';
- echo '</button>                                                                                                                                              ';
- echo '                                                                                                                                                       ';
- echo '<a class="navbar-brand" href="'. $sem_current_depth . '">$HOME</a>                                                                 ';
- echo '</div>                                                                                                                                                 ';
- echo '                                                                                                                                                       ';
- echo '<div id="my_navbar" class="navbar-collapse collapse" role="navigation">                                                                                ';
- echo '                                                                                                                                                       ';
- echo '<ul class="nav navbar-nav navbar-right">                                                           ';
+ echo '<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="my_nav">';
+
+ echo '<div class="container">';
+
+ echo '<div class="navbar-header">';
+
+ echo '<button type="button" class="navbar-toggle collapsed" ';
+ echo '  data-toggle="collapse" data-target="#my_navbar" aria-expanded="false" aria-controls="my_navbar">';
+
+ echo '<span class="sr-only">Toggle navigation</span>'; // <!--is this needed?-->
  
- echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' . './' . '2019' . ' </a>                                                            ';
- echo '  <ul class="dropdown-menu">                                                                                                                           ';
- echo '    <li><a href="' . $sem_current_depth . './2019/' . 'spring/"> spring </a></li>                                                ';
- echo '  </ul>                                                                                                                                                ';
- echo '</li>                                                                                                                                                  ';
+ echo '<span class="icon-bar"></span>';
+ echo '<span class="icon-bar"></span>';
+ echo '<span class="icon-bar"></span>'; //  these are for the three dashes that look like a button
 
- echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' . './' . '2018' . ' </a>                                                            ';
- echo '  <ul class="dropdown-menu">                                                                                                                           ';
- echo '    <li><a href="' . $sem_current_depth . './2018/' . 'fall/"> fall </a></li>                                                    ';
+ echo '</button>';
 
- echo '  </ul>                                                                                                                                                ';
- echo '</li>                                                                                                                                                  ';
+ echo '<a class="navbar-brand" href="'. $sem_current_depth . '">' . $home_name . '</a>';
+ echo '</div>';
 
- echo '</ul>                                                                                                                                                  ';
+ echo '<div id="my_navbar" class="navbar-collapse collapse" role="navigation">';
 
- echo '</div>                                                                                                                                                 ';
+ echo '<ul class="nav navbar-nav navbar-right">';
+ 
+ foreach ($past_years as $year => $value) {
+   echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' . './' . $year . ' </a>';
+   echo '  <ul class="dropdown-menu"> ';
+  foreach ($past_years[$year] as $term) {
+     echo '    <li><a href="' . $sem_current_depth . './' . $year . '/' . $term . '/">' . $term . '</a></li>';
+     }
+   echo '  </ul>';
+   echo '</li>';
+ }
 
- echo '</div>                                                                                                                                                 ';
+ echo '</ul>';
 
- echo '</nav>                                                                                                                                                 ';
+ echo '</div>';
+
+ echo '</div>';
+
+ echo '</nav>';
 
  echo '<div class="container" id="compensate_navbar_height"></div>                                                                                            ';
 
 }
+
+
 
 
 private static function main_banner($title, $department, $institution) {
@@ -471,11 +473,9 @@ private static function set_abstract($relative_path_to_seminars_base,
 private static function loop_over_events($events_map, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline) {
 
  
-    ///@todo: make sure there are no empty lines at the end of a csv file...
+    ///@todo: abstract have to be .txt (I think it's enough to be any text file), with a name specified in the csv file
     ///@todo: strip away any empty spaces before or after the csv fields
-    ///@todo: images have to be .jpg, don't they?
-    ///@todo: abstract have to be .txt, with a name specified in the csv file
-    ///@todo: do not put other nonempty rows below in the csv file
+    ///@todo: make sure there are no empty lines at the end of a csv file
  
   
     $num_rows = count($events_map);  
@@ -704,4 +704,9 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
  
  } //end class
 
+ 
+///@todo make a go_back function ../../
+///@todo make a function that computes the week day automatically from year/month/day_number
+///@todo automatically populate the list of past seminars
+ 
 ?>
