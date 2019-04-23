@@ -367,7 +367,10 @@ private static function event_details($events_map, $row, $discipline_array, $boo
     echo "<br>";
 
     
-    $toggle_abstract_id = 'toggle_abst_' .  $events_map[$row][Seminars::$discipline_idx]  . '_' . $events_map[$row][Seminars::$year_idx] . '_' . $events_map[$row][Seminars::$semester_idx] . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
+    $toggle_abstract_id = 'toggle_abst_' . $events_map[$row][Seminars::$discipline_idx]  . '_'
+                                         . $events_map[$row][Seminars::$year_idx]        . '_'
+                                         . $events_map[$row][Seminars::$month_idx]       . '_'
+                                         . $events_map[$row][Seminars::$day_idx];
 
     echo '<a  style="cursor: pointer; text-decoration: underline; " ';  ///@todo I want to give this the same color as an <a> tag with href= instead of id=
     echo ' id=' . '"' .  $toggle_abstract_id . '"';
@@ -459,7 +462,10 @@ private static function set_abstract($relative_path_to_seminars_base,
                                      $toggle_abstract_id) {
                                      
 //----------------    
-    $abstract_id = 'abst_' . $events_map[$row][Seminars::$discipline_idx]  . '_' . $events_map[$row][Seminars::$year_idx] . '_' . $events_map[$row][Seminars::$semester_idx] . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
+    $abstract_id = 'abst_' . $events_map[$row][Seminars::$discipline_idx]  . '_' 
+                           . $events_map[$row][Seminars::$year_idx]        . '_'
+                           . $events_map[$row][Seminars::$month_idx]       . '_'
+                           . $events_map[$row][Seminars::$day_idx];
 
     echo '<span class="abst" ';   ///@todo make this span CENTERED
     
