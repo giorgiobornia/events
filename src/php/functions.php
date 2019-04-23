@@ -96,26 +96,30 @@ $author = "Giorgio Bornia";
 echo '<head>';
 
 
- echo '<!-- These metas must be first in the head, so we must include this file before any other line in head -->                                                                            ';
+//  echo '<!-- These metas must be first in the head, so we must include this file before any other line in head -->                                                                            ';
  echo ' <meta charset="utf-8">                                                                                                                                                              ';
  echo ' <meta name="viewport" content="width=device-width, initial-scale=1">                                                                                                                ';
 
- echo '<!-- Meta tags for indexing in search engines -->                                                                                                                                    ';
+//  echo '<!-- Meta tags for indexing in search engines -->                                                                                                                                    ';
  echo ' <meta name="description" content="' . $description . '">                                                                                                                            ';
  echo ' <meta name="author"      content="' . $author . '">                                                                                                                                ';
 
- echo ' <!-- BOOTSTRAP -->                                                                                                                                                                  ';
- echo ' <!-- Latest compiled and minified CSS -->                                                                                                                                           ';
- echo '<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">                                                                                  ';
 
- echo '<!-- jQuery library -->                                                                                                                                                              ';
+ 
+//  jQuery library (must be before JavaScript)
  echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>                                                                                            ';
-
- echo '<!-- Latest compiled JavaScript -->                                                                                                                                                  ';
+ 
+//  BOOTSTRAP 
+//  Latest compiled and minified CSS
+ echo '<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">                                                                                  ';
+//  Latest compiled JavaScript 
  echo '<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>                                                                                           ';
 
+//  echo '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">';
+//  echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>';
 
- echo '<!-- MathJax -->                                                                                                                                                                     ';
+
+//  MathJax 
  echo ' <script type="text/x-mathjax-config">                                                                                                                                               ';
  echo ' MathJax.Hub.Config({                                                                                                                                                                ';
  echo ' tex2jax: {                                                                                                                                                                          ';
@@ -136,10 +140,11 @@ echo '<head>';
  echo '</script>                                                                                                                                                                            ';
 // //  <!--<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>--> <!--THIS WAS DISCONTINUED-->          
 
- echo ' <!-- This goes in the last position to override   -->                                                                                                                               ';
+
+
+// This must in the last position to override
  echo '<link rel="stylesheet" href="'  .  $library_path . './src/css/sem_style.css">                                                                                                        ';
                                                                                                                                                                                             
-
 
  Seminars::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
  
@@ -344,7 +349,7 @@ private static function event_details($events_map, $row, $discipline_array, $boo
       //     - NOT a link otherwise
     echo '<a   style="cursor:pointer;"';
 //     echo ' target="_blank" ';
-    echo 'href="' .  $events_map[$row][Seminars::$speaker_url_idx]  .  '">';
+    echo 'href=' . '"' .  $events_map[$row][Seminars::$speaker_url_idx]  .  '"' . '>';
     echo $events_map[$row][Seminars::$speaker_idx];
     echo '</a>';
     echo "<br>";
@@ -421,7 +426,11 @@ private static function set_abstract($relative_path_to_seminars_base,
 
     echo '<span class="abst" ';   ///@todo make this span CENTERED
     
-    echo ' id="' . $abstract_id . '">';
+    echo ' id=' . '"' . $abstract_id . '"'; 
+    
+    echo ' style="display: none;"';
+    
+    echo '>';
     
 
     $abstract_path =   
