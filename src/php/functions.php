@@ -17,14 +17,23 @@ echo '<!DOCTYPE html>';
 echo '<html>';
 
 
+echo '<head>';
+
   $title_in_toolbar = $discipline_array[ $topic ];
   
   Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
   
-  $events_map = Seminars::read_file_and_attach_topic_year_semester(Seminars::$events_file, $topic, $year, $semester);
+echo '</head>';
 
-  Seminars::set_seminars_by_topic_body($institution, $department, $topic, $year, $semester, $events_map, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);
+  
+  echo '<body>';
 
+
+    Seminars::set_seminars_by_topic_body($institution, $department, $topic, $year, $semester, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);
+
+  echo '</body>';
+  
+  
 
 echo '</html>';
 
@@ -42,14 +51,23 @@ echo '<!DOCTYPE html>';
 
 echo '<html>';
 
+
+echo '<head>';
+
    $title_in_toolbar = 'Seminars by week';
 
    Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
+   
+echo '</head>';
 
-   $events_in_week =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
+
+  echo '<body>';
+
+
+    Seminars::set_seminars_by_time_range_body($institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);  
+
+  echo '</body>';
   
-    Seminars::set_seminars_by_time_range_body($institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $events_in_week, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);  
-
 
 echo '</html>';
   
@@ -83,14 +101,11 @@ private static function read_file_and_attach_topic_year_semester($file, $topic, 
  }
 
 
-private static function set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar) {
+public static function set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar) {
 
 // the disadvantage of doing echo instead of including the file with a php include is just when you have to handle single quotes vs double quotes; also, a little lack of readability
 // However, the great advantage is that it is very clear what is passed! Previously, the variable coming from the file had to be set, and with the EXACT SAME NAME!
 //So it is muuuuch better in the end to use the function!
-
-
-echo '<head>';
 
 
 $description = "Seminars";
@@ -110,8 +125,6 @@ $author = "Giorgio Bornia";
 
  Seminars::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
  
-echo '</head>';
-
 
  }
 
@@ -579,21 +592,20 @@ private static function compute_sequential_day($year, $month, $day) {
  
  
  
-private static function set_seminars_by_topic_body($institution,
+public static function set_seminars_by_topic_body($institution,
                                                    $department,
                                                    $topic,
                                                    $year,
                                                    $semester, 
-                                                   $events_in_seminar, 
                                                    $abstracts_folder,
                                                    $images_folder,
                                                    $discipline_array) {
  
 
+ $events_in_seminar = Seminars::read_file_and_attach_topic_year_semester(Seminars::$events_file, $topic, $year, $semester);
+
  $relative_path_to_seminars_base = '../../../';
  
- echo '<body>';
-
 
  Seminars::navigation_bar($topic);
  
@@ -613,7 +625,6 @@ private static function set_seminars_by_topic_body($institution,
     
  Seminars::loop_over_events($events_in_seminar, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
 
- echo '</body>';
  
  
  }
@@ -622,7 +633,7 @@ private static function set_seminars_by_topic_body($institution,
  
 
  
-private static function set_seminars_by_time_range_body($institution, 
+public static function set_seminars_by_time_range_body($institution, 
                                                   $department, 
                                                   $year,
                                                   $semester, 
@@ -630,19 +641,19 @@ private static function set_seminars_by_time_range_body($institution,
                                                   $day_begin, 
                                                   $month_end, 
                                                   $day_end, 
-                                                  $events_in_week, 
                                                   $abstracts_folder,
                                                   $images_folder,
                                                   $discipline_array)  {
  
 
-echo '<body>';
 
  $title = "Seminars by week";
  
  Seminars::main_banner($title, $department, $institution);
 
-$starting_row = 0;
+    $events_in_week =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
+
+    $starting_row = 0;
     
     $relative_path_to_seminars_base = '../';
 
@@ -650,8 +661,6 @@ $starting_row = 0;
  
   Seminars::loop_over_events($events_in_week, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
  
-echo '</body>';
-
 
  }
  
