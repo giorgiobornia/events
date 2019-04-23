@@ -89,37 +89,58 @@ private static function set_html_head($library_path, $title_in_toolbar, $icon_in
 // However, the great advantage is that it is very clear what is passed! Previously, the variable coming from the file had to be set, and with the EXACT SAME NAME!
 //So it is muuuuch better in the end to use the function!
 
-$description = "Seminars";
-$author = "Giorgio Bornia";
-
 
 echo '<head>';
 
 
-//  echo '<!-- These metas must be first in the head, so we must include this file before any other line in head -->                                                                            ';
+$description = "Seminars";
+$author = "Giorgio Bornia";
+
+ Seminars::set_meta($description, $author);
+
+ 
+ Seminars::set_jquery_lib();
+ 
+ Seminars::set_bootstrap_css_and_javascript_libs();
+
+ Seminars::set_latex_rendering_lib();
+
+ Seminars::set_sem_css($library_path);
+                                                                                                                                                                                            
+
+ Seminars::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
+ 
+echo '</head>';
+
+
+ }
+
+ 
+  private static function set_meta($description, $author) {
+  
+//  These metas must be first in the head 
  echo ' <meta charset="utf-8">                                                                                                                                                              ';
  echo ' <meta name="viewport" content="width=device-width, initial-scale=1">                                                                                                                ';
 
-//  echo '<!-- Meta tags for indexing in search engines -->                                                                                                                                    ';
+// Meta tags for indexing in search engines
  echo ' <meta name="description" content="' . $description . '">                                                                                                                            ';
  echo ' <meta name="author"      content="' . $author . '">                                                                                                                                ';
+  
 
-
+  }
+  
  
-//  jQuery library (must be before JavaScript)
- echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>                                                                                            ';
+ private static function set_sem_css($library_path) {
+
+// This must in the last position to override
+ echo '<link rel="stylesheet" href="'  .  $library_path . './src/css/sem_style.css"> ';
  
-//  BOOTSTRAP 
-//  Latest compiled and minified CSS
- echo '<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">                                                                                  ';
-//  Latest compiled JavaScript 
- echo '<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>                                                                                           ';
-
-//  echo '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">';
-//  echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>';
+}
 
 
-//  MathJax 
+private static function set_latex_rendering_lib() {
+
+//  MathJax
  echo ' <script type="text/x-mathjax-config">                                                                                                                                               ';
  echo ' MathJax.Hub.Config({                                                                                                                                                                ';
  echo ' tex2jax: {                                                                                                                                                                          ';
@@ -141,20 +162,35 @@ echo '<head>';
 // //  <!--<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>--> <!--THIS WAS DISCONTINUED-->          
 
 
+}
 
-// This must in the last position to override
- echo '<link rel="stylesheet" href="'  .  $library_path . './src/css/sem_style.css">                                                                                                        ';
-                                                                                                                                                                                            
 
- Seminars::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
- 
-echo '</head>';
+private static function set_jquery_lib() {
 
- }
- 
- 
- 
- 
+//  jQuery library (must be before JavaScript!)
+ echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>  ';
+
+
+}
+
+
+
+private static function set_bootstrap_css_and_javascript_libs() {
+
+//  BOOTSTRAP 
+//  Latest compiled and minified CSS
+ echo '<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">                                                                                  ';
+//  Latest compiled JavaScript 
+ echo '<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>                                                                                           ';
+
+//  echo '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">';
+//  echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>';
+
+
+}
+
+
+
 private static function navigation_bar($discipline_folder) {
 
 $sem_current_depth = '../../';
@@ -279,8 +315,8 @@ private static function default_meeting_coords_banner_map($csv, $year, $semester
 
 private static function set_browser_toolbar($title, $icon_in_toolbar) {
  
- echo '<!-- Favicon -->                                                                                                                                                                     ';
- echo ' <link rel="icon" href="' .  $icon_in_toolbar . '">                                                                                                               ';
+//  Favicon
+ echo ' <link rel="icon" href="' .  $icon_in_toolbar . '"> ';
 
  echo '<title> ' . $title . ' </title>';
 
