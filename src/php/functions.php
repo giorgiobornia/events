@@ -179,9 +179,9 @@ private static function set_bootstrap_css_and_javascript_libs() {
 
 //  BOOTSTRAP 
 //  Latest compiled and minified CSS
- echo '<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">                                                                                  ';
+ echo '<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">';
 //  Latest compiled JavaScript 
- echo '<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>                                                                                           ';
+ echo '<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>';
 
 //  echo '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">';
 //  echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>';
@@ -369,8 +369,9 @@ private static function event_details($events_map, $row, $discipline_array, $boo
     
     $toggle_abstract_id = 'toggle_abst_' .  $events_map[$row][Seminars::$discipline_idx]  . '_' . $events_map[$row][Seminars::$year_idx] . '_' . $events_map[$row][Seminars::$semester_idx] . '_' . $events_map[$row][Seminars::$month_idx] . '_' . $events_map[$row][Seminars::$day_idx];
 
-    echo '<a  style="cursor:pointer;" ';
-    echo ' id="' .  $toggle_abstract_id . '">'; 
+    echo '<a  style="cursor: pointer; text-decoration: underline; " ';  ///@todo I want to give this the same color as an <a> tag with href= instead of id=
+    echo ' id=' . '"' .  $toggle_abstract_id . '"';
+    echo '>'; 
     
     echo "<em>";
     echo $events_map[$row][Seminars::$title_idx];
@@ -383,7 +384,7 @@ private static function event_details($events_map, $row, $discipline_array, $boo
     ///@todo: see if I can make this be
       //     - a link if href is non-empty in the csv file 
       //     - NOT a link otherwise
-    echo '<a   style="cursor:pointer;"';
+    echo '<a   style="cursor: pointer; text-decoration: none;"';
 //     echo ' target="_blank" ';
     echo 'href=' . '"' .  $events_map[$row][Seminars::$speaker_url_idx]  .  '"' . '>';
     echo $events_map[$row][Seminars::$speaker_idx];
