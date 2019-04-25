@@ -6,6 +6,23 @@ class Seminars {
  
  
   
+public static function generate_seminar_page_list($discipline_array) {
+
+
+     echo '<ol>';
+     
+    foreach ($discipline_array as $topic => $topic_string) {
+    
+     echo '<li>';
+     echo '<a href="./' . $topic . '">' . $topic_string . '</a>';
+     echo '</li>';
+     echo '<br>';
+     
+    }
+
+     echo '</ol>';
+     
+}
 
 
   
