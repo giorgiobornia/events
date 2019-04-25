@@ -4,7 +4,24 @@
 class Seminars {
 
  
+ public static function get_discipline_year_semester($file_in) {
+ //retrieve the information from the path 
  
+ $current_file = $file_in;
+ $explosion = explode('/',$current_file);
+ 
+//  print_r($explosion);
+  
+ $array[0] = $explosion[count($explosion)-4];
+ $array[1] = $explosion[count($explosion)-3];
+ $array[2] = $explosion[count($explosion)-2];
+ 
+  return $array;
+
+
+ }
+ 
+
   
 public static function redirect_page($year, $semester) {
 ///@todo see if you can even avoid generating the index page
@@ -46,8 +63,14 @@ public static function generate_seminar_page_list($discipline_array) {
 }
 
 
-  
-public static function generate_seminar_page_by_topic($library_path, $institution, $department, $topic, $year, $semester, $icon_in_toolbar, $discipline_array) {
+public static function generate_seminar_page_by_topic_year_semester($library_path, $institution, $department, $t_y_s, $icon_in_toolbar, $discipline_array) {
+
+   Seminars::generate_seminar_page_by_topic($library_path, $institution, $department, $t_y_s[0], $t_y_s[1], $t_y_s[2], $icon_in_toolbar, $discipline_array);
+
+}
+
+
+private static function generate_seminar_page_by_topic($library_path, $institution, $department, $topic, $year, $semester, $icon_in_toolbar, $discipline_array) {
 
  
 echo '<!DOCTYPE html>';
