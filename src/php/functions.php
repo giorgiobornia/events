@@ -6,6 +6,27 @@ class Seminars {
  
  
   
+public static function redirect_page($year, $semester) {
+///@todo see if you can even avoid generating the index page
+
+// There are other solutions to this based on Apache or PHP
+
+     echo '<!DOCTYPE html>';
+
+     echo '<html>';
+     echo '<head>';
+     echo '<title> Redirecting </title>';
+     echo '<meta http-equiv="refresh" content="0;url=./' . $year .'/' . $semester . '/' . '">';
+     echo '</head>';
+     echo '<body>';
+     echo '</body>';
+     echo '</html>';
+
+
+}
+
+
+
 public static function generate_seminar_page_list($discipline_array) {
 
 
@@ -171,9 +192,9 @@ $author = "Giorgio Bornia";
 private static function set_latex_rendering_lib() {
 
 //  MathJax
- echo ' <script type="text/x-mathjax-config">                                                                                                                                               ';
- echo ' MathJax.Hub.Config({                                                                                                                                                                ';
- echo ' tex2jax: {                                                                                                                                                                          ';
+ echo ' <script type="text/x-mathjax-config">';
+ echo ' MathJax.Hub.Config({';
+ echo ' tex2jax: {';
 //how it should be printed
 //  inlineMath:  [ ['$','$'],   ['\\(','\\)'] ],
 //  displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
@@ -182,13 +203,13 @@ private static function set_latex_rendering_lib() {
  echo ' inlineMath:  [ [\'$\',\'$\'],   [\'\\\(\',\'\\\)\'] ],                                                                                                                    ';  //some escaping is needed for the ' and \ fonts
  echo ' displayMath: [ [\'$$\',\'$$\'], ["\\\[","\\\]"]     ],                                                                                                                    '; //some escaping is needed for the ' and \ fonts
 //how to get it - end
- echo ' processEscapes: true                                                                                                                                                                ';
- echo ' }});                                                                                                                                                                                ';
- echo ' </script>                                                                                                                                                                           ';
+ echo ' processEscapes: true ';
+ echo ' }});';
+ echo ' </script>';
  
- echo '<script type="text/javascript" async                                                                                                                                                 ';
- echo '  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">                                                                                ';
- echo '</script>                                                                                                                                                                            ';
+ echo '<script type="text/javascript" async ';
+ echo '  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> ';
+ echo '</script> ';
 // //  <!--<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>--> <!--THIS WAS DISCONTINUED-->          
 
 
