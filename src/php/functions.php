@@ -49,10 +49,10 @@ public static function generate_seminar_page_list($discipline_array) {
 
      echo '<ol>';
      
-    foreach ($discipline_array as $topic => $topic_string) {
+    foreach ($discipline_array as $discipline => $discipline_string) {
     
      echo '<li>';
-     echo '<a href="./' . $topic . '">' . $topic_string . '</a>';
+     echo '<a href="./' . $discipline . '">' . $discipline_string . '</a>';
      echo '</li>';
      echo '<br>';
      
@@ -63,14 +63,18 @@ public static function generate_seminar_page_list($discipline_array) {
 }
 
 
-public static function generate_seminar_page_by_topic_year_semester($library_path, $institution, $department, $t_y_s, $icon_in_toolbar, $discipline_array) {
+public static function generate_seminar_page_by_topic_year_semester($library_path, $relative_path_to_app, $institution, $department, $t_y_s, $icon_in_toolbar, $discipline_array) {
 
-   Seminars::generate_seminar_page_by_topic($library_path, $institution, $department, $t_y_s[0], $t_y_s[1], $t_y_s[2], $icon_in_toolbar, $discipline_array);
+   $discipline = $t_y_s[0];
+   $year       = $t_y_s[1];
+   $semester   = $t_y_s[2];
+
+   Seminars::generate_seminar_page_by_topic($library_path, $relative_path_to_app, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_array);
 
 }
 
 
-private static function generate_seminar_page_by_topic($library_path, $institution, $department, $topic, $year, $semester, $icon_in_toolbar, $discipline_array) {
+private static function generate_seminar_page_by_topic($library_path, $relative_path_to_app, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_array) {
 
  
 echo '<!DOCTYPE html>';
@@ -80,7 +84,7 @@ echo '<html>';
 
 echo '<head>';
 
-  $title_in_toolbar = $discipline_array[ $topic ];
+  $title_in_toolbar = $discipline_array[ $discipline ];
   
   Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
   
@@ -90,7 +94,7 @@ echo '</head>';
   echo '<body>';
 
 
-    Seminars::set_seminars_by_topic_body($institution, $department, $topic, $year, $semester, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);
+    Seminars::set_seminars_by_topic_body($relative_path_to_app, $institution, $department, $discipline, $year, $semester, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);
 
   echo '</body>';
   
@@ -103,7 +107,18 @@ echo '</html>';
 
  
  
-public static function generate_all_seminars_page_by_time_range($library_path, $institution, $department, $icon_in_toolbar, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array) {
+public static function generate_page_with_all_seminars_by_time_range($library_path,  
+                                                                     $relative_path_to_app,
+                                                                     $institution, 
+                                                                     $department,
+                                                                     $icon_in_toolbar,
+                                                                     $year,
+                                                                     $semester,
+                                                                     $month_begin,
+                                                                     $day_begin,
+                                                                     $month_end,
+                                                                     $day_end,
+                                                                     $discipline_array) {
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
 // if so, I will store that array and make a map that will be parsed by a function
@@ -125,7 +140,7 @@ echo '</head>';
   echo '<body>';
 
 
-    Seminars::set_seminars_by_time_range_body($institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);  
+    Seminars::set_seminars_by_time_range_body($relative_path_to_app, $institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);  
 
   echo '</body>';
   
@@ -144,13 +159,13 @@ private static function read_csv_file($file) {
 }
 
 
-private static function read_file_and_attach_topic_year_semester($file, $topic, $year, $semester) {
+private static function read_file_and_attach_topic_year_semester($file, $discipline, $year, $semester) {
 
   $csv_map = Seminars::read_csv_file($file);
   
   for ($row = 0; $row < count($csv_map); $row++) {
   
-  array_push($csv_map[$row], $topic);
+  array_push($csv_map[$row], $discipline);
   array_push($csv_map[$row], $year);
   array_push($csv_map[$row], $semester);
   
@@ -653,9 +668,10 @@ private static function compute_sequential_day($year, $month, $day) {
  
  
  
-public static function set_seminars_by_topic_body($institution,
+public static function set_seminars_by_topic_body($relative_path_to_seminars_base,
+                                                  $institution,
                                                    $department,
-                                                   $topic,
+                                                   $discipline,
                                                    $year,
                                                    $semester, 
                                                    $abstracts_folder,
@@ -663,21 +679,19 @@ public static function set_seminars_by_topic_body($institution,
                                                    $discipline_array) {
  
 
- $events_in_seminar = Seminars::read_file_and_attach_topic_year_semester(Seminars::$events_file, $topic, $year, $semester);
+ $events_in_seminar = Seminars::read_file_and_attach_topic_year_semester(Seminars::$events_file, $discipline, $year, $semester);
 
- $relative_path_to_seminars_base = '../../../';
- 
 
- Seminars::navigation_bar($topic);
+ Seminars::navigation_bar($discipline);
  
  
- $title = 'Seminar in ' . $discipline_array[ $topic ];
+ $title = 'Seminar in ' . $discipline_array[ $discipline ];
 
  Seminars::main_banner($title, $department, $institution);
  
  Seminars::default_meeting_coords_banner_map($events_in_seminar, $year, $semester);
  
- Seminars::about($topic, $relative_path_to_seminars_base);
+ Seminars::about($discipline, $relative_path_to_seminars_base);
  
  $starting_row = Seminars::$row_events_begin;
  
@@ -694,7 +708,8 @@ public static function set_seminars_by_topic_body($institution,
  
 
  
-public static function set_seminars_by_time_range_body($institution, 
+public static function set_seminars_by_time_range_body($relative_path_to_seminars_base,
+                                                      $institution, 
                                                   $department, 
                                                   $year,
                                                   $semester, 
@@ -712,12 +727,10 @@ public static function set_seminars_by_time_range_body($institution,
  
  Seminars::main_banner($title, $department, $institution);
 
-    $events_in_week =  Seminars::parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
+    $events_in_week =  Seminars::parse_all_event_tables($relative_path_to_seminars_base, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
 
     $starting_row = 0;
     
-    $relative_path_to_seminars_base = '../';
-
  $bool_print_discipline = true;
  
   Seminars::loop_over_events($events_in_week, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
@@ -726,7 +739,7 @@ public static function set_seminars_by_time_range_body($institution,
  }
  
  
-private static function parse_all_event_tables($year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array)  {
+private static function parse_all_event_tables($relative_path_to_seminars_base, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array)  {
  
  
     $starting_row = Seminars::$row_events_begin;
@@ -734,12 +747,12 @@ private static function parse_all_event_tables($year, $semester, $month_begin, $
   
   $events_in_week = array();
   
-    foreach ($discipline_array as $topic => $topic_string) {
+    foreach ($discipline_array as $discipline => $discipline_string) {
     
     
-    $file_to_parse = '../' . $topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
+    $file_to_parse = $relative_path_to_seminars_base . '/' . $discipline . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
     
-   $csv_map = Seminars::read_file_and_attach_topic_year_semester($file_to_parse, $topic, $year, $semester);
+   $csv_map = Seminars::read_file_and_attach_topic_year_semester($file_to_parse, $discipline, $year, $semester);
 
     
     for ($row = $starting_row; $row < count($csv_map); $row++) {
