@@ -12,9 +12,9 @@ class Seminars {
  
 //  print_r($explosion);
   
- $array[0] = $explosion[count($explosion)-4];
- $array[1] = $explosion[count($explosion)-3];
- $array[2] = $explosion[count($explosion)-2];
+ $array[0] = $explosion[count($explosion) - 4];
+ $array[1] = $explosion[count($explosion) - 3];
+ $array[2] = $explosion[count($explosion) - 2];
  
   return $array;
 
@@ -194,10 +194,11 @@ $author = "Giorgio Bornia";
  
  Seminars::set_bootstrap_css_and_javascript_libs();
 
- Seminars::set_latex_rendering_lib();
-
  Seminars::set_sem_css($library_path);
+ 
                                                                                                                                                                                             
+ Seminars::set_latex_rendering_lib();
+ 
 
  Seminars::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
  
@@ -238,8 +239,8 @@ private static function set_latex_rendering_lib() {
 //  displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
 //how it should be printed - end
 //how to get it
- echo ' inlineMath:  [ [\'$\',\'$\'],   [\'\\\(\',\'\\\)\'] ],                                                                                                                    ';  //some escaping is needed for the ' and \ fonts
- echo ' displayMath: [ [\'$$\',\'$$\'], ["\\\[","\\\]"]     ],                                                                                                                    '; //some escaping is needed for the ' and \ fonts
+ echo ' inlineMath:  [ [\'$\',\'$\'],   [\'\\\(\',\'\\\)\'] ],    ';  //some escaping is needed for the ' and \ fonts
+ echo ' displayMath: [ [\'$$\',\'$$\'], ["\\\[","\\\]"]     ],    ';  //some escaping is needed for the ' and \ fonts
 //how to get it - end
  echo ' processEscapes: true ';
  echo ' }});';
@@ -289,36 +290,36 @@ private static function go_up($directory_levels) {
 }
 
 
+
+private static function convert_to_associative_array($array_in) {
+
+//convert a normal array of arrays into an associative array having the first column as key and the remaining ones as value
+
+ $assoc_array = array();
+  
+  for ($i = 0; $i < count($array_in); $i++) {
+   
+   $array_shifted = array_slice($array_in[$i], 1);
+   
+   $assoc_array[ $array_in[$i][0] ] = $array_shifted;
+   
+  }
+
+  return $assoc_array;
+  
+}
+
+
 private static function navigation_bar($discipline_folder) {
 
-$sem_current_depth = Seminars::go_up(2); //'../../';
+$sem_depth_wrt_discipline = Seminars::go_up(2);
 
-//  $past_editions = Seminars::read_csv_file($sem_current_depth . Seminars::$active_editions_file);
-// 
-//  echo '<br>';
-//  echo '<br>';
-//  echo '<br>';
-//  
-// //  echo count($past_editions);
-// 
-// //convert into associative array
-// $past_editions_new = array();
-// 
-//     for ($i = 0; $i < count($past_editions); $i++) {
-//     echo count($past_editions[$i]);
-//     
-// //     for ($j = 0; $j < count($past_editions[i]); $j++) {
-// //     
-// //     echo $past_editions[i];
-// //     }
-// }
+ $past_editions = Seminars::read_csv_file($sem_depth_wrt_discipline . Seminars::$active_editions_file);
 
- //this must be passed by the general seminar, not by its year/semester instances, if possible
-$past_editions = array(
- 2019 => array('spring'),
- 2018 => array('fall'),
-//  2017 => array('fall'),
- );
+
+  $past_years = Seminars::convert_to_associative_array($past_editions);
+
+
 
  $home_name = '$HOME';
  
@@ -340,18 +341,18 @@ $past_editions = array(
 
  echo '</button>';
 
- echo '<a class="navbar-brand" href="'. $sem_current_depth . '">' . $home_name . '</a>';
+ echo '<a class="navbar-brand" href="'. $sem_depth_wrt_discipline . '">' . $home_name . '</a>';
  echo '</div>';
 
  echo '<div id="my_navbar" class="navbar-collapse collapse" role="navigation">';
 
  echo '<ul class="nav navbar-nav navbar-right">';
  
- foreach ($past_editions as $year => $value) {
+ foreach ($past_years as $year => $value) {
    echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' . './' . $year . ' </a>';
    echo '  <ul class="dropdown-menu"> ';
-  foreach ($past_editions[$year] as $term) {
-     echo '    <li><a href="' . $sem_current_depth . './' . $year . '/' . $term . '/">' . $term . '</a></li>';
+  foreach ($past_years[$year] as $term) {
+     echo '    <li><a href="' . $sem_depth_wrt_discipline . './' . $year . '/' . $term . '/">' . $term . '</a></li>';
      }
    echo '  </ul>';
    echo '</li>';
@@ -532,7 +533,7 @@ private static function set_event_image($relative_path_to_seminars_base,
                                    
    echo '
      <td> 
-     <img class="sem_image img-circle" ' .  'src="' .
+     <img class="sem_image" ' .  'src="' .
      $relative_path_to_seminars_base . 
      $events_map[$row][Seminars::$discipline_idx] . '/' .  
      $events_map[$row][Seminars::$year_idx] . '/' . 
@@ -652,7 +653,7 @@ private static function loop_over_events($events_map, $starting_row, $relative_p
     $num_rows = count($events_map);  
     
     
-  echo '<div class="container ">';  /*text-center*/
+  echo '<div class="container ">';
 
     
     for ($row = $starting_row; $row < $num_rows; $row++) {
@@ -816,11 +817,12 @@ private static function parse_all_event_tables($relative_path_to_seminars_base, 
  
  //============== private data ===============
 
-   private static $abstracts_folder = "./abstracts/";
-   private static $images_folder    = "./images/";
-   private static $events_file = './events.csv';
-   private static $about_file = './about.txt';
-   private static $active_editions_file = './active_editions.csv';
+   private static $abstracts_folder     = "./abstracts/";
+   private static $images_folder        = "./images/";
+   private static $events_file          = './events.csv';
+   private static $about_file           = './about.txt';
+   private static $active_editions_file = './active_editions.csv';  ///@todo it is up to the user to write the same directories as the ones that are there, perhaps put a check on that
+                                                                    ///@todo you also have to check that the csv file does not have "empty cells"
 
  
  
@@ -873,5 +875,6 @@ private static function parse_all_event_tables($relative_path_to_seminars_base, 
  
 ///@todo make a function that computes the week day automatically from year/month/day_number
 ///@todo automatically populate the list of past seminars
- 
+///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
+
 ?>
