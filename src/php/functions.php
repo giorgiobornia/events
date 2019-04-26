@@ -310,16 +310,53 @@ private static function convert_to_associative_array($array_in) {
 }
 
 
-private static function navigation_bar($discipline_folder) {
+public static function generate_list_past_editions() {
 
-$sem_depth_wrt_discipline = Seminars::go_up(2);
+ $sem_depth_wrt_discipline = Seminars::go_up(2);
+
+ $past_years = Seminars::get_active_years();
+
+ echo '<ul>';
+
+  foreach ($past_years as $year => $value) {
+   echo '<li>' .  $year . ' </a>';
+   echo '<ul>';
+  foreach ($past_years[$year] as $term) {
+     echo '    <li><a href="' . $sem_depth_wrt_discipline . './' . $year . '/' . $term . '/">' . $term . '</a></li>';
+     }
+   echo '  </ul>';
+   echo '</li>';
+ }
+  
+ echo '</ul>';
+ 
+ 
+}
+
+
+private static function get_active_years() {
+
+ $sem_depth_wrt_discipline = Seminars::go_up(2);
 
  $past_editions = Seminars::read_csv_file($sem_depth_wrt_discipline . Seminars::$active_editions_file);
 
 
-  $past_years = Seminars::convert_to_associative_array($past_editions);
+ $past_years = Seminars::convert_to_associative_array($past_editions);
+ 
+ return $past_years;
 
 
+}
+
+
+
+private static function navigation_bar($discipline_folder) {
+
+
+  $sem_depth_wrt_discipline = Seminars::go_up(2);
+
+  $past_years = Seminars::get_active_years();
+ 
 
  $home_name = '$HOME';
  
