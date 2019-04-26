@@ -208,12 +208,12 @@ $author = "Giorgio Bornia";
   private static function set_meta($description, $author) {
   
 //  These metas must be first in the head 
- echo ' <meta charset="utf-8">                                                                                                                                                              ';
- echo ' <meta name="viewport" content="width=device-width, initial-scale=1">                                                                                                                ';
+ echo ' <meta charset="utf-8"> ';
+ echo ' <meta name="viewport" content="width=device-width, initial-scale=1"> ';
 
 // Meta tags for indexing in search engines
- echo ' <meta name="description" content="' . $description . '">                                                                                                                            ';
- echo ' <meta name="author"      content="' . $author . '">                                                                                                                                ';
+ echo ' <meta name="description" content="' . $description . '"> ';
+ echo ' <meta name="author"      content="' . $author . '"> ';
   
 
   }
@@ -278,14 +278,43 @@ private static function set_bootstrap_css_and_javascript_libs() {
 
 }
 
+private static function go_up($directory_levels) {
+
+  $go_back = '';
+  
+    for ($i = 0; $i < $directory_levels; $i++) $go_back .= '../'; //string concatenation is with .
+  
+  return $go_back;
+ 
+}
 
 
 private static function navigation_bar($discipline_folder) {
 
-$sem_current_depth = '../../';
+$sem_current_depth = Seminars::go_up(2); //'../../';
+
+//  $past_editions = Seminars::read_csv_file($sem_current_depth . Seminars::$active_editions_file);
+// 
+//  echo '<br>';
+//  echo '<br>';
+//  echo '<br>';
+//  
+// //  echo count($past_editions);
+// 
+// //convert into associative array
+// $past_editions_new = array();
+// 
+//     for ($i = 0; $i < count($past_editions); $i++) {
+//     echo count($past_editions[$i]);
+//     
+// //     for ($j = 0; $j < count($past_editions[i]); $j++) {
+// //     
+// //     echo $past_editions[i];
+// //     }
+// }
 
  //this must be passed by the general seminar, not by its year/semester instances, if possible
-$past_years = array(
+$past_editions = array(
  2019 => array('spring'),
  2018 => array('fall'),
 //  2017 => array('fall'),
@@ -318,10 +347,10 @@ $past_years = array(
 
  echo '<ul class="nav navbar-nav navbar-right">';
  
- foreach ($past_years as $year => $value) {
+ foreach ($past_editions as $year => $value) {
    echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' . './' . $year . ' </a>';
    echo '  <ul class="dropdown-menu"> ';
-  foreach ($past_years[$year] as $term) {
+  foreach ($past_editions[$year] as $term) {
      echo '    <li><a href="' . $sem_current_depth . './' . $year . '/' . $term . '/">' . $term . '</a></li>';
      }
    echo '  </ul>';
@@ -404,10 +433,11 @@ private static function default_meeting_coords_banner_map($csv, $year, $semester
 
 private static function set_browser_toolbar($title, $icon_in_toolbar) {
  
+//  Title
+ echo '<title> ' . $title . ' </title>';
+ 
 //  Favicon
  echo ' <link rel="icon" href="' .  $icon_in_toolbar . '"> ';
-
- echo '<title> ' . $title . ' </title>';
 
  }
 
@@ -790,6 +820,7 @@ private static function parse_all_event_tables($relative_path_to_seminars_base, 
    private static $images_folder    = "./images/";
    private static $events_file = './events.csv';
    private static $about_file = './about.txt';
+   private static $active_editions_file = './active_editions.csv';
 
  
  
@@ -840,7 +871,6 @@ private static function parse_all_event_tables($relative_path_to_seminars_base, 
  } //end class
 
  
-///@todo make a go_back function ../../
 ///@todo make a function that computes the week day automatically from year/month/day_number
 ///@todo automatically populate the list of past seminars
  
