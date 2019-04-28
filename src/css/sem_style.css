@@ -64,7 +64,7 @@ color: #00FF00; /*not working*/
 /* Item, table ============================== */
 
 table.sem_item {
-  margin-left: auto;
+  margin-left: none;
   margin-right: auto;
   border: none;
   border-color: transparent;
@@ -78,14 +78,15 @@ table.sem_item {
 
 table.sem_item td,th,tr  {
     
-  padding-left:   10px;
+/*   padding-left:   10px; */
+  padding-left:   none;
   padding-right:  10px;
   padding-top:     5px;
   padding-bottom:  5px;
   border: none;
   border-spacing: 0;
   border-color: transparent;
-  
+/*   text-align: center; */
 }
 
 

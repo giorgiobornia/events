@@ -363,7 +363,7 @@ private static function navigation_bar($discipline_folder) {
   
  echo '<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="my_nav">';
 
- echo '<div class="container">';
+ echo '<div class="' . Seminars::$bootstrap_container . '">';
 
  echo '<div class="navbar-header">';
 
@@ -403,7 +403,7 @@ private static function navigation_bar($discipline_folder) {
 
  echo '</nav>';
 
- echo '<div class="container" id="compensate_navbar_height"></div>                                                                                            ';
+ echo '<div class="' . Seminars::$bootstrap_container . '"' . ' id="compensate_navbar_height"></div>                                                                                            ';
 
 }
 
@@ -415,7 +415,7 @@ private static function main_banner($title, $department, $institution) {
 
   echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
   echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
-  echo '<div class="container text-center">';
+  echo '<div class="' . Seminars::$bootstrap_container . ' text-center">';
   echo '      <h1> ' . $title . ' </h1>';
   echo '      <h2> ' . $department  . ' </h2>';  
   echo '      <h2> ' . $institution . ' </h2>'; 
@@ -488,7 +488,7 @@ private static function about($discipline, $relative_path_to_seminars_base) {
     $discipline . '/' .  
     Seminars::$about_file;
 
-  echo '<div class="container ">';
+  echo '<div class="' . Seminars::$bootstrap_container . '">';
   
     include($about_txt_file);
   
@@ -504,6 +504,8 @@ private static function about($discipline, $relative_path_to_seminars_base) {
 
 
 private static function event_details($events_map, $row, $discipline_array, $bool_print_discipline) {
+
+    echo '<td>';
 
    if ( $bool_print_discipline == true ) {                                
       echo "<strong>";
@@ -578,7 +580,6 @@ private static function set_event_image($relative_path_to_seminars_base,
      $images_folder . '/' . 
      $events_map[$row][Seminars::$speaker_image_idx] . '" alt="image">  </td> ';
      
-    echo '<td style="text-align: center;">';
     
     
     }
@@ -690,7 +691,7 @@ private static function loop_over_events($events_map, $starting_row, $relative_p
     $num_rows = count($events_map);  
     
     
-  echo '<div class="container ">';
+  echo '<div class="' . Seminars::$bootstrap_container . '">';
 
     
     for ($row = $starting_row; $row < $num_rows; $row++) {
@@ -907,7 +908,12 @@ private static function parse_all_event_tables($relative_path_to_seminars_base, 
   
   private static $row_events_begin = 3;
  
- } //end class
+// ===== bootstrap style
+  private static $bootstrap_container = 'container';
+
+
+
+} //end class
 
  
 ///@todo make a function that computes the week day automatically from year/month/day_number
