@@ -46,19 +46,25 @@ public static function redirect_page($year, $semester) {
 
 public static function generate_seminar_page_list($discipline_array) {
 
+     echo '<br/>';
+     
+     echo 'List by topic of departmental seminars';
 
-     echo '<ol>';
+     echo '<br/>';
+     echo '<br/>';
+     
+     echo '<ul>';
      
     foreach ($discipline_array as $discipline => $discipline_string) {
     
      echo '<li>';
      echo '<a href="./' . $discipline . '">' . $discipline_string . '</a>';
      echo '</li>';
-     echo '<br>';
+     echo '<br/>';
      
     }
 
-     echo '</ol>';
+     echo '</ul>';
      
 }
 
@@ -410,12 +416,12 @@ private static function navigation_bar($discipline_folder) {
 
 
 
-private static function main_banner($title, $department, $institution) {
+public static function main_banner($title, $department, $institution) {
 
 
   echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
   echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
-  echo '<div class="' . Seminars::$bootstrap_container . ' text-center">';
+  echo '<div class="' . Seminars::$bootstrap_container . ' ' . Seminars::$bootstrap_centered . '">';
   echo '      <h1> ' . $title . ' </h1>';
   echo '      <h2> ' . $department  . ' </h2>';  
   echo '      <h2> ' . $institution . ' </h2>'; 
@@ -428,7 +434,7 @@ private static function main_banner($title, $department, $institution) {
  
 private static function default_meeting_coords_banner($semester, $year, $week_day, $time, $room) {
 
- echo '<div class="container-fluid text-center" id="sem_header">';
+ echo '<div class="'. Seminars::$bootstrap_container_fluid . ' ' . Seminars::$bootstrap_centered . '" id="sem_header">';
  
  echo '<h2>';
  echo $semester . ' ' . 
@@ -572,7 +578,7 @@ private static function set_event_image($relative_path_to_seminars_base,
                                    
    echo '
      <td> 
-     <img class="sem_image" ' .  'src="' .
+     <img class="' . Seminars::$sem_image . '" ' .  'src="' .
      $relative_path_to_seminars_base . 
      $events_map[$row][Seminars::$discipline_idx] . '/' .  
      $events_map[$row][Seminars::$year_idx] . '/' . 
@@ -594,7 +600,7 @@ private static function set_event_image_and_details($relative_path_to_seminars_b
 
 
     echo '
-     <table class="sem_item">
+     <table class="' . Seminars::$sem_item . '">
      <tr>';
      
      Seminars::set_event_image($relative_path_to_seminars_base, $images_folder, $events_map, $row);
@@ -910,7 +916,12 @@ private static function parse_all_event_tables($relative_path_to_seminars_base, 
  
 // ===== bootstrap style
   private static $bootstrap_container = 'container';
+  private static $bootstrap_container_fluid = 'container-fluid';
+  private static $bootstrap_centered = 'text-center';
 
+// ===== sem style (must be consistent with css)
+  private static $sem_image = 'sem_image';
+  private static $sem_item = 'sem_item';
 
 
 } //end class
