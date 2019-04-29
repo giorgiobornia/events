@@ -279,9 +279,12 @@ private static function set_bootstrap_css_and_javascript_libs() {
 //  Latest compiled JavaScript 
  echo '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>';
 
-//  echo '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">';
-//  echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>';
-
+//  echo '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">';
+// 
+// 
+//  echo ' <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>';
+//  echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>';
+//  echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>';
 
 }
 
@@ -419,7 +422,7 @@ private static function navigation_bar($discipline_folder) {
 public static function main_banner($title, $department, $institution) {
 
 
-  echo '<div class="my_banner jumbotron">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
+  echo '<div class="my_banner">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
   echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
   echo '<div class="' . Seminars::$bootstrap_container . ' ' . Seminars::$bootstrap_centered . '">';
   echo '      <h1> ' . $title . ' </h1>';
@@ -434,7 +437,7 @@ public static function main_banner($title, $department, $institution) {
  
 private static function default_meeting_coords_banner($semester, $year, $week_day, $time, $room) {
 
- echo '<div class="'. Seminars::$bootstrap_container_fluid . ' ' . Seminars::$bootstrap_centered . '" id="sem_header">';
+ echo '<div class="'. Seminars::$bootstrap_container_fluid . ' ' . Seminars::$bootstrap_centered . '" id="' . Seminars::$sem_header_id . '">';
  
  echo '<h2>';
  echo $semester . ' ' . 
@@ -922,6 +925,7 @@ private static function parse_all_event_tables($relative_path_to_seminars_base, 
 // ===== sem style (must be consistent with css)
   private static $sem_image = 'sem_image';
   private static $sem_item = 'sem_item';
+  private static $sem_header_id = 'sem_header';
 
 
 } //end class
