@@ -21,8 +21,43 @@ class Seminars {
 
  }
  
-
+ 
+ 
+public static function include_file($remote_path_prefix, $relative_local_path, $file, $are_input_files_local) {
+//either use include for local files, or use curl request for external ones
   
+ if ($are_input_files_local == true) {
+       
+ include($relative_local_path . '/' . $file);
+ 
+ }
+ 
+ else {
+ 
+  $absolute_url = $remote_path_prefix . '/' . $file;
+  
+       // create curl resource 
+        $ch = curl_init(); 
+
+        // set url 
+        curl_setopt($ch, CURLOPT_URL, $absolute_url); 
+
+        //return the transfer as a string 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+
+        // $output contains the output string 
+        $output = curl_exec($ch); 
+      
+         echo $output;
+
+        // close curl resource to free up system resources 
+        curl_close($ch); 
+        
+  }
+
+}
+
+
 public static function redirect_page($year, $semester) {
 ///@todo see if you can even avoid generating the index page
 
