@@ -25,7 +25,8 @@ class Seminars {
  
 public static function include_file($remote_path_prefix, $relative_local_path, $file, $are_input_files_local) {
 //either use include for local files, or use curl request for external ones
-  
+//include of external files may be disabled by a server for security reasons
+
  if ($are_input_files_local == true) {
        
  include($relative_local_path . '/' . $file);
@@ -546,6 +547,24 @@ private static function about($discipline, $relative_path_to_seminars_base) {
  
 }
 
+private static function set_abstract_id_and_its_toggle($events_map, $row, $base_str) {
+
+  $clock_str = $events_map[$row][Seminars::$time_idx];
+  $clock_str = str_replace(' ', '_', $clock_str);
+  $clock_str = str_replace(':', '_', $clock_str);
+  
+
+    $abstract_id = $base_str . /* either 'toggle_' or '' */ 'abst_' .
+      $events_map[$row][Seminars::$discipline_idx]  . '_' . 
+      $events_map[$row][Seminars::$year_idx]        . '_' .
+      $events_map[$row][Seminars::$month_idx]       . '_' . 
+      $events_map[$row][Seminars::$day_idx]         . '_' .
+      $clock_str;
+      
+  return  $abstract_id;
+  
+}
+
 
 private static function event_details($events_map, $row, $discipline_array, $bool_print_discipline) {
 
@@ -570,10 +589,8 @@ private static function event_details($events_map, $row, $discipline_array, $boo
     echo "<br>";
 
     
-    $toggle_abstract_id = 'toggle_abst_' . $events_map[$row][Seminars::$discipline_idx]  . '_'
-                                         . $events_map[$row][Seminars::$year_idx]        . '_'
-                                         . $events_map[$row][Seminars::$month_idx]       . '_'
-                                         . $events_map[$row][Seminars::$day_idx];
+    $toggle_abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
+
 
     echo '<a  style="cursor: pointer; text-decoration: underline; " ';  ///@todo I want to give this the same color as an <a> tag with href= instead of id=
     echo ' id=' . '"' .  $toggle_abstract_id . '"';
@@ -663,12 +680,10 @@ private static function set_abstract($relative_path_to_seminars_base,
                                      $row,
                                      $toggle_abstract_id) {
                                      
-//----------------    
-    $abstract_id = 'abst_' . $events_map[$row][Seminars::$discipline_idx]  . '_' 
-                           . $events_map[$row][Seminars::$year_idx]        . '_'
-                           . $events_map[$row][Seminars::$month_idx]       . '_'
-                           . $events_map[$row][Seminars::$day_idx];
+    $abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, '');
+    
 
+//----------------    
     echo '<span class="abst" ';   ///@todo make this span CENTERED
     
     echo ' id=' . '"' . $abstract_id . '"'; 
@@ -686,11 +701,9 @@ private static function set_abstract($relative_path_to_seminars_base,
     $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
 
     
-//     include should be of another PHP file, or of a LOCAL address (not http url)
     include($abstract_path);
     
     echo '</span>';
-    
 //----------------    
 
 
@@ -967,7 +980,6 @@ private static function parse_all_event_tables($relative_path_to_seminars_base, 
 
  
 ///@todo make a function that computes the week day automatically from year/month/day_number
-///@todo automatically populate the list of past seminars
 ///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 
 ?>
