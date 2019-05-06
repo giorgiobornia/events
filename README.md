@@ -7,6 +7,8 @@ Features:
     - by discipline & year & semester
     
     - by a specified time range (e.g., a week), for a given list of disciplines
+    
+- Colloquia can be treated as a particular instance of a discipline
 
 - LaTeX is typeset directly on the webpage through the MathJax libraries (very convenient for math formulas)
 
@@ -14,7 +16,9 @@ Features:
 
     - Abstracts can contain LaTeX formulas and are embedded in the webpage (no annoying separate PDF or separate page opening)
 
-- Responsive web design through Bootstrap
+- Optional: generation of navigation bars and banners through Bootstrap
+
+- The calls can be embedded inside an arbitrary <body> field that is taken care of by the user
 
 - Each seminar will be grouped according to the folder scheme "discipline/year/semester/", where typically
 
@@ -24,14 +28,15 @@ Features:
 
     - "semester" is the current semester (e.g., "spring", "fall")
 
-- Past editions can be easily handled
+- A list of past editions can be handled easily
 
 
 
  Used libraries (no need to install them on the server, they are directly pointed to by our head):
 
- Bootstrap
  
- JQuery
+ JavaScript and JQuery (to toggle the dropdown abstracts)
  
- MathJax
+ MathJax (to render mathematical symbols)
+
+ Bootstrap (to generate navigation bars and banners, optional)
