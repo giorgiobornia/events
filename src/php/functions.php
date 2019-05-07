@@ -21,15 +21,26 @@ class Seminars {
 
  }
  
- 
- 
-public static function include_file($remote_path_prefix, $relative_local_path, $file, $are_input_files_local) {
+private static function get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local) {
+
+  $prefix = '';
+
+ if ($are_input_files_local == true) { $prefix = $local_path_prefix  . '/'; }
+ else {                                $prefix = $remote_path_prefix . '/'; }
+
+ return $prefix;
+
+}
+
+
+public static function include_file($remote_path_prefix, $local_path_prefix, $file, $are_input_files_local) {
 //either use include for local files, or use curl request for external ones
 //include of external files may be disabled by a server for security reasons
 
+
  if ($are_input_files_local == true) {
        
- include($relative_local_path . '/' . $file);
+ include($local_path_prefix . '/' . $file);
  
  }
  
@@ -84,7 +95,7 @@ public static function generate_seminar_page_list($discipline_array) {
 
      echo '<br/>';
      
-     echo 'List by topic of departmental seminars';
+     echo 'Seminars';
 
      echo '<br/>';
      echo '<br/>';
@@ -105,18 +116,18 @@ public static function generate_seminar_page_list($discipline_array) {
 }
 
 
-public static function generate_seminar_page_by_topic_year_semester($library_path, $relative_path_to_app, $institution, $department, $t_y_s, $icon_in_toolbar, $discipline_array) {
+public static function generate_seminar_page_by_topic_year_semester($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $t_y_s, $icon_in_toolbar, $discipline_array) {
 
    $discipline = $t_y_s[0];
    $year       = $t_y_s[1];
    $semester   = $t_y_s[2];
 
-   Seminars::generate_seminar_page_by_topic($library_path, $relative_path_to_app, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_array);
+   Seminars::generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_array);
 
 }
 
 
-private static function generate_seminar_page_by_topic($library_path, $relative_path_to_app, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_array) {
+private static function generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_array) {
 
  
 echo '<!DOCTYPE html>';
@@ -136,7 +147,7 @@ echo '</head>';
   echo '<body>';
 
 
-    Seminars::set_seminars_by_topic_body($relative_path_to_app, $institution, $department, $discipline, $year, $semester, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);
+    Seminars::set_seminars_by_topic_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);
 
   echo '</body>';
   
@@ -150,7 +161,7 @@ echo '</html>';
  
  
 public static function generate_page_with_all_seminars_by_time_range($library_path,  
-                                                                     $relative_path_to_app,
+                                                                     $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                                      $institution, 
                                                                      $department,
                                                                      $icon_in_toolbar,
@@ -182,7 +193,7 @@ echo '</head>';
   echo '<body>';
 
 
-    Seminars::set_seminars_by_time_range_body($relative_path_to_app, $institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);  
+    Seminars::set_seminars_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);  
 
   echo '</body>';
   
@@ -526,16 +537,15 @@ private static function set_browser_toolbar($title, $icon_in_toolbar) {
 
 
 
-private static function about($discipline, $relative_path_to_seminars_base) {
+private static function about($discipline, $remote_path_prefix, $local_path_prefix, $are_input_files_local) {
 
-    $about_txt_file =   
-    $relative_path_to_seminars_base .  
+    $about_txt_file =
     $discipline . '/' .  
     Seminars::$about_file;
 
   echo '<div class="' . Seminars::$bootstrap_container . '">';
   
-    include($about_txt_file);
+   Seminars::include_file( $remote_path_prefix, $local_path_prefix, $about_txt_file, $are_input_files_local);
   
   echo '<br>';       
   echo '<br>';       
@@ -626,15 +636,20 @@ private static function event_details($events_map, $row, $discipline_array, $boo
 }
 
 
-private static function set_event_image($relative_path_to_seminars_base,
-                                       $images_folder,
-                                       $events_map, 
-                                       $row)  {
-                                   
+private static function set_event_image($remote_path_prefix,
+                                        $local_path_prefix,
+                                        $are_input_files_local,
+                                        $images_folder,
+                                        $events_map,
+                                        $row)  {
+                                        
+                                        
+ $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+                                  
    echo '
      <td> 
      <img class="' . Seminars::$sem_image . '" ' .  'src="' .
-     $relative_path_to_seminars_base . 
+     $prefix . 
      $events_map[$row][Seminars::$discipline_idx] . '/' .  
      $events_map[$row][Seminars::$year_idx] . '/' . 
      $events_map[$row][Seminars::$semester_idx]  . '/' . 
@@ -646,7 +661,7 @@ private static function set_event_image($relative_path_to_seminars_base,
     }
 
 
-private static function set_event_image_and_details($relative_path_to_seminars_base,
+private static function set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                    $images_folder,
                                    $events_map, 
                                    $row,
@@ -658,7 +673,7 @@ private static function set_event_image_and_details($relative_path_to_seminars_b
      <table class="' . Seminars::$sem_item . '">
      <tr>';
      
-     Seminars::set_event_image($relative_path_to_seminars_base, $images_folder, $events_map, $row);
+     Seminars::set_event_image($remote_path_prefix, $local_path_prefix, $are_input_files_local, $images_folder, $events_map, $row);
     
     $toggle_abstract_id = Seminars::event_details($events_map, $row, $discipline_array, $bool_print_discipline);
     
@@ -674,7 +689,7 @@ private static function set_event_image_and_details($relative_path_to_seminars_b
 }
 
 
-private static function set_abstract($relative_path_to_seminars_base,
+private static function set_abstract($local_path_prefix,
                                      $abstracts_folder,
                                      $events_map,
                                      $row,
@@ -694,7 +709,7 @@ private static function set_abstract($relative_path_to_seminars_base,
     
 
     $abstract_path =   
-    $relative_path_to_seminars_base .  
+    $local_path_prefix .  
     $events_map[$row][Seminars::$discipline_idx] . '/' .  
     $events_map[$row][Seminars::$year_idx] . '/' . 
     $events_map[$row][Seminars::$semester_idx] . '/' . 
@@ -737,7 +752,7 @@ private static function set_abstract($relative_path_to_seminars_base,
  }
  
  
-private static function loop_over_events($events_map, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline) {
+private static function loop_over_events($events_map, $starting_row, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline) {
 
  
     ///@todo: abstract have to be .txt (I think it's enough to be any text file), with a name specified in the csv file
@@ -754,9 +769,9 @@ private static function loop_over_events($events_map, $starting_row, $relative_p
     for ($row = $starting_row; $row < $num_rows; $row++) {
 
     
-    $toggle_abstract_id = Seminars::set_event_image_and_details($relative_path_to_seminars_base, $images_folder, $events_map, $row, $discipline_array, $bool_print_discipline);
+    $toggle_abstract_id = Seminars::set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local, $images_folder, $events_map, $row, $discipline_array, $bool_print_discipline);
     
-                        Seminars::set_abstract($relative_path_to_seminars_base, $abstracts_folder, $events_map, $row, $toggle_abstract_id);
+                        Seminars::set_abstract($local_path_prefix, $abstracts_folder, $events_map, $row, $toggle_abstract_id);
     
     }
     
@@ -794,7 +809,9 @@ private static function compute_sequential_day($year, $month, $day) {
  
  
  
-public static function set_seminars_by_topic_body($relative_path_to_seminars_base,
+public static function set_seminars_by_topic_body($remote_path_prefix,
+                                                  $local_path_prefix,
+                                                  $are_input_files_local,
                                                   $institution,
                                                    $department,
                                                    $discipline,
@@ -817,14 +834,14 @@ public static function set_seminars_by_topic_body($relative_path_to_seminars_bas
  
  Seminars::default_meeting_coords_banner_map($events_in_seminar, $year, $semester);
  
- Seminars::about($discipline, $relative_path_to_seminars_base);
+ Seminars::about($discipline, $remote_path_prefix, $local_path_prefix, $are_input_files_local);
  
  $starting_row = Seminars::$row_events_begin;
  
  
  $bool_print_discipline = false;
     
- Seminars::loop_over_events($events_in_seminar, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
+ Seminars::loop_over_events($events_in_seminar, $starting_row, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
 
  
  
@@ -834,7 +851,7 @@ public static function set_seminars_by_topic_body($relative_path_to_seminars_bas
  
 
  
-public static function set_seminars_by_time_range_body($relative_path_to_seminars_base,
+public static function set_seminars_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                       $institution, 
                                                   $department, 
                                                   $year,
@@ -853,19 +870,19 @@ public static function set_seminars_by_time_range_body($relative_path_to_seminar
  
  Seminars::main_banner($title, $department, $institution);
 
-    $events_in_week =  Seminars::parse_all_event_tables($relative_path_to_seminars_base, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
+    $events_in_week =  Seminars::parse_all_event_tables($local_path_prefix, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
 
     $starting_row = 0;
     
  $bool_print_discipline = true;
  
-  Seminars::loop_over_events($events_in_week, $starting_row, $relative_path_to_seminars_base, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
+  Seminars::loop_over_events($events_in_week, $starting_row, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
  
 
  }
  
  
-private static function parse_all_event_tables($relative_path_to_seminars_base, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array)  {
+private static function parse_all_event_tables($local_path_prefix, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array)  {
  
  
     $starting_row = Seminars::$row_events_begin;
@@ -876,7 +893,7 @@ private static function parse_all_event_tables($relative_path_to_seminars_base, 
     foreach ($discipline_array as $discipline => $discipline_string) {
     
     
-    $file_to_parse = $relative_path_to_seminars_base . '/' . $discipline . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
+    $file_to_parse = $local_path_prefix . '/' . $discipline . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
     
    $csv_map = Seminars::read_file_and_attach_topic_year_semester($file_to_parse, $discipline, $year, $semester);
 
