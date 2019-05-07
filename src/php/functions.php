@@ -212,9 +212,11 @@ private static function read_csv_file($file) {
 }
 
 
-private static function read_file_and_attach_topic_year_semester($file, $discipline, $year, $semester) {
+private static function read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester) {
 
-  $csv_map = Seminars::read_csv_file($file);
+ $file_to_parse = $prefix . '/' . $discipline . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
+ 
+ $csv_map = Seminars::read_csv_file($file_to_parse);
   
   for ($row = 0; $row < count($csv_map); $row++) {
   
@@ -689,7 +691,7 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
 }
 
 
-private static function set_abstract($local_path_prefix,
+private static function set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                      $abstracts_folder,
                                      $events_map,
                                      $row,
@@ -707,16 +709,17 @@ private static function set_abstract($local_path_prefix,
     
     echo '>';
     
+    
+    $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
 
     $abstract_path =   
-    $local_path_prefix .  
     $events_map[$row][Seminars::$discipline_idx] . '/' .  
     $events_map[$row][Seminars::$year_idx] . '/' . 
     $events_map[$row][Seminars::$semester_idx] . '/' . 
     $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
 
     
-    include($abstract_path);
+    Seminars::include_file( $remote_path_prefix, $local_path_prefix, $abstract_path, $are_input_files_local);
     
     echo '</span>';
 //----------------    
@@ -771,7 +774,7 @@ private static function loop_over_events($events_map, $starting_row, $remote_pat
     
     $toggle_abstract_id = Seminars::set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local, $images_folder, $events_map, $row, $discipline_array, $bool_print_discipline);
     
-                        Seminars::set_abstract($local_path_prefix, $abstracts_folder, $events_map, $row, $toggle_abstract_id);
+                                         Seminars::set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local, $abstracts_folder, $events_map, $row, $toggle_abstract_id);
     
     }
     
@@ -820,9 +823,11 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
                                                    $abstracts_folder,
                                                    $images_folder,
                                                    $discipline_array) {
+                                                   
  
-
- $events_in_seminar = Seminars::read_file_and_attach_topic_year_semester(Seminars::$events_file, $discipline, $year, $semester);
+ $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+ 
+ $events_in_seminar = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester);
 
 
  Seminars::navigation_bar($discipline);
@@ -870,7 +875,7 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
  
  Seminars::main_banner($title, $department, $institution);
 
-    $events_in_week =  Seminars::parse_all_event_tables($local_path_prefix, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
+    $events_in_week =  Seminars::parse_all_event_tables($remote_path_prefix, $local_path_prefix, $are_input_files_local, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
 
     $starting_row = 0;
     
@@ -882,20 +887,19 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
  }
  
  
-private static function parse_all_event_tables($local_path_prefix, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array)  {
+private static function parse_all_event_tables($remote_path_prefix, $local_path_prefix, $are_input_files_local, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array)  {
  
  
-    $starting_row = Seminars::$row_events_begin;
+  $starting_row = Seminars::$row_events_begin;
 
+  $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
   
   $events_in_week = array();
   
     foreach ($discipline_array as $discipline => $discipline_string) {
     
     
-    $file_to_parse = $local_path_prefix . '/' . $discipline . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
-    
-   $csv_map = Seminars::read_file_and_attach_topic_year_semester($file_to_parse, $discipline, $year, $semester);
+   $csv_map = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester);
 
     
     for ($row = $starting_row; $row < count($csv_map); $row++) {
