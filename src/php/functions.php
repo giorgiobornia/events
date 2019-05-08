@@ -8,6 +8,8 @@ class Seminars {
  //retrieve the information from the path 
  
  $current_file = $file_in;
+ $current_file = str_replace('\\', '/', $current_file);  //for Windows file paths
+
  $explosion = explode('/',$current_file);
  
 //  print_r($explosion);
