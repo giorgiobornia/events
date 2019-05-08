@@ -183,7 +183,7 @@ echo '<html>';
 
 echo '<head>';
 
-   $title_in_toolbar = 'Seminars by week';
+   $title_in_toolbar = 'Weekly events';
 
    Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
    
@@ -244,22 +244,33 @@ $author = "Giorgio Bornia";
 
  Seminars::set_meta($description, $author);
 
- 
+ Seminars::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
+
+
+
  Seminars::set_jquery_lib();
  
  Seminars::set_bootstrap_css_and_javascript_libs();
 
+
+
+ Seminars::set_mandatory_libs($library_path);
+
+
+
+}
+
+
+
+
+public static function set_mandatory_libs($library_path) {
+
  Seminars::set_sem_css($library_path);
  
-                                                                                                                                                                                            
  Seminars::set_latex_rendering_lib();
  
-
- Seminars::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
+} 
  
-
- }
-
  
   private static function set_meta($description, $author) {
   
@@ -368,12 +379,16 @@ private static function convert_to_associative_array($array_in) {
 }
 
 
-public static function generate_list_past_editions() {
+public static function generate_list_past_editions($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline) {
 
  $sem_depth_wrt_discipline = Seminars::go_up(2);
 
- $past_years = Seminars::get_active_years();
+ $past_years = Seminars::get_active_years($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline);
 
+ echo 'All terms';
+
+ echo '<br/>';
+ 
  echo '<ul>';
 
   foreach ($past_years as $year => $value) {
@@ -392,11 +407,17 @@ public static function generate_list_past_editions() {
 }
 
 
-private static function get_active_years() {
+private static function get_active_years($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline) {
 
  $sem_depth_wrt_discipline = Seminars::go_up(2);
-
- $past_editions = Seminars::read_csv_file($sem_depth_wrt_discipline . Seminars::$active_editions_file);
+ 
+ $prefix = '';
+ 
+ if ($are_input_files_local) { $prefix = $sem_depth_wrt_discipline;  }
+ else {  $prefix = $remote_path_prefix . '/' . $discipline . '/';  }
+ 
+ 
+ $past_editions = Seminars::read_csv_file($prefix . Seminars::$active_editions_file);
 
 
  $past_years = Seminars::convert_to_associative_array($past_editions);
@@ -408,12 +429,12 @@ private static function get_active_years() {
 
 
 
-private static function navigation_bar($discipline_folder) {
+private static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline_folder) {
 
 
   $sem_depth_wrt_discipline = Seminars::go_up(2);
 
-  $past_years = Seminars::get_active_years();
+  $past_years = Seminars::get_active_years($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline_folder);
  
 
  $home_name = '$HOME';
@@ -709,8 +730,6 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
     
     echo '>';
     
-    
-    $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
 
     $abstract_path =   
     $events_map[$row][Seminars::$discipline_idx] . '/' .  
@@ -830,10 +849,10 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
  $events_in_seminar = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester);
 
 
- Seminars::navigation_bar($discipline);
+ Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline);
  
  
- $title = 'Seminar in ' . $discipline_array[ $discipline ];
+ $title = $discipline_array[ $discipline ];
 
  Seminars::main_banner($title, $department, $institution);
  
@@ -871,7 +890,7 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
  
 
 
- $title = "Seminars by week";
+ $title = "Weekly events";
  
  Seminars::main_banner($title, $department, $institution);
 
