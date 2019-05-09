@@ -206,8 +206,12 @@ echo '</html>';
 
 
 private static function read_csv_file($file) {
+  
+ $array_from_file = file($file); ///@todo this command seems to work only with CSV files coming from Linux/Mac, but not from Windows... the diff command says files are equal...!
  
-  $csv_map = array_map('str_getcsv', file($file));  ///@todo this command seems to work only with CSV files coming from Linux/Mac, but not from Windows... the diff command says files are equal...!
+//  print_r($array_from_file);
+
+  $csv_map = array_map('str_getcsv', $array_from_file); 
 
   return $csv_map;
   
