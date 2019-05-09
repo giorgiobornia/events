@@ -847,7 +847,7 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
                                                    
  
  $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
- 
+
  $events_in_seminar = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester);
 
 

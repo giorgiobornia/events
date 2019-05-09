@@ -1,9 +1,10 @@
  <?php
  
  //library =============
- $library_path = "../../../../"; //folder where the library class is
+ $relative_path_to_library = "../../../../"; //folder where the library class is
+ $relative_path_to_app = "../../../";
  
- include($library_path . "./src/php/functions.php");
+ include($relative_path_to_library . "./src/php/functions.php");
  
  $institution = "University of Nowhere";  //this string is what you'll see on the page
  $department = "Department of Nothing";   //this string is what you'll see on the page
@@ -19,16 +20,21 @@
  
  $icon_in_toolbar ='';   //we'll leave it empty ///@todo put some default
  
- Seminars::generate_seminar_page_by_topic($library_path, 
-                                          $institution, 
-                                          $department,  
-                                          $discipline, 
-                                          $year, 
-                                          $semester,
-                                          $icon_in_toolbar,
-                                          $discipline_folder_to_string); ///@todo here I should only pass my own translation from folder to string
+ $are_input_files_local = true;
  
- ///@todo make this completely TTU-independent
+ $math_server_url_base = ''; //not needed if files are local
+ 
+ $array = Seminars::get_discipline_year_semester(__FILE__);
+
+ Seminars::generate_seminar_page_by_topic_year_semester($relative_path_to_library,
+                                                        $server_url_base,
+                                                        $relative_path_to_app,
+                                                        $are_input_files_local,
+                                                        $institution,
+                                                        $department,
+                                                        $array,
+                                                        $icon_in_toolbar,
+                                                        $discipline_folder_to_string);
   
  ?>
 
