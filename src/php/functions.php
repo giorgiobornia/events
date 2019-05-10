@@ -638,24 +638,25 @@ private static function event_details($events_map, $row, $discipline_array, $boo
 
     echo '<td>';
 
+    echo "<strong>";
+    echo  $events_map[$row][Seminars::$week_day_idx] . ", " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx] . ", ";
+    echo "</strong>";
+    
+    echo "<em>";
+    echo $events_map[$row][Seminars::$time_idx] . ", ";
+    echo "</em>";
+    
+//     echo "<em>";
+    echo "room "  .  $events_map[$row][Seminars::$room_idx] ;
+//     echo "</em>";
+    echo "<br>";
+
    if ( $bool_print_discipline == true ) {                                
       echo "<strong>";
         echo $discipline_array[ $events_map[$row][Seminars::$discipline_idx] ];
       echo "</strong>";
       echo "<br>";
     }
-    
-    echo "<strong>";
-    echo  $events_map[$row][Seminars::$week_day_idx] . ", " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx] . ", ";
-    echo "</strong>";
-    echo "<em>";
-    echo $events_map[$row][Seminars::$time_idx] . ", ";
-    echo "</em>";
-//     echo "<em>";
-    echo "room "  .  $events_map[$row][Seminars::$room_idx] ;
-//     echo "</em>";
-    echo "<br>";
-
     
     $toggle_abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
 
@@ -903,7 +904,21 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
  }
  
 
+ private static function sort_array_of_arrays(& $array_of_arrays, $index, $sort_order) {
  
+//  $index: column index with respect to which you intend to sort
+//  $sort_order: SORT_ASC, SORT_DESC, ...
+ 
+  $temp_column = array();
+    
+  foreach ($array_of_arrays as $key => $row) {
+    $temp_column[$key] = $row[$index];
+  }
+
+  array_multisort($temp_column, $sort_order, $array_of_arrays);
+  
+
+ }
 
  
 public static function set_seminars_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
@@ -920,11 +935,13 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
                                                   $discipline_array, $bool_print_discipline)  {
  
 
-
-
     $events_in_week =  Seminars::parse_all_event_tables($remote_path_prefix, $local_path_prefix, $are_input_files_local, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
+    
+    
+    Seminars::sort_array_of_arrays($events_in_week, Seminars::$month_idx, SORT_ASC);
 
-    ///@todo sort the map by month and day
+//     Seminars::sort_array_of_arrays($events_in_week, Seminars::$day_idx, SORT_ASC);
+    
     
     $starting_row = 0;
      
