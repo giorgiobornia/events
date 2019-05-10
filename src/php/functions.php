@@ -97,7 +97,7 @@ public static function generate_seminar_page_list($discipline_array) {
 
      echo '<br/>';
      
-     echo 'Seminars';
+     echo '<h3> &nbsp <strong> Seminars  </strong> </h3>';
 
      echo '<br/>';
      echo '<br/>';
@@ -185,7 +185,7 @@ echo '<html>';
 
 echo '<head>';
 
-   $title_in_toolbar = 'Weekly events';
+   $title_in_toolbar = 'Weekly Colloquia and Seminars';
 
    Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
    
@@ -194,9 +194,38 @@ echo '</head>';
 
   echo '<body>';
 
+ $title = "Weekly Colloquia and Seminars";
+ 
+ Seminars::main_banner($title, $department, $institution);
+ 
+ 
+ 
+  echo '<h3> &nbsp <strong> Colloquia </strong> </h3>';
+  
+    $only_colloquia_in = ttu_math_seminars::$discipline_array;
+    $only_colloquia_out = array_splice($only_colloquia_in, 12, 13);
+    
+   $only_colloquia_bool_print_discipline = false;
 
-    Seminars::set_seminars_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);  
+    Seminars::set_seminars_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, Seminars::$abstracts_folder, Seminars::$images_folder, $only_colloquia_out, $only_colloquia_bool_print_discipline);
+    
+    
+    
+  echo '<h3> &nbsp <strong> Seminars </strong> </h3>';
 
+    $only_seminars_in = ttu_math_seminars::$discipline_array;
+    $only_seminars_out = array_splice($only_seminars_in, 0, 12);
+    
+    $only_seminars_bool_print_discipline = true;
+ 
+    Seminars::set_seminars_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, Seminars::$abstracts_folder, Seminars::$images_folder, $only_seminars_out, $only_seminars_bool_print_discipline);  
+    
+    
+  echo '<br>';
+  echo '<br>';
+  echo '<br>';
+  
+    
   echo '</body>';
   
 
@@ -803,13 +832,6 @@ private static function loop_over_events($events_map, $starting_row, $remote_pat
     
     }
     
-    
-    
-    
-  echo '<br>';
-  echo '<br>';
-  echo '<br>';
-  
 
   echo '</div>';   
     
@@ -873,7 +895,10 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
     
  Seminars::loop_over_events($events_in_seminar, $starting_row, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
 
- 
+  echo '<br>';
+  echo '<br>';
+  echo '<br>';
+
  
  }
  
@@ -892,20 +917,17 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
                                                   $day_end, 
                                                   $abstracts_folder,
                                                   $images_folder,
-                                                  $discipline_array)  {
+                                                  $discipline_array, $bool_print_discipline)  {
  
 
 
- $title = "Weekly events";
- 
- Seminars::main_banner($title, $department, $institution);
 
     $events_in_week =  Seminars::parse_all_event_tables($remote_path_prefix, $local_path_prefix, $are_input_files_local, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array);
 
-    $starting_row = 0;
+    ///@todo sort the map by month and day
     
- $bool_print_discipline = true;
- 
+    $starting_row = 0;
+     
   Seminars::loop_over_events($events_in_week, $starting_row, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
  
 
