@@ -97,7 +97,7 @@ public static function generate_seminar_page_list($discipline_array) {
 
      echo '<br/>';
      
-     echo '<h3> &nbsp <strong> Seminars  </strong> </h3>';
+     echo '<h3> &nbsp <strong> Seminars by topic </strong> </h3>';
 
      echo '<br/>';
      echo '<br/>';
@@ -603,7 +603,9 @@ private static function about($discipline, $remote_path_prefix, $local_path_pref
 
   echo '<div class="' . Seminars::$bootstrap_container . '">';
   
-   Seminars::include_file( $remote_path_prefix, $local_path_prefix, $about_txt_file, $are_input_files_local);
+  echo '<br>';       
+  
+  Seminars::include_file( $remote_path_prefix, $local_path_prefix, $about_txt_file, $are_input_files_local);
   
   echo '<br>';       
   echo '<br>';       
