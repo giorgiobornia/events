@@ -884,7 +884,7 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
 
  Seminars::main_banner($title, $department, $institution);
  
- Seminars::default_meeting_coords_banner_map($events_in_seminar, $year, $semester);
+ //Seminars::default_meeting_coords_banner_map($events_in_seminar, $year, $semester);
  
  Seminars::about($discipline, $remote_path_prefix, $local_path_prefix, $are_input_files_local);
  
@@ -928,8 +928,10 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
     
     $starting_row = 0;
      
-  Seminars::loop_over_events($events_in_week, $starting_row, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
  
+ if (count($events_in_week) == 0) echo '&nbsp &nbsp None this week';
+ 
+ else  Seminars::loop_over_events($events_in_week, $starting_row, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
 
  }
  
