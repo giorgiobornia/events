@@ -526,12 +526,15 @@ private static function navigation_bar($remote_path_prefix, $local_path_prefix, 
 
 public static function main_banner($title, $department, $institution) {
 
+  $dept_name_idx = 0;
+  $dept_url_idx = 1;
+  
 
   echo '<div class="my_banner">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
   echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
   echo '<div class="' . Seminars::$bootstrap_container . ' ' . Seminars::$bootstrap_centered . '">';
   echo '      <h1> ' . $title . ' </h1>';
-  echo '      <h2> ' . $department  . ' </h2>';  
+  echo '      <h2> ' . '<a href="' . $department[$dept_url_idx] . '"' . ' style="color: white;"' . '>'  . $department[$dept_name_idx]  . '</a>'. ' </h2>';  
   echo '      <h2> ' . $institution . ' </h2>'; 
   echo '  </div>';
   echo '</div>';
