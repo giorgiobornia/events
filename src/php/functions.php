@@ -93,12 +93,23 @@ public static function redirect_page($year, $semester) {
 
 
 
-public static function generate_seminar_page_list($discipline_array) {
+public static function generate_seminar_page_list($discipline_array, $colloquia) {
+
+$depth_all_sems = '../../../';
 
      echo '<br/>';
      
-     echo '<h3> &nbsp <strong> Seminars by topic </strong> </h3>';
+     echo '<h3> &nbsp <strong> Colloquia and seminars by topic </strong> </h3>';
 
+     echo '<br/>';
+     echo '<br/>';
+     
+     echo '<ul>';
+     echo '<li>';
+     echo '<a href="' . $depth_all_sems  . $colloquia . '/' . '"> Colloquia </a>';
+     echo '</li>';
+     echo '</ul>';
+     
      echo '<br/>';
      echo '<br/>';
      
@@ -107,7 +118,7 @@ public static function generate_seminar_page_list($discipline_array) {
     foreach ($discipline_array as $discipline => $discipline_string) {
     
      echo '<li>';
-     echo '<a href="./' . $discipline . '">' . $discipline_string . '</a>';
+     echo '<a href="' . $depth_all_sems . './' . $discipline . '">' . $discipline_string . '</a>';
      echo '</li>';
      echo '<br/>';
      
@@ -185,7 +196,7 @@ echo '<html>';
 
 echo '<head>';
 
-   $title_in_toolbar = 'Weekly Colloquia and Seminars';
+   $title_in_toolbar = 'Colloquia and Seminars';
 
    Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
    
@@ -194,7 +205,7 @@ echo '</head>';
 
   echo '<body>';
 
- $title = "Weekly Colloquia and Seminars";
+ $title = "Colloquia and Seminars";
  
  Seminars::main_banner($title, $department, $institution);
  
@@ -467,14 +478,14 @@ private static function get_active_years($remote_path_prefix, $local_path_prefix
 private static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline_folder) {
 
 
-  $sem_depth_wrt_discipline = Seminars::go_up(2);
+ $sem_depth_wrt_discipline = Seminars::go_up(2);
+ $home_name = $discipline_folder; //'$HOME';
+ 
+ $depth_all_sems = Seminars::go_up(3);
+ $home_all_sems = 'Colloquia and seminars';
 
   $past_years = Seminars::get_active_years($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline_folder);
  
-
- $home_name = '$HOME';
- 
-  
  echo '<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="my_nav">';
 
  echo '<div class="' . Seminars::$bootstrap_container . '">';
@@ -492,7 +503,10 @@ private static function navigation_bar($remote_path_prefix, $local_path_prefix, 
 
  echo '</button>';
 
- echo '<a class="navbar-brand" href="'. $sem_depth_wrt_discipline . '">' . $home_name . '</a>';
+//  echo '<a class="navbar-brand" href="'. $sem_depth_wrt_discipline . '">' . $home_name . '</a>';
+ 
+ echo '<a class="navbar-brand" href="'. $depth_all_sems . '">' . $home_all_sems . '</a>';
+ 
  echo '</div>';
 
  echo '<div id="my_navbar" class="navbar-collapse collapse" role="navigation">';
@@ -500,7 +514,7 @@ private static function navigation_bar($remote_path_prefix, $local_path_prefix, 
  echo '<ul class="nav navbar-nav navbar-right">';
  
  foreach ($past_years as $year => $value) {
-   echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' . './' . $year . ' </a>';
+   echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' .  $year . ' </a>';
    echo '  <ul class="dropdown-menu"> ';
   foreach ($past_years[$year] as $term) {
      echo '    <li><a href="' . $sem_depth_wrt_discipline . './' . $year . '/' . $term . '/">' . $term . '</a></li>';
