@@ -24,11 +24,12 @@ class Seminars {
  }
  
 private static function get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local) {
+//this is the prefix wrt. the seminars folder
 
   $prefix = '';
 
- if ($are_input_files_local == true) { $prefix = $local_path_prefix  . '/'; }
- else {                                $prefix = $remote_path_prefix . '/'; }
+ if ($are_input_files_local == true) { $prefix = $local_path_prefix  /*. '/'*/; }  ///@todo these paths MUST already have a slash in them; I should do a function that checks this
+ else {                                $prefix = $remote_path_prefix /*. '/'*/; }  ///@todo putting an additional '/' is actually not always a good idea
 
  return $prefix;
 
@@ -95,7 +96,7 @@ public static function redirect_page($year, $semester) {
 
 public static function generate_seminar_page_list($discipline_array, $colloquia) {
 
-$depth_all_sems = '../../../';
+$depth_all_sems = Seminars::go_up(3);
 
      echo '<br/>';
      
@@ -203,9 +204,15 @@ echo '<head>';
 echo '</head>';
 
 
-  echo '<body>';
 
- $title = "Colloquia and Seminars";
+  echo '<body>';
+  
+  $discipline = 'all';
+  
+  Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline);
+ 
+
+ $title = $title_in_toolbar;
  
  Seminars::main_banner($title, $department, $institution);
  
@@ -379,14 +386,12 @@ private static function set_jquery_lib() {
 
 private static function set_bootstrap_css_and_javascript_libs() {
 
-//  BOOTSTRAP 
 //  Latest compiled and minified CSS
  echo '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">';
 //  Latest compiled JavaScript 
  echo '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>';
 
 //  echo '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">';
-// 
 // 
 //  echo ' <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>';
 //  echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>';
@@ -427,9 +432,12 @@ private static function convert_to_associative_array($array_in) {
 
 public static function generate_list_past_editions($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline) {
 
- $sem_depth_wrt_discipline = Seminars::go_up(2);
 
- $past_years = Seminars::get_active_years($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline);
+ $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+
+ $prefix_disc = $prefix . $discipline . '/';
+ 
+ $past_years = Seminars::get_active_years($prefix_disc);
 
  echo 'All terms';
 
@@ -441,7 +449,7 @@ public static function generate_list_past_editions($remote_path_prefix, $local_p
    echo '<li>' .  $year . ' </a>';
    echo '<ul>';
   foreach ($past_years[$year] as $term) {
-     echo '    <li><a href="' . $sem_depth_wrt_discipline . './' . $year . '/' . $term . '/">' . $term . '</a></li>';
+     echo '    <li><a href="' . $prefix_disc . $year . '/' . $term . '/">' . $term . '</a></li>';
      }
    echo '  </ul>';
    echo '</li>';
@@ -453,17 +461,10 @@ public static function generate_list_past_editions($remote_path_prefix, $local_p
 }
 
 
-private static function get_active_years($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline) {
+private static function get_active_years($prefix_disc) {
 
- $sem_depth_wrt_discipline = Seminars::go_up(2);
  
- $prefix = '';
- 
- if ($are_input_files_local) { $prefix = $sem_depth_wrt_discipline;  }
- else {  $prefix = $remote_path_prefix . '/' . $discipline . '/';  }
- 
- 
- $past_editions = Seminars::read_csv_file($prefix . Seminars::$active_editions_file);
+ $past_editions = Seminars::read_csv_file($prefix_disc . Seminars::$active_editions_file);
 
 
  $past_years = Seminars::convert_to_associative_array($past_editions);
@@ -474,26 +475,11 @@ private static function get_active_years($remote_path_prefix, $local_path_prefix
 }
 
 
+private static function navigation_bar_menu_button($id_target) {
 
-private static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline_folder) {
-
-
- $sem_depth_wrt_discipline = Seminars::go_up(2);
- $home_name = $discipline_folder; //'$HOME';
- 
- $depth_all_sems = Seminars::go_up(3);
- $home_all_sems = 'Colloquia and seminars';
-
-  $past_years = Seminars::get_active_years($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline_folder);
- 
- echo '<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="my_nav">';
-
- echo '<div class="' . Seminars::$bootstrap_container . '">';
-
- echo '<div class="navbar-header">';
 
  echo '<button type="button" class="navbar-toggle collapsed" ';
- echo '  data-toggle="collapse" data-target="#my_navbar" aria-expanded="false" aria-controls="my_navbar">';
+ echo '  data-toggle="collapse" data-target="#' . $id_target . '"' . ' aria-expanded="false" aria-controls="' . $id_target . '">';
 
  echo '<span class="sr-only">Toggle navigation</span>'; // <!--is this needed?-->
  
@@ -503,21 +489,39 @@ private static function navigation_bar($remote_path_prefix, $local_path_prefix, 
 
  echo '</button>';
 
-//  echo '<a class="navbar-brand" href="'. $sem_depth_wrt_discipline . '">' . $home_name . '</a>';
  
+}
+
+
+private static function navigation_bar_header($id_target, $depth_all_sems, $home_all_sems) {
+
+
+echo '<div class="navbar-header">';
+
  echo '<a class="navbar-brand" href="'. $depth_all_sems . '">' . $home_all_sems . '</a>';
  
+ 
+ Seminars::navigation_bar_menu_button($id_target);
+ 
  echo '</div>';
+ 
+}
 
- echo '<div id="my_navbar" class="navbar-collapse collapse" role="navigation">';
+
+private static function navigation_bar_past_years($prefix_disc, $id_target) {
+
+
+ echo '<div id="' . $id_target . '"' . ' class="navbar-collapse collapse" role="navigation">';
 
  echo '<ul class="nav navbar-nav navbar-right">';
+ 
+ $past_years = Seminars::get_active_years($prefix_disc);
  
  foreach ($past_years as $year => $value) {
    echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' .  $year . ' </a>';
    echo '  <ul class="dropdown-menu"> ';
   foreach ($past_years[$year] as $term) {
-     echo '    <li><a href="' . $sem_depth_wrt_discipline . './' . $year . '/' . $term . '/">' . $term . '</a></li>';
+     echo '    <li><a href="' . $prefix_disc . $year . '/' . $term . '/">' . $term . '</a></li>';
      }
    echo '  </ul>';
    echo '</li>';
@@ -527,11 +531,36 @@ private static function navigation_bar($remote_path_prefix, $local_path_prefix, 
 
  echo '</div>';
 
+ 
+}
+
+
+public static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline) {
+
+ 
+ echo '<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="my_nav">';
+
+ 
+ echo '<div class="' . Seminars::$bootstrap_container . '">';
+
+ $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+
+ $prefix_disc = $prefix . $discipline . '/';
+
+ $home_all_sems = 'Colloquia and seminars';
+ 
+ $target_past_years = 'my_navbar';
+ 
+ Seminars::navigation_bar_header($target_past_years, $prefix, $home_all_sems);
+
+ Seminars::navigation_bar_past_years($prefix_disc, $target_past_years);
+
  echo '</div>';
 
+ 
  echo '</nav>';
 
- echo '<div class="' . Seminars::$bootstrap_container . '"' . ' id="compensate_navbar_height"></div>                                                                                            ';
+ echo '<div class="' . Seminars::$bootstrap_container . '"' . ' id="compensate_navbar_height"></div>';
 
 }
 
