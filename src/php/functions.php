@@ -478,54 +478,43 @@ private static function get_active_years($prefix_disc) {
 private static function navigation_bar_menu_button($id_target) {
 
 
- echo '<button type="button" class="navbar-toggle collapsed" ';
- echo '  data-toggle="collapse" data-target="#' . $id_target . '"' . ' aria-expanded="false" aria-controls="' . $id_target . '">';
+ echo '<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#' . $id_target . '"' . ' aria-controls="' . $id_target . '"' . ' aria-expanded="false" aria-label="Toggle navigation">';
 
- echo '<span class="sr-only">Toggle navigation</span>'; // <!--is this needed?-->
- 
- echo '<span class="icon-bar"></span>';
- echo '<span class="icon-bar"></span>';
- echo '<span class="icon-bar"></span>'; //  these are for the three dashes that look like a button
+ echo '<span class="navbar-toggler-icon"></span>';
 
  echo '</button>';
-
  
 }
 
 
-private static function navigation_bar_header($id_target, $depth_all_sems, $home_all_sems) {
-
-
-echo '<div class="navbar-header">';
+private static function navigation_bar_brand($depth_all_sems, $home_all_sems) {
 
  echo '<a class="navbar-brand" href="'. $depth_all_sems . '">' . $home_all_sems . '</a>';
- 
- 
- Seminars::navigation_bar_menu_button($id_target);
- 
- echo '</div>';
- 
+
 }
+
 
 
 private static function navigation_bar_past_years($prefix_disc, $id_target) {
 
 
- echo '<div id="' . $id_target . '"' . ' class="navbar-collapse collapse" role="navigation">';
+ echo '<div class="collapse navbar-collapse" id="' . $id_target . '"' . '>';
 
- echo '<ul class="nav navbar-nav navbar-right">';
+ echo '<ul class="navbar-nav mr-auto">';
  
  $past_years = Seminars::get_active_years($prefix_disc);
  
  foreach ($past_years as $year => $value) {
-   echo '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">' .  $year . ' </a>';
+   
+   echo '<li class="nav-item dropdown">';
+   echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $year . ' </a>';
    echo '  <ul class="dropdown-menu"> ';
   foreach ($past_years[$year] as $term) {
      echo '    <li><a href="' . $prefix_disc . $year . '/' . $term . '/">' . $term . '</a></li>';
      }
    echo '  </ul>';
-   echo '</li>';
- }
+  echo '</li>';
+}
 
  echo '</ul>';
 
@@ -538,10 +527,8 @@ private static function navigation_bar_past_years($prefix_disc, $id_target) {
 public static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline) {
 
  
- echo '<nav class="navbar navbar-expand-lg navbar-fixed-top" role="navigation" id="my_nav">';
+ echo '<nav class="navbar navbar-expand-lg  navbar-light navbar-fixed-top" id="my_nav">';
 
- 
- echo '<div class="' . Seminars::$bootstrap_container . '">';
 
  $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
 
@@ -551,16 +538,14 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
  
  $target_past_years = 'my_navbar';
  
- Seminars::navigation_bar_header($target_past_years, $prefix, $home_all_sems);
+ Seminars::navigation_bar_brand($prefix, $home_all_sems);
+ 
+ Seminars::navigation_bar_menu_button($target_past_years);
 
  Seminars::navigation_bar_past_years($prefix_disc, $target_past_years);
 
- echo '</div>';
 
- 
  echo '</nav>';
-
- echo '<div class="' . Seminars::$bootstrap_container . '"' . ' id="compensate_navbar_height"></div>';
 
 }
 
