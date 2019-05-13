@@ -1,7 +1,7 @@
  <?php
  
  //library
- $relative_path_to_library = "../../"; //folder where the library class is
+ $relative_path_to_library = "../../";
  
  include($relative_path_to_library . "./src/php/functions.php");
  
