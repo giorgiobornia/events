@@ -13,23 +13,23 @@
 
 
 #my_navbar {
- background-color: #303030;
+/*  background-color: #303030; */
 font-family: "Courier Bold", Courier, monospace;
 font-weight: bold;
 color: #FF0000; /*not working*/
 }
 
-.navbar-inverse .navbar-brand {
+ .navbar-brand {
   color: #FF0000;    /*somehow this wins over my_nav and my_navbar... does the class win over the instance?*/
 }
 
-.navbar-inverse .navbar-nav > li > a {
+ .navbar-nav > li > a {
     color: #FF0000;  /*looking at the inspector I found how to have this override the rest*/
 }
 
 #compensate_navbar_height {
 
-  height: 50px;  /*I should make this dynamic*/
+/*   height: 50px;  /*I should make this dynamic*/ */
 
 }
 
