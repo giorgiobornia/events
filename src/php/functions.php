@@ -130,18 +130,18 @@ $depth_all_sems = Seminars::go_up(3);
 }
 
 
-public static function generate_seminar_page_by_topic_year_semester($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $t_y_s, $icon_in_toolbar, $discipline_array) {
+public static function generate_seminar_page_by_topic_year_semester($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $t_y_s, $icon_in_toolbar, $discipline_current) {
 
    $discipline = $t_y_s[0];
    $year       = $t_y_s[1];
    $semester   = $t_y_s[2];
 
-   Seminars::generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_array);
+   Seminars::generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_current);
 
 }
 
 
-private static function generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_array) {
+private static function generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_current) {
 
  
 echo '<!DOCTYPE html>';
@@ -151,7 +151,7 @@ echo '<html>';
 
 echo '<head>';
 
-  $title_in_toolbar = $discipline_array[ $discipline ];
+  $title_in_toolbar = $discipline_current[ $discipline ];
   
   Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
   
@@ -161,7 +161,7 @@ echo '</head>';
   echo '<body>';
 
 
-    Seminars::set_seminars_by_topic_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_array);
+    Seminars::set_seminars_by_topic_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_current);
 
   echo '</body>';
   
@@ -494,14 +494,8 @@ private static function navigation_bar_brand($depth_all_sems, $home_all_sems) {
 }
 
 
+private static function navigation_bar_past_years($prefix_disc) {
 
-private static function navigation_bar_past_years($prefix_disc, $id_target) {
-
-
- echo '<div class="collapse navbar-collapse" id="' . $id_target . '"' . '>';
-
- echo '<ul class="navbar-nav mr-auto">';
- 
  $past_years = Seminars::get_active_years($prefix_disc);
  
  foreach ($past_years as $year => $value) {
@@ -516,6 +510,30 @@ private static function navigation_bar_past_years($prefix_disc, $id_target) {
   echo '</li>';
 }
 
+
+}
+
+private static function navigation_bar_disciplines() {
+
+//   echo '<li class="nav-item dropdown">';
+//     echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  Topics . ' </a>';
+//    echo '</li>';
+
+
+}
+
+
+private static function navigation_bar_content($prefix_disc, $id_target) {
+
+
+ echo '<div class="collapse navbar-collapse" id="' . $id_target . '"' . '>';
+
+ echo '<ul class="navbar-nav mr-auto">';
+ 
+  Seminars::navigation_bar_past_years($prefix_disc);
+
+  Seminars::navigation_bar_disciplines();
+
  echo '</ul>';
 
  echo '</div>';
@@ -527,7 +545,7 @@ private static function navigation_bar_past_years($prefix_disc, $id_target) {
 public static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline) {
 
  
- echo '<nav class="navbar navbar-expand-lg  navbar-light navbar-fixed-top" id="my_nav">';
+ echo '<nav class="navbar navbar-expand-lg  navbar-light navbar-fixed-top">';
 
 
  $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
@@ -542,7 +560,7 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
  
  Seminars::navigation_bar_menu_button($target_past_years);
 
- Seminars::navigation_bar_past_years($prefix_disc, $target_past_years);
+ Seminars::navigation_bar_content($prefix_disc, $target_past_years);
 
 
  echo '</nav>';
@@ -561,7 +579,7 @@ public static function main_banner($title, $department, $institution) {
   echo '<div class="my_banner">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
   echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
   echo '<div class="' . Seminars::$bootstrap_container . ' ' . Seminars::$bootstrap_centered . '">';
-  echo '      <h1> ' . $title . ' </h1>';
+  echo '      <h2> ' . $title . ' </h2>';
   echo '      <h2> ' . '<a href="' . $department[$dept_url_idx] . '"' . ' style="color: white;"' . '>'  . $department[$dept_name_idx]  . '</a>'. ' </h2>';  
   echo '      <h2> ' . $institution . ' </h2>'; 
   echo '  </div>';

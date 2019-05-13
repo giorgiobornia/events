@@ -1,13 +1,13 @@
  <?php
  
  //library =============
- $relative_path_to_library = "../../../../"; //folder where the library class is
  $relative_path_to_app = "../../../";
+ $relative_path_to_library = "../../../../"; //folder where the library class is
  
  include($relative_path_to_library . "./src/php/functions.php");
  
  $institution = "University of Nowhere";  //this string is what you'll see on the page
- $department = "Department of Nothing";   //this string is what you'll see on the page
+ $department = array("Department of Nothing",'https://www.google.com');   //this string is what you'll see on the page
  
  $discipline = 'discipline';  //this must match the folder name; below you have the translation that you'll see on the page
  $year = 'year';              //this must match the folder name; it is also what you'll see on the page, only Capitalized
