@@ -83,7 +83,7 @@ public static function redirect_page($year, $semester) {
      echo '<html>';
      echo '<head>';
      echo '<title> Redirecting </title>';
-     echo '<meta http-equiv="refresh" content="0;url=./' . $year .'/' . $semester . '/' . '">';
+     echo '<meta http-equiv="refresh" content="0; url=./' . $year .'/' . $semester . '/' . '">';
      echo '</head>';
      echo '<body>';
      echo '</body>';
@@ -209,7 +209,7 @@ echo '</head>';
   
   $discipline = 'all';
   
-  Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline);
+  Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline, $discipline_array);
  
 
  $title = $title_in_toolbar;
@@ -502,37 +502,49 @@ private static function navigation_bar_past_years($prefix_disc) {
    
    echo '<li class="nav-item dropdown">';
    echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $year . ' </a>';
-   echo '  <ul class="dropdown-menu"> ';
+   
+   echo '  <ul class="dropdown-menu">';
   foreach ($past_years[$year] as $term) {
      echo '    <li><a href="' . $prefix_disc . $year . '/' . $term . '/">' . $term . '</a></li>';
      }
    echo '  </ul>';
+   
   echo '</li>';
 }
 
 
 }
 
-private static function navigation_bar_disciplines() {
+private static function navigation_bar_disciplines($prefix, $discipline_array) {
 
-//   echo '<li class="nav-item dropdown">';
-//     echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  Topics . ' </a>';
-//    echo '</li>';
+
+
+  echo '<li class="nav-item dropdown">';
+    echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  Topics . ' </a>';
+
+   echo '  <ul class="dropdown-menu">';
+    foreach ($discipline_array as $discipline => $discipline_string) {
+     echo '    <li><a href="' . $prefix . $discipline . '">' . $discipline_string . '</a></li>';
+
+}
+   echo '  </ul>';
+
+   echo '</li>';
 
 
 }
 
 
-private static function navigation_bar_content($prefix_disc, $id_target) {
+private static function navigation_bar_content($prefix_disc, $id_target, $prefix, $discipline_array) {
 
 
  echo '<div class="collapse navbar-collapse" id="' . $id_target . '"' . '>';
 
  echo '<ul class="navbar-nav mr-auto">';
  
-  Seminars::navigation_bar_past_years($prefix_disc);
+  Seminars::navigation_bar_disciplines($prefix, $discipline_array);
 
-  Seminars::navigation_bar_disciplines();
+  Seminars::navigation_bar_past_years($prefix_disc);
 
  echo '</ul>';
 
@@ -542,7 +554,7 @@ private static function navigation_bar_content($prefix_disc, $id_target) {
 }
 
 
-public static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline) {
+public static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline, $discipline_array) {
 
  
  echo '<nav class="navbar navbar-expand-lg  navbar-light navbar-fixed-top">';
@@ -560,7 +572,7 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
  
  Seminars::navigation_bar_menu_button($target_past_years);
 
- Seminars::navigation_bar_content($prefix_disc, $target_past_years);
+ Seminars::navigation_bar_content($prefix_disc, $target_past_years, $prefix, $discipline_array);
 
 
  echo '</nav>';
@@ -929,7 +941,7 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
  $events_in_seminar = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester);
 
 
- Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline);
+ Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline, $discipline_array);
  
  
  $title = $discipline_array[ $discipline ];
