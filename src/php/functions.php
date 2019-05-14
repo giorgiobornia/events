@@ -106,6 +106,7 @@ public static function redirect_page_with_path($redir_path) {
 
 
 private static function generate_seminar_page_list($discipline_array, $colloquia, $prefix) {
+//not used at present, the navigation bar does this job
 
     $depth_all_sems = $prefix;
 
@@ -219,7 +220,6 @@ public static function generate_page_with_all_weeks_list($relative_path_to_libra
     
      $prefix = Seminars::get_prefix($remote_url_base, $local_url_base, $are_input_files_local);
 
-  Seminars::generate_seminar_page_list($only_seminars, $colloquia, $prefix); 
  
  }
  
@@ -662,7 +662,7 @@ public static function main_banner($title, $department, $institution) {
 
   echo '<div class="my_banner">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
   echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
-  echo '<div class="' . Seminars::$bootstrap_container . ' ' . Seminars::$bootstrap_centered . '">';
+  echo '<div class="' . Seminars::$bootstrap_container . '"' . ' ' . Seminars::$banners_text_alignment . '>';
   echo '      <h2> ' . $title . ' </h2>';
   echo '      <h2> ' . /*'<a href="' . $department[$dept_url_idx] . '"' . ' style="color: white;"' . '>'  .*/ $department[$dept_name_idx]  /*. '</a>'*/ . ' </h2>';  
   echo '      <h2> ' . $institution . ' </h2>'; 
@@ -675,7 +675,7 @@ public static function main_banner($title, $department, $institution) {
  
 private static function default_meeting_coords_banner($semester, $year, $week_day, $time, $room) {
 
- echo '<div class="'. Seminars::$bootstrap_container_fluid . ' ' . Seminars::$bootstrap_centered . '" id="' . Seminars::$sem_header_id . '">';
+ echo '<div class="'. Seminars::$bootstrap_container_fluid . '"' . ' ' . Seminars::$banners_text_alignment . ' id="' . Seminars::$sem_header_id . '">';
  
  echo '<h2>';
  echo $semester . ' ' . 
@@ -1212,7 +1212,7 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 // ===== bootstrap style
   private static $bootstrap_container = 'container';
   private static $bootstrap_container_fluid = 'container-fluid';
-  private static $bootstrap_centered = 'text-center';
+  private static $banners_text_alignment = 'style="text-align: left;"';
 
 // ===== sem style (must be consistent with css)
   private static $sem_image = 'sem_image';
