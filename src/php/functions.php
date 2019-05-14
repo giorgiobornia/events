@@ -700,16 +700,23 @@ private static function capitalize($string) {
  }
  
  
-///@todo deprecated 
-private static function default_meeting_coords_banner_map($csv, $year, $semester) {
+///@todo not used for now 
+private static function default_meeting_coords_banner_map($file_to_parse, $year, $semester) {
  
+ $csv = Seminars::read_csv_file($file_to_parse);
+
+ //default meeting related data
+   $week_day_default_meeting_idx            = 0;
+   $time_default_meeting_idx                = 1;
+   $room_default_meeting_idx                = 2;
+   $row_default_meeting_data = 1;
  
   Seminars::default_meeting_coords_banner(
       Seminars::capitalize($semester),
       Seminars::capitalize($year),
-      $csv[Seminars::$row_default_meeting_data][Seminars::$week_day_default_meeting_idx],
-      $csv[Seminars::$row_default_meeting_data][    Seminars::$time_default_meeting_idx],
-      $csv[Seminars::$row_default_meeting_data][    Seminars::$room_default_meeting_idx]
+      $csv[$row_default_meeting_data][$week_day_default_meeting_idx],
+      $csv[$row_default_meeting_data][$time_default_meeting_idx],
+      $csv[$row_default_meeting_data][$room_default_meeting_idx]
       );
  
  } 
@@ -1029,6 +1036,8 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
 
  Seminars::main_banner($title, $department, $institution);
   
+//  Seminars::default_meeting_coords_banner_map('./default.csv', $year, $semester);
+  
  Seminars::about($discipline, $remote_path_prefix, $local_path_prefix, $are_input_files_local);
  
  $starting_row = Seminars::$row_events_begin;
@@ -1202,15 +1211,10 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
   
   private static $row_events_begin = 1;
   
-   //default meeting related data
-   private static     $week_day_default_meeting_idx            = 0;
-   private static     $time_default_meeting_idx                = 1;
-   private static     $room_default_meeting_idx                = 2;
-   private static     $row_default_meeting_data = 1;
   
 // ===== bootstrap style
-  private static $bootstrap_container = 'container';
-  private static $bootstrap_container_fluid = 'container-fluid';
+  private static $bootstrap_container = 'container';              //centered page
+  private static $bootstrap_container_fluid = 'container-fluid';  //all viewport width
   private static $banners_text_alignment = 'text-align: left;';
 
 // ===== sem style (must be consistent with css)
