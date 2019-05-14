@@ -58,7 +58,7 @@ public static function include_file($remote_path_prefix, $local_path_prefix, $fi
         curl_setopt($ch, CURLOPT_URL, $absolute_url); 
 
         //return the transfer as a string 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
 
         // $output contains the output string 
         $output = curl_exec($ch); 
@@ -105,7 +105,7 @@ public static function redirect_page_with_path($redir_path) {
 
 
 
-public static function generate_seminar_page_list($discipline_array, $colloquia) {
+private static function generate_seminar_page_list($discipline_array, $colloquia) {
 
 $depth_all_sems = Seminars::go_up(3);
 
@@ -183,6 +183,45 @@ echo '</html>';
  }
  
 
+public static function generate_page_with_all_weeks_list($relative_path_to_library,
+                                                               $title,
+                                                               $icon_in_toolbar,
+                                                               $remote_url_base,
+                                                               $local_url_base,
+                                                               $are_input_files_local,
+                                                               $discipline,
+                                                               $discipline_array,
+                                                               $department,
+                                                               $institution,
+                                                               $year,
+                                                               $semester,
+                                                               $week_month_day_begin,
+                                                               $only_seminars,
+                                                               $colloquia) {  
+
+  Seminars::set_html_head($relative_path_to_library, $title, $icon_in_toolbar);
+
+  echo '<body>';
+  
+  Seminars::navigation_bar($remote_url_base, $local_url_base, $are_input_files_local, $discipline, $discipline_array, $department);
+  
+  Seminars::main_banner($title, $department, $institution);  
+  
+    echo '<h2> &nbsp <strong> ' . Seminars::capitalize($semester) . ' ' . $year . ' </strong> </h2>';
+    
+    echo '<h3> &nbsp <strong> Colloquia and seminars by week </strong> </h3>';
+    
+    echo '<br/>';
+    
+   Seminars::loop_over_semester_weeks($week_month_day_begin);
+   
+    echo '<br/>';
+    
+    
+  Seminars::generate_seminar_page_list($only_seminars, $colloquia); 
+ 
+ }
+ 
  
  
 public static function generate_page_with_all_seminars_by_time_range($library_path,  
@@ -208,9 +247,11 @@ echo '<html>';
 
 echo '<head>';
 
-   $title_in_toolbar = 'Colloquia and Seminars';
+  $title_in_toolbar = 'Colloquia and Seminars';
 
-   Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
+  $discipline = 'all';
+  
+  Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
    
 echo '</head>';
 
@@ -218,7 +259,6 @@ echo '</head>';
 
   echo '<body>';
   
-  $discipline = 'all';
   
   Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline, $discipline_array, $department);
  
@@ -231,8 +271,10 @@ echo '</head>';
  
   echo '<h3> &nbsp <strong> Colloquia </strong> </h3>';
   
-    $only_colloquia_in = ttu_math_seminars::$discipline_array;
-    $only_colloquia_out = array_splice($only_colloquia_in, 12, 13);
+   $num_all_disc = count($discipline_array);
+  
+    $only_colloquia_in = $discipline_array;
+    $only_colloquia_out = array_splice($only_colloquia_in, $num_all_disc - 1, $num_all_disc);  ///@todo colloquia is the last one
     
    $only_colloquia_bool_print_discipline = false;
 
@@ -242,8 +284,8 @@ echo '</head>';
     
   echo '<h3> &nbsp <strong> Seminars </strong> </h3>';
 
-    $only_seminars_in = ttu_math_seminars::$discipline_array;
-    $only_seminars_out = array_splice($only_seminars_in, 0, 12);
+    $only_seminars_in = $discipline_array;
+    $only_seminars_out = array_splice($only_seminars_in, 0, $num_all_disc - 1);
     
     $only_seminars_bool_print_discipline = true;
  
@@ -951,7 +993,15 @@ private static function compute_sequential_day($year, $month, $day) {
  } 
  
  
- 
+
+public static function get_month_string($number) { 
+
+  return Seminars::$months_conv[$number];
+
+}
+
+
+
 public static function set_seminars_by_topic_body($remote_path_prefix,
                                                   $local_path_prefix,
                                                   $are_input_files_local,
@@ -1044,6 +1094,20 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
 
  }
  
+ 
+public static function loop_over_semester_weeks($week_month_day_begin) {
+
+
+    for ($month_index = 0; $month_index < count($week_month_day_begin); $month_index++) {
+   
+    echo '&nbsp <a href="./week/' . $week_month_day_begin[$month_index][0] . '_' . $week_month_day_begin[$month_index][1] . '.php">' . 'Week of Monday, ' . Seminars::get_month_string($week_month_day_begin[$month_index][0]) . ' ' .  $week_month_day_begin[$month_index][1] . '</a>';    echo '<br/>';
+    
+    }
+
+
+}
+
+
  
 private static function parse_all_event_tables($remote_path_prefix, $local_path_prefix, $are_input_files_local, $year, $semester, $month_begin, $day_begin, $month_end, $day_end, $discipline_array)  {
  
