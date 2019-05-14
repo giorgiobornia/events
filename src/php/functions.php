@@ -660,12 +660,12 @@ public static function main_banner($title, $department, $institution) {
   $dept_url_idx = 1;
   
 
-  echo '<div class="my_banner">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
-  echo '<div class="my_filter">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
-  echo '<div class="' . Seminars::$bootstrap_container . '"' . ' ' . Seminars::$banners_text_alignment . '>';
+  echo '<div class="main_banner">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
+  echo '<div class="filter_to_read_fonts_on_images">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
+  echo '<div class="' . Seminars::$bootstrap_container . '"' . ' ' . 'style="' . Seminars::$banners_text_alignment . '"' . '>';
   echo '      <h2> ' . $title . ' </h2>';
-  echo '      <h2> ' . /*'<a href="' . $department[$dept_url_idx] . '"' . ' style="color: white;"' . '>'  .*/ $department[$dept_name_idx]  /*. '</a>'*/ . ' </h2>';  
-  echo '      <h2> ' . $institution . ' </h2>'; 
+  echo '      <h3> ' . /*'<a href="' . $department[$dept_url_idx] . '"' . ' style="color: white;"' . '>'  .*/ $department[$dept_name_idx]  /*. '</a>'*/ . ' </h3>';
+  echo '      <h3> ' . $institution . ' </h3>';
   echo '  </div>';
   echo '</div>';
   echo '</div>';
@@ -675,15 +675,15 @@ public static function main_banner($title, $department, $institution) {
  
 private static function default_meeting_coords_banner($semester, $year, $week_day, $time, $room) {
 
- echo '<div class="'. Seminars::$bootstrap_container_fluid . '"' . ' ' . Seminars::$banners_text_alignment . ' id="' . Seminars::$sem_header_id . '">';
+ echo '<div class="'. Seminars::$bootstrap_container_fluid . '"' . ' ' . 'style="' . Seminars::$banners_text_alignment . ' ' . Seminars::$sem_header_style . '"' . '>';
  
- echo '<h2>';
+ echo '<h3>';
  echo $semester . ' ' . 
       $year     . ' - ' . 
       $week_day . ', ' . 
       $time . ' - ' . 'room ' . 
       $room;
- echo '</h2>';
+ echo '</h3>';
  
  echo '</div>';
  
@@ -1028,7 +1028,7 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
 
  Seminars::main_banner($title, $department, $institution);
  
- //Seminars::default_meeting_coords_banner_map($events_in_seminar, $year, $semester);
+//  Seminars::default_meeting_coords_banner_map($events_in_seminar, $year, $semester);
  
  Seminars::about($discipline, $remote_path_prefix, $local_path_prefix, $are_input_files_local);
  
@@ -1212,12 +1212,12 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 // ===== bootstrap style
   private static $bootstrap_container = 'container';
   private static $bootstrap_container_fluid = 'container-fluid';
-  private static $banners_text_alignment = 'style="text-align: left;"';
+  private static $banners_text_alignment = 'text-align: left;';
 
 // ===== sem style (must be consistent with css)
   private static $sem_image = 'sem_image';
   private static $sem_item = 'sem_item';
-  private static $sem_header_id = 'sem_header';
+  private static $sem_header_style = 'background-color: lightgray;';
 
 
 } //end class
