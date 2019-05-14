@@ -22,7 +22,7 @@
  
  $are_input_files_local = true;
  
- $math_server_url_base = ''; //not needed if files are local
+ $server_url_base = ''; //not needed if files are local
  
  $array = Seminars::get_discipline_year_semester(__FILE__);
 

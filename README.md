@@ -22,7 +22,7 @@ Features:
 
 - Each seminar will be grouped according to the folder scheme "discipline/year/semester/", where typically
 
-    - "discipline" is the field of the seminar (e.g., AppliedMath, Analysis, NumberTheory, etc.)
+    - "discipline" is the field of the seminar (e.g., applied_math, analysis, number_theory, etc.)
 
     - "year" is the current year (e.g., 2019)
 
