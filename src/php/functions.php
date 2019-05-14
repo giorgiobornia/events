@@ -105,9 +105,9 @@ public static function redirect_page_with_path($redir_path) {
 
 
 
-private static function generate_seminar_page_list($discipline_array, $colloquia) {
+private static function generate_seminar_page_list($discipline_array, $colloquia, $prefix) {
 
-$depth_all_sems = Seminars::go_up(3);
+    $depth_all_sems = $prefix;
 
      echo '<br/>';
      
@@ -217,8 +217,9 @@ public static function generate_page_with_all_weeks_list($relative_path_to_libra
    
     echo '<br/>';
     
-    
-  Seminars::generate_seminar_page_list($only_seminars, $colloquia); 
+     $prefix = Seminars::get_prefix($remote_url_base, $local_url_base, $are_input_files_local);
+
+  Seminars::generate_seminar_page_list($only_seminars, $colloquia, $prefix); 
  
  }
  
