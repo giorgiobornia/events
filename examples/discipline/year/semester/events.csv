@@ -1,4 +1,2 @@
-week_day,time,room,,,,,,,,,
-Monday,4-5 PM, Building 111,,,,,,,,,
 month, day, week_day, time, room, speaker,speaker_department,speaker_institution,speaker_url, speaker_image, title, abstract_file
 4,3,Monday,4:00 PM,Another Building 110, Speaker Name (Can Have A Link To Its Personal Website),Department of No Big Deal,University of Who Knows Where,https://www.google.com,blank_face.png,Title - it can have math symbols like $L^2(\Omega)$,monthday.txt

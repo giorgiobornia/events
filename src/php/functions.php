@@ -672,7 +672,7 @@ public static function main_banner($title, $department, $institution) {
 
  }
  
- 
+///@todo deprecated 
 private static function default_meeting_coords_banner($semester, $year, $week_day, $time, $room) {
 
  echo '<div class="'. Seminars::$bootstrap_container_fluid . '"' . ' ' . 'style="' . Seminars::$banners_text_alignment . ' ' . Seminars::$sem_header_style . '"' . '>';
@@ -700,6 +700,7 @@ private static function capitalize($string) {
  }
  
  
+///@todo deprecated 
 private static function default_meeting_coords_banner_map($csv, $year, $semester) {
  
  
@@ -1027,9 +1028,7 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
  $title = $discipline_array[ $discipline ];
 
  Seminars::main_banner($title, $department, $institution);
- 
-//  Seminars::default_meeting_coords_banner_map($events_in_seminar, $year, $semester);
- 
+  
  Seminars::about($discipline, $remote_path_prefix, $local_path_prefix, $are_input_files_local);
  
  $starting_row = Seminars::$row_events_begin;
@@ -1201,14 +1200,14 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
    private static   $year_idx            = 13;
    private static   $semester_idx        = 14;
   
+  private static $row_events_begin = 1;
+  
+   //default meeting related data
    private static     $week_day_default_meeting_idx            = 0;
    private static     $time_default_meeting_idx                = 1;
    private static     $room_default_meeting_idx                = 2;
-
-  private static $row_default_meeting_data = 1;
+   private static     $row_default_meeting_data = 1;
   
-  private static $row_events_begin = 3;
- 
 // ===== bootstrap style
   private static $bootstrap_container = 'container';
   private static $bootstrap_container_fluid = 'container-fluid';
