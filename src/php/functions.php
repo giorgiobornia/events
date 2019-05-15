@@ -1230,6 +1230,7 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 ///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 ///@todo remember to input the speaker websites with https:// or http:// in front! (maybe do a check to find this)
 ///@todo do a function that picks a rectangular image and makes it square by extending its smaller side with white
-///@todo remove the first 2 lines from the csv events file
+///@todo We should do Colloquia, Seminars and also Other Events (Workshops, Lecture Series, Banquet, etc...)
+
 
 ?>
