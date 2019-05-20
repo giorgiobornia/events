@@ -175,7 +175,6 @@ echo '</head>';
 
     Seminars::set_seminars_by_topic_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_current);
 
-    Seminars::test_table();
     
   echo '</body>';
   
@@ -780,34 +779,32 @@ private static function set_abstract_id_and_its_toggle($events_map, $row, $base_
 }
 
 
-private static function event_day($events_map, $row) {
+private static function set_event_day($events_map, $row) {
+
+//    echo '<td>';
+//    
+//    echo "<strong>";
+//     echo  $events_map[$row][Seminars::$week_day_idx] . ", " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx] . ", ";
+//     echo "</strong>";
+//     echo '</td>';
+
+    echo '<td width="100px">';
 
     echo "<strong>";
-    echo  $events_map[$row][Seminars::$week_day_idx] . ", " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx] . ", ";
+    echo  $events_map[$row][Seminars::$week_day_idx] . " <br> " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " <br> " . $events_map[$row][Seminars::$day_idx] . " <br> ";
     echo "</strong>";
+    
+    echo '</td>';
+    
+    
 
 }
 
 private static function event_details($events_map, $row, $discipline_array, $bool_print_discipline) {
 
-//@todo the idea here is that I have two things that should be <td> in laptop or <tr> in mobile
-
-//     echo '<td width="100px">';
-// 
-//     echo "<strong>";
-//     echo  $events_map[$row][Seminars::$week_day_idx] . " <br> " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " <br> " . $events_map[$row][Seminars::$day_idx] . " <br> ";
-//     echo "</strong>";
-//     
-//     echo '</td>';
-//     
-//     
-//     echo '<td>';
     
     echo '<td>';
 
-    
-    Seminars::event_day($events_map, $row);
-    
     
     echo "<em>";
     echo $events_map[$row][Seminars::$time_idx] . ", ";
@@ -873,18 +870,18 @@ private static function set_event_image($remote_path_prefix,
                                         
                                         
  $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
-                                  
-   echo '
-     <td> 
-     <img class="' . Seminars::$sem_image . '" ' .  'src="' .
+
+   echo '<td>'; 
+   
+   echo '<img class="' . Seminars::$sem_image . '" ' .  'src="' .
      $prefix . 
      $events_map[$row][Seminars::$discipline_idx] . '/' .  
      $events_map[$row][Seminars::$year_idx] . '/' . 
      $events_map[$row][Seminars::$semester_idx]  . '/' . 
      $images_folder . '/' . 
-     $events_map[$row][Seminars::$speaker_image_idx] . '" alt="image">  </td> ';
+     $events_map[$row][Seminars::$speaker_image_idx] . '" alt="image">';
      
-    
+   echo '</td>';
     
     }
 
@@ -897,18 +894,26 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
                                    $bool_print_discipline) {
 
 
-    echo '
-     <table class="' . Seminars::$sem_item . '">
-     <tr>';
+    echo '<table class="' . Seminars::$sem_item . '">';
+    
+    
+    echo '<td>';
      
+     echo ' <table id="switch_col">';
+
      Seminars::set_event_image($remote_path_prefix, $local_path_prefix, $are_input_files_local, $images_folder, $events_map, $row);
     
+     Seminars::set_event_day($events_map, $row);
+     
+     echo ' </table>';
+    
+    echo ' </td>';
+    
+
     $toggle_abstract_id = Seminars::event_details($events_map, $row, $discipline_array, $bool_print_discipline);
     
     
-    echo ' </tr>
-      </table> 
-     ';
+    echo '</table>';
 
   return $toggle_abstract_id;
   
@@ -922,33 +927,12 @@ private static function test_table() {
     echo '                                  ';
     echo ' <td>                             ';
     echo '                                  ';
-    echo '     <table id="switch_col">                      ';
-    echo '                                  ';
-    echo '         <tr>                     ';
-    echo '           <td>Title </td>        ';
-    echo '         </tr>                    ';
-    echo '         <tr>                     ';
-    echo '           <td> 40.000 </td>      ';
-    echo '         </tr>                    ';
-    echo '                                  ';
-    echo '     </table>                     ';
+    echo '           Title         ';
     echo '                                  ';
     echo '   </td>                          ';
     echo '                                  ';
     echo '   <td>                           ';
-    echo '                                  ';
-    echo '     <table id="switch_col">                      ';
-    echo '         <tr>                     ';
-    echo '           <td> Title2 </td>      ';
-    echo '         </tr>                    ';
-    echo '         <tr>                     ';
-    echo '           <td> 40.000 </td>      ';
-    echo '         </tr>                    ';
-    echo '                                  ';
-    echo '                                  ';
-    echo '                                  ';
-    echo '     </table>                     ';
-    echo '                                  ';
+    echo '            Title2     ';
     echo '   </td>                          ';
     echo '                                  ';
     echo ' </table>                         ';
