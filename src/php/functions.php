@@ -223,7 +223,11 @@ public static function generate_page_with_all_weeks_list($relative_path_to_libra
     echo '<br/>';
     
     echo '</div>';
-     
+
+  
+    //sandbox
+
+
   echo '</body>';
  
  }
@@ -785,14 +789,8 @@ private static function set_abstract_id_and_its_toggle($events_map, $row, $base_
 
 private static function set_event_day($events_map, $row) {
 
-//    echo '<td>';
-//    
-//    echo "<strong>";
-//     echo  $events_map[$row][Seminars::$week_day_idx] . ", " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx] . ", ";
-//     echo "</strong>";
-//     echo '</td>';
 
-    echo '<td width="110px">';
+    echo '<td width="100px">';
 
     echo "<strong>";
     echo  $events_map[$row][Seminars::$week_day_idx] . " <br/> " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx];
@@ -928,14 +926,10 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
 private static function test_table() {
 
 
-    echo ' <table id="switch_col">                          ';
-    echo '                                  ';
+    echo ' <table id="switch_col">';
     echo ' <td>                             ';
-    echo '                                  ';
     echo '           Title         ';
-    echo '                                  ';
     echo '   </td>                          ';
-    echo '                                  ';
     echo '   <td>                           ';
     echo '            Title2     ';
     echo '   </td>                          ';
@@ -1041,28 +1035,51 @@ private static function loop_over_events($events_map, $starting_row, $remote_pat
  
 public static function compute_subsequent_day_with_offset($year_in, $month_in, $day_in, $offset_wanted) {
   
- $sequential_day_begin = Seminars::compute_sequential_day($year_in, $month_in, $day_in);
+ $sequential_day_begin = Seminars::compute_day_sequential_number($year_in, $month_in, $day_in);
  
  $sequential_day_end = $sequential_day_begin + $offset_wanted;
- ///@todo here we assume we always stay inside the same year
+    
+ $month_and_day_out = Seminars::compute_month_and_day_from_sequential_number($year_in, $sequential_day_end);
 
+//  echo $month_and_day_out[0] . ' ' . $month_and_day_out[1];
+
+ return $month_and_day_out;
+ 
 }
 
 
-private static function compute_month_and_day_from_sequential_number($year_in, $number_in) { 
- //convert back to month/day: this function assumes we will never cross to the next year
+private static function compute_year_days_number($year) { 
+//either 365 or 366
 
 
    $month_days = Seminars::get_month_days($year);
 
+$days_number = 0;
+
+ for ($i = 0; $i < count($month_days); $i++) $days_number += $month_days[$i];
+
+ return $days_number; 
+ 
+}
+
+
+
+private static function compute_month_and_day_from_sequential_number($year_in, $number_in) { 
+ //the input number starts at 0
+ //the outputs start at 1
+ 
+   $month_days = Seminars::get_month_days($year_in);
+   
+ if ($number_in > Seminars::compute_year_days_number($year) - 1) echo '@todo Handling of year crossing not implemented';
+   
    $month_current = 0;
-   while ($number_in > Seminars::$month_days_max - 1) {
+   while ($number_in > $month_days[$month_current] - 1) {
       $number_in -= $month_days[$month_current];
       $month_current++;
    }
    
-   $month_out = $month_current;
-   $day_out = $number_in + 1;
+   $month_out = $month_current + 1;
+   $day_out   = $number_in + 1;
    
    $month_and_day_out = array($month_out, $day_out);
    
@@ -1071,8 +1088,9 @@ private static function compute_month_and_day_from_sequential_number($year_in, $
 }
 
 
-private static function compute_sequential_day($year, $month, $day) { 
- //it starts at 0
+private static function compute_day_sequential_number($year, $month, $day) { 
+ //the inputs start at 1 
+ //the output goes from 0 to 364 or 365
  
  
    $month_days = Seminars::get_month_days($year);
@@ -1082,7 +1100,7 @@ private static function compute_sequential_day($year, $month, $day) {
    $sequential_day += $month_days[$i];
    }
    
-   $sequential_day += $day;
+   $sequential_day += $day - 1;
    
    return    $sequential_day;
    
@@ -1091,9 +1109,11 @@ private static function compute_sequential_day($year, $month, $day) {
  
 public static function get_month_days($year) { 
 
+   $is_leap = $year % 4;
+   
    $month_days = array();
    
-   if($year%4 != 0) $month_days = Seminars::$month_days_non_leap;
+   if($is_leap != 0) $month_days = Seminars::$month_days_non_leap;
    else             $month_days = Seminars::$month_days_leap;
    
    return $month_days;
@@ -1211,7 +1231,12 @@ public static function loop_over_semester_weeks($week_month_day_begin) {
 
     for ($month_index = 0; $month_index < count($week_month_day_begin); $month_index++) {
    
-    echo '&nbsp <a href="./week/' . $week_month_day_begin[$month_index][0] . '_' . $week_month_day_begin[$month_index][1] . '.php">' . 'Week of Monday, ' . Seminars::get_month_string($week_month_day_begin[$month_index][0]) . ' ' .  $week_month_day_begin[$month_index][1] . '</a>';    echo '<br/>';
+    echo '&nbsp <a href="./week/' . 
+    $week_month_day_begin[$month_index][0] . '_' . 
+    $week_month_day_begin[$month_index][1] . '.php">' . 
+    'Week of Monday, ' . Seminars::get_month_string($week_month_day_begin[$month_index][0]) . ' ' .  $week_month_day_begin[$month_index][1] . '</a>';    
+    
+    echo '<br/>';
     
     }
 
@@ -1238,9 +1263,9 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
     for ($row = $starting_row; $row < count($csv_map); $row++) {
 
     //best thing is probably to convert into an increasing number, to avoid non-monotone behavior
-    $sequential_begin   = Seminars::compute_sequential_day($year, $month_begin, $day_begin);
-    $sequential_end     = Seminars::compute_sequential_day($year, $month_end, $day_end);
-    $sequential_current = Seminars::compute_sequential_day($year, $csv_map[$row][Seminars::$month_idx], $csv_map[$row][Seminars::$day_idx]);
+    $sequential_begin   = Seminars::compute_day_sequential_number($year, $month_begin, $day_begin);
+    $sequential_end     = Seminars::compute_day_sequential_number($year, $month_end, $day_end);
+    $sequential_current = Seminars::compute_day_sequential_number($year, $csv_map[$row][Seminars::$month_idx], $csv_map[$row][Seminars::$day_idx]);
     
     if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end ) {
     
@@ -1291,8 +1316,8 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
  12 =>  /*'December'); */    'Dec.'); 
 
 
-   private static   $month_days_non_leap = array(31,28/*29*/,31,30,31,30,31,31,30,31,30,31);  //non-bissextile
-   private static   $month_days_leap     = array(31,/*28*/29,31,30,31,30,31,31,30,31,30,31);  //bissextile
+   private static   $month_days_non_leap = array(31,28,31,30,31,30,31,31,30,31,30,31);  //non-bissextile
+   private static   $month_days_leap     = array(31,29,31,30,31,30,31,31,30,31,30,31);  //bissextile
  
    private static   $month_days_max = 31;
 
