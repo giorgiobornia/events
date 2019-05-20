@@ -812,6 +812,9 @@ private static function event_details($events_map, $row, $discipline_array, $boo
     echo $events_map[$row][Seminars::$title_idx];
     echo "</em>";
     
+    echo ' <i style="  border: solid black;  border-width: 0 2px 2px 0; display: inline-block;  padding: 3px; transform: rotate(45deg) translate(0px,-3px); -webkit-transform: rotate(45deg) translate(0px,-3px); "></i>';
+//   arrow up  <i style="transform: rotate(-135deg);  -webkit-transform: rotate(135deg);"></i>
+    
     echo '</a>';
     echo "<br>";
 
@@ -901,7 +904,7 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
     
 
 //----------------    
-    echo '<span class="abst" ';   ///@todo make this span CENTERED
+    echo '<span ';   ///@todo make this span CENTERED
     
     echo ' id=' . '"' . $abstract_id . '"'; 
     
