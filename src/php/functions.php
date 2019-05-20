@@ -183,7 +183,8 @@ echo '</head>';
 echo '</html>';
 
  }
- 
+
+
 
 public static function generate_page_with_all_weeks_list($relative_path_to_library,
                                                                $title,
@@ -213,14 +214,17 @@ public static function generate_page_with_all_weeks_list($relative_path_to_libra
     
     echo '<h3> &nbsp <strong> Colloquia and seminars by week </strong> </h3>';
     
+     echo '<div class="' . Seminars::$bootstrap_container . '">';
+     
     echo '<br/>';
-    
+ 
    Seminars::loop_over_semester_weeks($week_month_day_begin);
    
     echo '<br/>';
     
-     $prefix = Seminars::get_prefix($remote_url_base, $local_url_base, $are_input_files_local);
-
+    echo '</div>';
+     
+  echo '</body>';
  
  }
  
@@ -746,14 +750,14 @@ private static function about($discipline, $remote_path_prefix, $local_path_pref
 
   echo '<div class="' . Seminars::$bootstrap_container . '">';
   
-  echo '<br>';       
+  echo '<br/>';       
   
   Seminars::include_file( $remote_path_prefix, $local_path_prefix, $about_txt_file, $are_input_files_local);
   
-  echo '<br>';       
-  echo '<br>';       
+  echo '<br/>';       
+  echo '<br/>';       
 
-  echo '<div>';
+  echo '</div>';
   
    ///@todo mention organizers
    
@@ -1033,14 +1037,46 @@ private static function loop_over_events($events_map, $starting_row, $remote_pat
     
   } 
  
- 
-private static function compute_sequential_day($year, $month, $day) { 
- 
-   $month_days;
-   
-   if($year%4 != 0) $month_days = array(31,28/*29*/,31,30,31,30,31,31,30,31,30,31);
-   else             $month_days = array(31,/*28*/29,31,30,31,30,31,31,30,31,30,31);
 
+ 
+public static function compute_subsequent_day_with_offset($year_in, $month_in, $day_in, $offset_wanted) {
+  
+ $sequential_day_begin = Seminars::compute_sequential_day($year_in, $month_in, $day_in);
+ 
+ $sequential_day_end = $sequential_day_begin + $offset_wanted;
+ ///@todo here we assume we always stay inside the same year
+
+}
+
+
+private static function compute_month_and_day_from_sequential_number($year_in, $number_in) { 
+ //convert back to month/day: this function assumes we will never cross to the next year
+
+
+   $month_days = Seminars::get_month_days($year);
+
+   $month_current = 0;
+   while ($number_in > Seminars::$month_days_max - 1) {
+      $number_in -= $month_days[$month_current];
+      $month_current++;
+   }
+   
+   $month_out = $month_current;
+   $day_out = $number_in + 1;
+   
+   $month_and_day_out = array($month_out, $day_out);
+   
+   return $month_and_day_out;
+   
+}
+
+
+private static function compute_sequential_day($year, $month, $day) { 
+ //it starts at 0
+ 
+ 
+   $month_days = Seminars::get_month_days($year);
+   
    $sequential_day = 0;
     for ($i = 0; $i < $month - 1; $i++) {
    $sequential_day += $month_days[$i];
@@ -1050,8 +1086,19 @@ private static function compute_sequential_day($year, $month, $day) {
    
    return    $sequential_day;
    
- } 
+ }
  
+ 
+public static function get_month_days($year) { 
+
+   $month_days = array();
+   
+   if($year%4 != 0) $month_days = Seminars::$month_days_non_leap;
+   else             $month_days = Seminars::$month_days_leap;
+   
+   return $month_days;
+   
+ }
  
 
 public static function get_month_string($number) { 
@@ -1148,7 +1195,11 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
     $starting_row = 0;
      
  
- if (count($events_in_week) == 0) echo '&nbsp &nbsp None this week';
+ if (count($events_in_week) == 0)   {
+     echo '<div class="' . Seminars::$bootstrap_container . '">';
+     echo 'None this week';
+     echo '</div>';
+ }
  
  else  Seminars::loop_over_events($events_in_week, $starting_row, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $abstracts_folder, $images_folder, $discipline_array, $bool_print_discipline);
 
@@ -1240,8 +1291,10 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
  12 =>  /*'December'); */    'Dec.'); 
 
 
-  
+   private static   $month_days_non_leap = array(31,28/*29*/,31,30,31,30,31,31,30,31,30,31);  //non-bissextile
+   private static   $month_days_leap     = array(31,/*28*/29,31,30,31,30,31,31,30,31,30,31);  //bissextile
  
+   private static   $month_days_max = 31;
 
 // =====
    private static   $month_idx               = 0;  //if this column is empty, it still generates the page
