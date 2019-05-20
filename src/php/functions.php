@@ -629,9 +629,6 @@ private static function navigation_bar_content($prefix_disc, $id_target, $prefix
 public static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline, $discipline_array, $department) {
 
  
- echo '<nav class="navbar navbar-expand-lg  navbar-light navbar-fixed-top">';
-
-
  $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
 
  $prefix_disc = $prefix . $discipline . '/';
@@ -639,6 +636,9 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
  $home_all_sems = 'Home';
  
  $target_past_years = 'my_navbar';
+
+ 
+ echo '<nav class="navbar navbar-expand-lg navbar-light">'; /*fixed-top ///@todo padding-top of the body must be modified, if you want the navigation bar to be fixed */
  
  Seminars::navigation_bar_brand($prefix, $home_all_sems);
  
@@ -661,7 +661,7 @@ public static function main_banner($title, $department, $institution) {
   
 
   echo '<div class="main_banner">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
-  echo '<div class="filter_to_read_fonts_on_images">';                       //<!--id="" if you set more than one id then the FIRST ONE is taken-->
+  echo '<div style="background-color: rgba(0, 0, 0, 0.3);">';                       //filter so that fonts on images are readable
   echo '<div class="' . Seminars::$bootstrap_container . '"' . ' ' . 'style="' . Seminars::$banners_text_alignment . '"' . '>';
   echo '      <h2> ' . $title . ' </h2>';
   echo '      <h3> ' . /*'<a href="' . $department[$dept_url_idx] . '"' . ' style="color: white;"' . '>'  .*/ $department[$dept_name_idx]  /*. '</a>'*/ . ' </h3>';

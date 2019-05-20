@@ -8,12 +8,8 @@
     text-shadow: 0 1px 0 white, 0 0 5px white;
 }
 
-.filter_to_read_fonts_on_images {
-    background-color: rgba(0, 0, 0, 0.3);
-}
 
-
-/* Item, table ============================== */
+/* Single event ============================== */
 
 table.sem_item {
   margin-left: none;
