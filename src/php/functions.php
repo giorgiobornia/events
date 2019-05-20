@@ -788,15 +788,24 @@ private static function set_event_day($events_map, $row) {
 //     echo "</strong>";
 //     echo '</td>';
 
-    echo '<td width="100px">';
+    echo '<td width="110px">';
 
     echo "<strong>";
-    echo  $events_map[$row][Seminars::$week_day_idx] . " <br> " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " <br> " . $events_map[$row][Seminars::$day_idx] . " <br> ";
+    echo  $events_map[$row][Seminars::$week_day_idx] . " <br/> " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx];
     echo "</strong>";
     
+    echo '<br/>';
+    
+    
+    echo "<em>";
+    echo $events_map[$row][Seminars::$time_idx];
+    echo "</em>";
+    
+    echo '<br/>';
+    echo /*"room "  .*/  $events_map[$row][Seminars::$room_idx] ;
+    echo "<br>";
+    
     echo '</td>';
-    
-    
 
 }
 
@@ -806,14 +815,6 @@ private static function event_details($events_map, $row, $discipline_array, $boo
     echo '<td>';
 
     
-    echo "<em>";
-    echo $events_map[$row][Seminars::$time_idx] . ", ";
-    echo "</em>";
-    
-//     echo "<em>";
-    echo "room "  .  $events_map[$row][Seminars::$room_idx] ;
-//     echo "</em>";
-    echo "<br>";
 
    if ( $bool_print_discipline == true ) {                                
       echo "<strong>";
@@ -1225,18 +1226,18 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
  
  //array for conversion from month number to string
  private static $months_conv = array(
- 1  =>  'January',     /*  'Jan.',  */
- 2  =>  'February',    /*  'Feb.',  */
- 3  =>  'March',       /*  'Mar.',  */
- 4  =>  'April',       /*  'Apr.',  */
- 5  =>  'May',         /*  'May',   */
- 6  =>  'June',        /*  'Jun.',  */
- 7  =>  'July',        /*  'Jul.',  */
- 8  =>  'August',      /*  'Aug.',  */
- 9  =>  'September',   /*  'Sep.',  */
- 10 =>  'October',     /*  'Oct.',  */
- 11 =>  'November',    /*  'Nov.',  */
- 12 =>  'December');   /*  'Dec.'); */
+ 1  =>  /*'January',   */    'Jan.',  
+ 2  =>  /*'February',  */    'Feb.',  
+ 3  =>  /*'March',     */    'Mar.',  
+ 4  =>  /*'April',     */    'Apr.',  
+ 5  =>  /*'May',       */    'May',   
+ 6  =>  /*'June',      */    'Jun.',  
+ 7  =>  /*'July',      */    'Jul.',  
+ 8  =>  /*'August',    */    'Aug.',  
+ 9  =>  /*'September', */    'Sep.',  
+ 10 =>  /*'October',   */    'Oct.',  
+ 11 =>  /*'November',  */    'Nov.',  
+ 12 =>  /*'December'); */    'Dec.'); 
 
 
   
