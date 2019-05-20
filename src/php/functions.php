@@ -780,6 +780,14 @@ private static function set_abstract_id_and_its_toggle($events_map, $row, $base_
 }
 
 
+private static function event_day($events_map, $row) {
+
+    echo "<strong>";
+    echo  $events_map[$row][Seminars::$week_day_idx] . ", " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx] . ", ";
+    echo "</strong>";
+
+}
+
 private static function event_details($events_map, $row, $discipline_array, $bool_print_discipline) {
 
 //@todo the idea here is that I have two things that should be <td> in laptop or <tr> in mobile
@@ -797,9 +805,8 @@ private static function event_details($events_map, $row, $discipline_array, $boo
     
     echo '<td>';
 
-    echo "<strong>";
-    echo  $events_map[$row][Seminars::$week_day_idx] . ", " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx] . ", ";
-    echo "</strong>";
+    
+    Seminars::event_day($events_map, $row);
     
     
     echo "<em>";
@@ -908,7 +915,7 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
 
 }
 
-public static function test_table() {
+private static function test_table() {
 
 
     echo ' <table id="switch_col">                          ';
