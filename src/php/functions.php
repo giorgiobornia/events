@@ -3,8 +3,25 @@
 
 class Seminars {
 
- 
+ ///@todo deprecated
  public static function get_discipline_year_semester($file_in) {
+ //retrieve the information from the path 
+ 
+ $current_file = $file_in;
+ $current_file = str_replace('\\', '/', $current_file);  //for Windows file paths
+
+ $explosion = explode('/',$current_file);
+ 
+ $array = Seminars::get_array_components_from_the_end($explosion, 1, 3);
+
+ return $array;
+
+
+ }
+ 
+ 
+ 
+  public static function get_path_components_from_the_end($file_in, $starting_pos_from_end, $how_many_backwards) {
  //retrieve the information from the path 
  
  $current_file = $file_in;
@@ -14,14 +31,29 @@ class Seminars {
  
 //  print_r($explosion);
   
- $array[0] = $explosion[count($explosion) - 4];
- $array[1] = $explosion[count($explosion) - 3];
- $array[2] = $explosion[count($explosion) - 2];
- 
+  $array = Seminars::get_array_components_from_the_end($explosion, $starting_pos_from_end, $how_many_backwards);
+
+//    print_r($array);
+  
   return $array;
 
+ }
+ 
+ 
+ 
+  public static function get_array_components_from_the_end($array_in, $starting_pos_from_end, $how_many_backwards) {
+  
+  $array = array();
+  
+  for ($i = 0; $i < $how_many_backwards; $i++) {
+      $array[$i] = $array_in[count($array_in) - 1 - $starting_pos_from_end - $i];
+  }
+
+  return $array;
 
  }
+ 
+ 
  
 private static function get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local) {
 //this is the prefix wrt. the seminars folder
@@ -144,9 +176,9 @@ private static function generate_seminar_page_list($discipline_array, $colloquia
 
 public static function generate_seminar_page_by_topic_year_semester($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $t_y_s, $icon_in_toolbar, $discipline_current) {
 
-   $discipline = $t_y_s[0];
+   $discipline = $t_y_s[2];
    $year       = $t_y_s[1];
-   $semester   = $t_y_s[2];
+   $semester   = $t_y_s[0];
 
    Seminars::generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_current);
 
