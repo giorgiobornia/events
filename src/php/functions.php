@@ -175,6 +175,8 @@ echo '</head>';
 
     Seminars::set_seminars_by_topic_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, Seminars::$abstracts_folder, Seminars::$images_folder, $discipline_current);
 
+    Seminars::test_table();
+    
   echo '</body>';
   
   
@@ -660,9 +662,10 @@ public static function main_banner($title, $department, $institution) {
   $dept_url_idx = 1;
   
 
-  echo '<div class="main_banner">';    //<!--if the jumbotron stays inside a container it doesn't go all-the-width-->
+  echo '<div class="main_banner">';
   echo '<div style="background-color: rgba(0, 0, 0, 0.3);">';                       //filter so that fonts on images are readable
-  echo '<div class="' . Seminars::$bootstrap_container . '"' . ' ' . 'style="' . Seminars::$banners_text_alignment . '"' . '>';
+  echo '<div class="' . Seminars::$bootstrap_container . '"' . ' ' . 'style="' . Seminars::$banners_text_alignment . '"' . '>';  //
+//   echo '<div style="' . Seminars::$banners_text_alignment . ' display: inline; width: 100%; margin-left: auto; margin-right: auto;  "' . '>';  //
   echo '      <h2> ' . $title . ' </h2>';
   echo '      <h3> ' . /*'<a href="' . $department[$dept_url_idx] . '"' . ' style="color: white;"' . '>'  .*/ $department[$dept_name_idx]  /*. '</a>'*/ . ' </h3>';
   echo '      <h3> ' . $institution . ' </h3>';
@@ -779,11 +782,25 @@ private static function set_abstract_id_and_its_toggle($events_map, $row, $base_
 
 private static function event_details($events_map, $row, $discipline_array, $bool_print_discipline) {
 
+//@todo the idea here is that I have two things that should be <td> in laptop or <tr> in mobile
+
+//     echo '<td width="100px">';
+// 
+//     echo "<strong>";
+//     echo  $events_map[$row][Seminars::$week_day_idx] . " <br> " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " <br> " . $events_map[$row][Seminars::$day_idx] . " <br> ";
+//     echo "</strong>";
+//     
+//     echo '</td>';
+//     
+//     
+//     echo '<td>';
+    
     echo '<td>';
 
     echo "<strong>";
     echo  $events_map[$row][Seminars::$week_day_idx] . ", " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx] . ", ";
     echo "</strong>";
+    
     
     echo "<em>";
     echo $events_map[$row][Seminars::$time_idx] . ", ";
@@ -833,8 +850,7 @@ private static function event_details($events_map, $row, $discipline_array, $boo
     echo "<br>";
     
     
-    echo '
-      </td>';
+    echo '</td>';
       
       return $toggle_abstract_id;
 
@@ -883,8 +899,7 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
     $toggle_abstract_id = Seminars::event_details($events_map, $row, $discipline_array, $bool_print_discipline);
     
     
-    echo '  
-      </tr>
+    echo ' </tr>
       </table> 
      ';
 
@@ -892,6 +907,47 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
   
 
 }
+
+public static function test_table() {
+
+
+    echo ' <table id="switch_col">                          ';
+    echo '                                  ';
+    echo ' <td>                             ';
+    echo '                                  ';
+    echo '     <table id="switch_col">                      ';
+    echo '                                  ';
+    echo '         <tr>                     ';
+    echo '           <td>Title </td>        ';
+    echo '         </tr>                    ';
+    echo '         <tr>                     ';
+    echo '           <td> 40.000 </td>      ';
+    echo '         </tr>                    ';
+    echo '                                  ';
+    echo '     </table>                     ';
+    echo '                                  ';
+    echo '   </td>                          ';
+    echo '                                  ';
+    echo '   <td>                           ';
+    echo '                                  ';
+    echo '     <table id="switch_col">                      ';
+    echo '         <tr>                     ';
+    echo '           <td> Title2 </td>      ';
+    echo '         </tr>                    ';
+    echo '         <tr>                     ';
+    echo '           <td> 40.000 </td>      ';
+    echo '         </tr>                    ';
+    echo '                                  ';
+    echo '                                  ';
+    echo '                                  ';
+    echo '     </table>                     ';
+    echo '                                  ';
+    echo '   </td>                          ';
+    echo '                                  ';
+    echo ' </table>                         ';
+                                            
+}                                           
+
 
 
 private static function set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local,

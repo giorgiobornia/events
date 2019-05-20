@@ -45,3 +45,22 @@ table.sem_item td,th,tr  {
     height: 100px;
     width: 100px;
 }
+
+
+/* Switch columns, responsive ============================== */
+@media all and (max-width:500px) {
+  table#switch_col {
+    width: 100%;
+  }
+  table#switch_col td {
+    display: block;
+    width: 100%;
+  }
+  table#switch_col tr {
+    display: block;
+    margin-bottom: 30px;
+  }
+  table#switch_col tr tr {
+    margin-bottom: 0;
+  }
+}
