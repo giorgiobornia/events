@@ -3,19 +3,12 @@
 
 class Seminars {
 
- ///@todo deprecated
+ ///@todo deprecated:
  public static function get_discipline_year_semester($file_in) {
- //retrieve the information from the path 
  
- $current_file = $file_in;
- $current_file = str_replace('\\', '/', $current_file);  //for Windows file paths
-
- $explosion = explode('/',$current_file);
+  $array = Seminars::get_path_components_from_the_end($file_in,1,3);
  
- $array = Seminars::get_array_components_from_the_end($explosion, 1, 3);
-
- return $array;
-
+  return $array;
 
  }
  
@@ -27,7 +20,25 @@ class Seminars {
  $current_file = $file_in;
  $current_file = str_replace('\\', '/', $current_file);  //for Windows file paths
 
- $explosion = explode('/',$current_file);
+ $delimiter = '/';
+ 
+ $explosion = explode($delimiter, $current_file);
+ 
+//  print_r($explosion);
+  
+  $array = Seminars::get_array_components_from_the_end($explosion, $starting_pos_from_end, $how_many_backwards);
+
+//    print_r($array);
+  
+  return $array;
+
+ }
+
+ 
+
+ public static function get_string_components_from_the_end($delimiter, $string_in, $starting_pos_from_end, $how_many_backwards) {
+ 
+ $explosion = explode($delimiter, $string_in);
  
 //  print_r($explosion);
   
