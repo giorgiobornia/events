@@ -3,8 +3,9 @@
 
 class Seminars {
 
- ///@todo deprecated:
+
  public static function get_discipline_year_semester($file_in) {
+ ///@todo actually this is semester/year/discipline now
  
   $array = Seminars::get_path_components_from_the_end($file_in,1,3);
  
@@ -17,20 +18,14 @@ class Seminars {
   public static function get_path_components_from_the_end($file_in, $starting_pos_from_end, $how_many_backwards) {
  //retrieve the information from the path 
  
- $current_file = $file_in;
- $current_file = str_replace('\\', '/', $current_file);  //for Windows file paths
-
  $delimiter = '/';
  
- $explosion = explode($delimiter, $current_file);
- 
-//  print_r($explosion);
-  
-  $array = Seminars::get_array_components_from_the_end($explosion, $starting_pos_from_end, $how_many_backwards);
+ $current_file = $file_in;
+ $current_file = str_replace('\\', '/', $current_file);  //Windows file paths have backslash
 
-//    print_r($array);
-  
-  return $array;
+ $array = Seminars::get_string_components_from_the_end($delimiter, $current_file, $starting_pos_from_end, $how_many_backwards);
+
+ return $array;
 
  }
 
@@ -40,13 +35,9 @@ class Seminars {
  
  $explosion = explode($delimiter, $string_in);
  
-//  print_r($explosion);
-  
-  $array = Seminars::get_array_components_from_the_end($explosion, $starting_pos_from_end, $how_many_backwards);
+ $array = Seminars::get_array_components_from_the_end($explosion, $starting_pos_from_end, $how_many_backwards);
 
-//    print_r($array);
-  
-  return $array;
+ return $array;
 
  }
  
@@ -255,9 +246,7 @@ public static function generate_page_with_all_weeks_list($relative_path_to_libra
   
     echo '<h2> &nbsp <strong> ' . Seminars::capitalize($semester) . ' ' . $year . ' </strong> </h2>';
     
-    echo '<h3> &nbsp <strong> Colloquia and seminars by week </strong> </h3>';
-    
-     echo '<div class="' . Seminars::$bootstrap_container . '">';
+    echo '<div class="' . Seminars::$bootstrap_container . '">';
      
     echo '<br/>';
  
@@ -967,17 +956,16 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
 }
 
 private static function test_table() {
+//this is to test if two blocks in one row become two blocks in a column in mobile devices
 
-
-    echo ' <table id="switch_col">';
-    echo ' <td>                             ';
-    echo '           Title         ';
-    echo '   </td>                          ';
-    echo '   <td>                           ';
-    echo '            Title2     ';
-    echo '   </td>                          ';
-    echo '                                  ';
-    echo ' </table>                         ';
+    echo '<table id="switch_col">';
+    echo '<td>';
+    echo 'Title';
+    echo '</td>';
+    echo '<td>';
+    echo 'Title2';
+    echo '</td>';
+    echo '</table>';
                                             
 }                                           
 
@@ -1075,6 +1063,38 @@ private static function loop_over_events($events_map, $starting_row, $remote_pat
   } 
  
 
+public static function generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end) {
+
+///@todo check that the input and the output are a Monday
+
+ $offset_wanted = 7;
+ 
+ $sequential_day_begin = Seminars::compute_day_sequential_number($year_in, $month_begin, $day_begin);
+ 
+ $sequential_day_end = Seminars::compute_day_sequential_number($year_in, $month_end, $day_end);
+ 
+ $months_and_days = array();
+ 
+ $new_day = $sequential_day_begin;
+ $month_and_day_out = Seminars::compute_month_and_day_from_sequential_number($year_in, $sequential_day_begin);
+ 
+ array_push($months_and_days, $month_and_day_out);
+ 
+ 
+ 
+ while ($new_day < $sequential_day_end) {
+ 
+   $new_day += $offset_wanted;
+   $month_and_day_item = Seminars::compute_month_and_day_from_sequential_number($year_in, $new_day);
+   array_unshift($months_and_days, $month_and_day_item);  //the most recent is at the top: the alternative is array_push
+  
+ }
+  
+ return $months_and_days;
+
+}
+
+ 
  
 public static function compute_subsequent_day_with_offset($year_in, $month_in, $day_in, $offset_wanted) {
   
@@ -1082,6 +1102,8 @@ public static function compute_subsequent_day_with_offset($year_in, $month_in, $
  
  $sequential_day_end = $sequential_day_begin + $offset_wanted;
     
+ if ($sequential_day_end > Seminars::compute_year_days_number($year_in) - 1) echo '@todo Handling of year crossing not implemented';
+   
  $month_and_day_out = Seminars::compute_month_and_day_from_sequential_number($year_in, $sequential_day_end);
 
 //  echo $month_and_day_out[0] . ' ' . $month_and_day_out[1];
@@ -1112,8 +1134,6 @@ private static function compute_month_and_day_from_sequential_number($year_in, $
  //the outputs start at 1
  
    $month_days = Seminars::get_month_days($year_in);
-   
- if ($number_in > Seminars::compute_year_days_number($year) - 1) echo '@todo Handling of year crossing not implemented';
    
    $month_current = 0;
    while ($number_in > $month_days[$month_current] - 1) {
