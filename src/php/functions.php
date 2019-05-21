@@ -864,16 +864,15 @@ private static function event_details($events_map, $row, $discipline_array, $boo
     $toggle_abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
 
 
-    echo '<a  style="cursor: pointer; text-decoration: underline; " ';  ///@todo I want to give this the same color as an <a> tag with href= instead of id=
-    echo ' id=' . '"' .  $toggle_abstract_id . '"';
+    echo '<a  id=' . '"' .  $toggle_abstract_id . '"';
+    echo '  style="cursor: pointer; text-decoration: underline;" ';    ///@todo I want to give this the same color as an <a> tag with href= instead of id=
     echo '>'; 
     
     echo "<em>";
     echo $events_map[$row][Seminars::$title_idx];
     echo "</em>";
     
-    echo ' <i style="  border: solid black;  border-width: 0 2px 2px 0; display: inline-block;  padding: 3px; transform: rotate(45deg) translate(0px,-3px); -webkit-transform: rotate(45deg) translate(0px,-3px); "></i>';
-//   arrow up  <i style="transform: rotate(-135deg);  -webkit-transform: rotate(135deg);"></i>
+    echo ' <i id="pippo" class="arrow_down"></i>';
     
     echo '</a>';
     echo "<br>";
@@ -983,6 +982,12 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
                                      
     $abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, '');
     
+    $abstract_path =   
+    $events_map[$row][Seminars::$discipline_idx] . '/' .  
+    $events_map[$row][Seminars::$year_idx] . '/' . 
+    $events_map[$row][Seminars::$semester_idx] . '/' . 
+    $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
+
 
 //----------------    
     echo '<span ';   ///@todo make this span CENTERED
@@ -993,14 +998,6 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
     
     echo '>';
     
-
-    $abstract_path =   
-    $events_map[$row][Seminars::$discipline_idx] . '/' .  
-    $events_map[$row][Seminars::$year_idx] . '/' . 
-    $events_map[$row][Seminars::$semester_idx] . '/' . 
-    $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
-
-    
     Seminars::include_file( $remote_path_prefix, $local_path_prefix, $abstract_path, $are_input_files_local);
     
     echo '</span>';
@@ -1009,18 +1006,20 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
 
 
 // ********************
+// on click over the title identified by $toggle_abstract_id, toggle the abstract span (I think a simple toggle means turn on or off the whole object)
     echo '<script>';
 
     echo '
       $(document).ready(
-        function(){';
+        function() {';
       
      echo '
        $("a#' . $toggle_abstract_id . '").click(';
        
      echo '
-       function(){
+       function() {
           $("span#' . $abstract_id . '").toggle();
+//           $("i#' . 'pippo' . '").toggle();
         }
       );';    //end click
       
@@ -1031,7 +1030,6 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
 
   
    echo '</script>';
-//     echo "<br>";
 // ********************
  
  }
@@ -1069,6 +1067,7 @@ private static function loop_over_events($events_map, $starting_row, $remote_pat
 
 public static function generate_initial_week_files($year_in, $month_begin, $day_begin, $month_end, $day_end, $src_file, $folder_out) {
 //@todo temporarily give Write access to all in the containing folder, and clean the output folder week/
+// then, do a chown to remove the web user
 
 $months_and_days = Seminars::generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end);
 
