@@ -7,7 +7,10 @@ class Seminars {
  public static function get_discipline_year_semester($file_in) {
  ///@todo actually this is semester/year/discipline now
  
-  $array = Seminars::get_path_components_from_the_end($file_in,1,3);
+ $first_pos_from_the_end_to_read = 1;
+ $num_positions_from_the_end_to_read = 3;
+ 
+  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $num_positions_from_the_end_to_read);
  
   return $array;
 
@@ -178,9 +181,9 @@ private static function generate_seminar_page_list($discipline_array, $colloquia
 
 public static function generate_seminar_page_by_topic_year_semester($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $t_y_s, $icon_in_toolbar, $discipline_current) {
 
-   $discipline = $t_y_s[2];
-   $year       = $t_y_s[1];
-   $semester   = $t_y_s[0];
+   $discipline = $t_y_s[Seminars::$discipline_idx_in_path_from_end];
+   $year       = $t_y_s[Seminars::$year_idx_in_path_from_end];
+   $semester   = $t_y_s[Seminars::$semester_idx_in_path_from_end];
 
    Seminars::generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local, $institution, $department, $discipline, $year, $semester, $icon_in_toolbar, $discipline_current);
 
@@ -309,6 +312,7 @@ echo '</head>';
  
  Seminars::main_banner($title, $department, $institution);
  
+  echo '<h2> &nbsp <strong> ' . Seminars::$months_conv[$month_begin] . ' ' . $day_begin  . ' - ' . Seminars::$months_conv[$month_end] . ' ' . $day_end  . ' </strong> </h2>';
  
  
   echo '<h3> &nbsp <strong> Colloquia </strong> </h3>';
@@ -1064,6 +1068,7 @@ private static function loop_over_events($events_map, $starting_row, $remote_pat
  
 
 public static function generate_initial_week_files($year_in, $month_begin, $day_begin, $month_end, $day_end, $src_file, $folder_out) {
+//@todo temporarily give Write access to all in the containing folder, and clean the output folder week/
 
 $months_and_days = Seminars::generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end);
 
@@ -1425,6 +1430,9 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
   
   private static $row_events_begin = 1;
   
+   private static   $discipline_idx_in_path_from_end = 2;
+   private static   $year_idx_in_path_from_end       = 1;
+   private static   $semester_idx_in_path_from_end   = 0;
   
 // ===== bootstrap style
   private static $bootstrap_container = 'container';              //centered page
