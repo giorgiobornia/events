@@ -811,7 +811,7 @@ private static function set_abstract_id_and_its_toggle($events_map, $row, $base_
   $clock_str = str_replace(':', '_', $clock_str);
   
 
-    $abstract_id = $base_str . /* either 'toggle_' or '' */ 'abst_' .
+    $abstract_id = $base_str . 'abst_' .
       $events_map[$row][Seminars::$discipline_idx]  . '_' . 
       $events_map[$row][Seminars::$year_idx]        . '_' .
       $events_map[$row][Seminars::$month_idx]       . '_' . 
@@ -847,12 +847,11 @@ private static function set_event_day($events_map, $row) {
 
 }
 
-private static function event_details($events_map, $row, $discipline_array, $bool_print_discipline) {
+
+private static function set_event_details($events_map, $row, $discipline_array, $bool_print_discipline, $toggle_abstract_id, $arrow_abstract_id) {
 
     
     echo '<td>';
-
-    
 
    if ( $bool_print_discipline == true ) {                                
       echo "<strong>";
@@ -861,8 +860,6 @@ private static function event_details($events_map, $row, $discipline_array, $boo
       echo "<br>";
     }
     
-    $toggle_abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
-
 
     echo '<a  id=' . '"' .  $toggle_abstract_id . '"';
     echo '  style="cursor: pointer; text-decoration: underline;" ';    ///@todo I want to give this the same color as an <a> tag with href= instead of id=
@@ -872,7 +869,7 @@ private static function event_details($events_map, $row, $discipline_array, $boo
     echo $events_map[$row][Seminars::$title_idx];
     echo "</em>";
     
-    echo ' <i id="pippo" class="arrow_down"></i>';
+    echo ' <i id=' . '"' .  $arrow_abstract_id . '"' . ' class="arrow_down"></i>';
     
     echo '</a>';
     echo "<br>";
@@ -894,7 +891,6 @@ private static function event_details($events_map, $row, $discipline_array, $boo
     
     echo '</td>';
       
-      return $toggle_abstract_id;
 
 }
 
@@ -929,7 +925,9 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
                                    $events_map, 
                                    $row,
                                    $discipline_array,
-                                   $bool_print_discipline) {
+                                   $bool_print_discipline,
+                                   $toggle_abstract_id,
+                                   $arrow_abstract_id) {
 
 
     echo '<table class="' . Seminars::$sem_item . '">';
@@ -948,13 +946,12 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
     echo ' </td>';
     
 
-    $toggle_abstract_id = Seminars::event_details($events_map, $row, $discipline_array, $bool_print_discipline);
+    Seminars::set_event_details($events_map, $row, $discipline_array, $bool_print_discipline, $toggle_abstract_id, $arrow_abstract_id);
     
     
     echo '</table>';
 
-  return $toggle_abstract_id;
-  
+
 
 }
 
@@ -978,7 +975,8 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
                                      $abstracts_folder,
                                      $events_map,
                                      $row,
-                                     $toggle_abstract_id) {
+                                     $toggle_abstract_id,
+                                     $arrow_abstract_id) {
                                      
     $abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, '');
     
@@ -1019,7 +1017,7 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
      echo '
        function() {
           $("span#' . $abstract_id . '").toggle();
-//           $("i#' . 'pippo' . '").toggle();
+          $("i#' . $arrow_abstract_id . '").toggleClass("arrow_up");
         }
       );';    //end click
       
@@ -1051,10 +1049,12 @@ private static function loop_over_events($events_map, $starting_row, $remote_pat
     
     for ($row = $starting_row; $row < $num_rows; $row++) {
 
+    $toggle_abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
+    $arrow_abstract_id  = Seminars::set_abstract_id_and_its_toggle($events_map, $row, 'arrow_');
+
+    Seminars::set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local, $images_folder, $events_map, $row, $discipline_array, $bool_print_discipline, $toggle_abstract_id, $arrow_abstract_id);
     
-    $toggle_abstract_id = Seminars::set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local, $images_folder, $events_map, $row, $discipline_array, $bool_print_discipline);
-    
-                                         Seminars::set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local, $abstracts_folder, $events_map, $row, $toggle_abstract_id);
+    Seminars::set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local, $abstracts_folder, $events_map, $row, $toggle_abstract_id, $arrow_abstract_id);
     
     }
     
