@@ -1063,6 +1063,28 @@ private static function loop_over_events($events_map, $starting_row, $remote_pat
   } 
  
 
+public static function generate_initial_week_files($year_in, $month_begin, $day_begin, $month_end, $day_end, $src_file, $folder_out) {
+
+$months_and_days = Seminars::generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end);
+
+    for ($index = 0; $index < count($months_and_days); $index++) {
+    
+    $destination = $months_and_days[$index][0] . '_' . $months_and_days[$index][1] .'.php';
+    
+    $destination = $folder_out . $destination;
+//     echo ' ' . $src_file . ' ' . $destination;
+     if(!copy($src_file, $destination)) { echo ' copy failed; you may have a permission issue on the directory where you are trying to write (the web user has his own permissions). Also, if the file already exists the copy may not work'; }
+    
+    
+}
+
+
+
+
+}
+
+
+
 public static function generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end) {
 
 ///@todo check that the input and the output are a Monday
@@ -1292,12 +1314,12 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
 public static function loop_over_semester_weeks($week_month_day_begin) {
 
 
-    for ($month_index = 0; $month_index < count($week_month_day_begin); $month_index++) {
+    for ($index = 0; $index < count($week_month_day_begin); $index++) {
    
     echo '&nbsp <a href="./week/' . 
-    $week_month_day_begin[$month_index][0] . '_' . 
-    $week_month_day_begin[$month_index][1] . '.php">' . 
-    'Week of Monday, ' . Seminars::get_month_string($week_month_day_begin[$month_index][0]) . ' ' .  $week_month_day_begin[$month_index][1] . '</a>';    
+    $week_month_day_begin[$index][0] . '_' . 
+    $week_month_day_begin[$index][1] . '.php">' . 
+    'Week of Monday, ' . Seminars::get_month_string($week_month_day_begin[$index][0]) . ' ' .  $week_month_day_begin[$index][1] . '</a>';    
     
     echo '<br/>';
     
