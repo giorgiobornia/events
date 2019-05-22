@@ -262,7 +262,6 @@ public static function generate_page_with_all_weeks_list($relative_path_to_libra
   
     //sandbox
 
-
   echo '</body>';
  
  }
@@ -1090,6 +1089,49 @@ $months_and_days = Seminars::generate_initial_week_days($year_in, $month_begin, 
 }
 
 
+private static function compute_week_day($year_in, $month_in, $day_in) {
+
+//let us start from a January 1 that is a Monday. Let us pick January 1, 1990
+//also, I found out that in the Gregorian calendar leap years are NOT every 4 years, but centennial years NOT divisible by 400 are not leap years... 
+// since we will not see this until we die, let us stick with a Julian approach and make leap years every 4 years
+
+  $starting_day = 1;
+  $starting_month = 1;
+  $starting_year = 1990;
+
+// compute the sequential number from this starting point
+  $abs_day = -1;
+  
+  $year_count = $starting_year;
+
+  while($year_count < $year_in) {
+  
+  if ($year_count % 4 != 0) $abs_day += 365;
+  else                      $abs_day += 366;
+  
+    $year_count ++;
+  }
+
+ $sequential_day_in_current_year = Seminars::compute_day_sequential_number($year_in, $month_in, $day_in);
+ 
+ $total_day = $abs_day + $sequential_day_in_current_year + 1;
+ 
+ $week_day_modulo = $total_day % 7;
+ 
+ $week_day;
+ 
+    for ($i = 0; $i < 7; $i++) {
+ if ($week_day_modulo == $i)   $week_day = $i;
+ }
+ 
+ 
+//  echo Seminars::$week_day_conv[$week_day];
+
+ return Seminars::$week_day_conv[$week_day];
+ 
+}
+
+
 
 public static function generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end) {
 
@@ -1406,6 +1448,15 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
  11 =>  /*'November',  */    'Nov.',  
  12 =>  /*'December'); */    'Dec.'); 
 
+ private static $week_day_conv = array(
+ 0  =>    'Monday',  
+ 1  =>    'Tuesday',  
+ 2  =>    'Wednesday',  
+ 3  =>    'Thursday',  
+ 4  =>    'Friday',   
+ 5  =>    'Saturday',  
+ 6  =>    'Sunday'
+ ); 
 
    private static   $month_days_non_leap = array(31,28,31,30,31,30,31,31,30,31,30,31);  //non-bissextile
    private static   $month_days_leap     = array(31,29,31,30,31,30,31,31,30,31,30,31);  //bissextile
