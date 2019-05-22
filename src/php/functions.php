@@ -1506,5 +1506,5 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 ///@todo do a function that picks a rectangular image and makes it square by extending its smaller side with white
 ///@todo We should do Colloquia, Seminars and also Other Events (Workshops, Lecture Series, Banquet, etc...)
 
-
+///@todo take an arbitrary image, find max between width and height, and make that max equal to N, and keep the aspect ratio for the other dimension; then put a background square of N x N; finally apply border-radius
 ?>
