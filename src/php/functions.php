@@ -862,16 +862,18 @@ private static function set_event_details($events_map, $row, $discipline_array, 
     
 
     echo '<a  id=' . '"' .  $toggle_abstract_id . '"';
-    echo '  style="cursor: pointer; text-decoration: underline;" ';    ///@todo I want to give this the same color as an <a> tag with href= instead of id=
+    echo '  style="cursor: pointer; text-decoration: underline; " ';    ///@todo I want to give this the same color as an <a> tag with href= instead of id=
     echo '>'; 
     
-    echo "<em>";
+    echo '<em style="padding-right: 5px">';   ///with this padding we add a space that doesn't get underlined although the text is. An alternative would be to put the 'underline' as a style of <em> instead of <a>
     echo $events_map[$row][Seminars::$title_idx];
-    echo "</em>";
-    
-    echo ' <i id=' . '"' .  $arrow_abstract_id . '"' . ' class="arrow_down"></i>';
+    echo '</em>';
+        
+    echo '<i id=' . '"' .  $arrow_abstract_id . '"' . ' class="arrow_down"></i>';
     
     echo '</a>';
+    
+    
     echo "<br>";
 
     

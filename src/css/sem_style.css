@@ -69,11 +69,11 @@ table.sem_item td,th,tr  {
 /* Classes for arrow up or down ============================== */
 
  i.arrow_down {
-  border: solid black;  border-width: 0 2px 2px 0; display: inline-block;  padding: 3px; transform: rotate(45deg) translate(0px,-3px); -webkit-transform: rotate(45deg) translate(0px,-3px);
+  border: solid black;  border-width: 0 2px 2px 0; display: inline-block;  padding: 3px; transform: translate(0px,-2px) rotate(45deg); -webkit-transform: translate(0px,-2px) rotate(45deg);
  }
  
  i.arrow_up {
-  border: solid black;  border-width: 0 2px 2px 0; display: inline-block;  padding: 3px; transform: rotate(-135deg) translate(-3px,3px); -webkit-transform: rotate(-135deg) translate(-3px,3px);
+  border: solid black;  border-width: 0 2px 2px 0; display: inline-block;  padding: 3px; transform: translate(0px,2px) rotate(-135deg); -webkit-transform: translate(0px,2px) rotate(-135deg);
  }
  
  
