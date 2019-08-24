@@ -258,9 +258,7 @@ public static function generate_page_with_all_weeks_list($relative_path_to_libra
                                                                $institution,
                                                                $year,
                                                                $semester,
-                                                               $week_month_day_begin,
-                                                               $only_seminars,
-                                                               $colloquia) {  
+                                                               $week_month_day_begin) {  
 
   Seminars::set_html_head($relative_path_to_library, $title, $icon_in_toolbar);
 
