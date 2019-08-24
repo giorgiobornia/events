@@ -933,10 +933,16 @@ private static function set_abstract_id_and_its_toggle($events_map, $row, $base_
 private static function set_event_day($events_map, $row) {
 
 
+    $year = $events_map[$row][Seminars::$year_idx];
+    $month = $events_map[$row][Seminars::$month_idx];
+    $day = $events_map[$row][Seminars::$day_idx];
+    
+    $week_day = Seminars::compute_week_day($year, $month, $day);  //$events_map[$row][Seminars::$week_day_idx]
+
     echo '<td width="100px">';
 
     echo "<strong>";
-    echo  $events_map[$row][Seminars::$week_day_idx] . " <br/> " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx];
+    echo  $week_day  . " <br/> " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx];
     echo "</strong>";
     
     echo '<br/>';
@@ -1664,7 +1670,9 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
    private static   $discipline_idx      = 12;
    private static   $year_idx            = 13;
    private static   $semester_idx        = 14;
-  
+// =====
+
+
   private static $row_events_begin = 1;
   
    private static   $discipline_idx_in_path_from_end = 2;
