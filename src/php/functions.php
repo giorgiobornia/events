@@ -301,10 +301,7 @@ public static function generate_page_with_all_seminars_by_time_range($library_pa
                                                                      $icon_in_toolbar,
                                                                      $year,
                                                                      $semester,
-                                                                     $month_begin,
-                                                                     $day_begin,
-                                                                     $month_end,
-                                                                     $day_end,
+                                                                     $month_begin, $day_begin, $month_end, $day_end,
                                                                      $discipline_array, $colloquium_array, 
                                                                      $seminar_container, $colloquium_container, 
                                                                      $is_seminar_colloquium_all ) {
@@ -351,10 +348,6 @@ echo '</head>';
  
   echo '<h3> &nbsp <strong> Colloquia </strong> </h3>';
   
-   $num_all_disc = count($discipline_array);
-  
-    $only_colloquia_in = $discipline_array;
-    $only_colloquia_out = array_splice($only_colloquia_in, $num_all_disc - 1, $num_all_disc);  ///@todo colloquia is the last one
     
    $only_colloquia_bool_print_discipline = false;
    
@@ -364,7 +357,8 @@ echo '</head>';
                                               $institution, $department, 
                                               $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
                                               Seminars::$abstracts_folder, Seminars::$images_folder, 
-                                              $only_colloquia_out,  $colloquium_array, $only_colloquia_bool_print_discipline,
+                                              $discipline_array,  $colloquium_array, 
+                                              $only_colloquia_bool_print_discipline,
                                               $seminar_container, $colloquium_container, 
                                               $is_colloquium);
     
@@ -372,8 +366,6 @@ echo '</head>';
     
   echo '<h3> &nbsp <strong> Seminars </strong> </h3>';
 
-    $only_seminars_in = $discipline_array;
-    $only_seminars_out = array_splice($only_seminars_in, 0, $num_all_disc - 1);
     
     $only_seminars_bool_print_discipline = true;
  
@@ -383,7 +375,8 @@ echo '</head>';
                                               $institution, $department, 
                                               $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
                                               Seminars::$abstracts_folder, Seminars::$images_folder, 
-                                              $only_seminars_out,  $colloquium_array, $only_seminars_bool_print_discipline,
+                                              $discipline_array,  $colloquium_array,
+                                              $only_seminars_bool_print_discipline,
                                               $seminar_container, $colloquium_container, 
                                               $is_seminar);  
     
@@ -937,7 +930,7 @@ private static function set_event_day($events_map, $row) {
     $month = $events_map[$row][Seminars::$month_idx];
     $day = $events_map[$row][Seminars::$day_idx];
     
-    $week_day = Seminars::compute_week_day($year, $month, $day);  //$events_map[$row][Seminars::$week_day_idx]
+    $week_day = Seminars::compute_week_day($year, $month, $day);
 
     echo '<td width="100px">';
 
@@ -1657,20 +1650,18 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 // =====
    private static   $month_idx               = 0;  //if this column is empty, it still generates the page
    private static   $day_idx                 = 1;  //if this column is empty, it still generates the page
-   private static   $week_day_idx            = 2;  //if this column is empty, it still generates the page
-   private static   $time_idx                = 3;  //if this column is empty, it still generates the page
-   private static   $room_idx                = 4;  //if this column is empty, it still generates the page
-   private static   $speaker_idx             = 5;  //if this column is empty, it still generates the page
-   private static   $speaker_department_idx  = 6;  //if this column is empty, it still generates the page
-   private static   $speaker_institution_idx = 7;  //if this column is empty, it still generates the page
-   private static   $speaker_url_idx         = 8;  //if this column is empty, it still generates the page
-   private static   $speaker_image_idx       = 9;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
-   private static   $title_idx               = 10;  //if this column is empty, it still generates the page
-   private static   $abstract_file_idx       = 11;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
-   private static   $discipline_idx      = 12;
-   private static   $year_idx            = 13;
-   private static   $semester_idx        = 14;
-// =====
+   private static   $time_idx                = 2;  //if this column is empty, it still generates the page
+   private static   $room_idx                = 3;  //if this column is empty, it still generates the page
+   private static   $speaker_idx             = 4;  //if this column is empty, it still generates the page
+   private static   $speaker_department_idx  = 5;  //if this column is empty, it still generates the page
+   private static   $speaker_institution_idx = 6;  //if this column is empty, it still generates the page
+   private static   $speaker_url_idx         = 7;  //if this column is empty, it still generates the page
+   private static   $speaker_image_idx       = 8;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+   private static   $title_idx               = 9;  //if this column is empty, it still generates the page
+   private static   $abstract_file_idx       = 10;  //if this column is empty, it still generates the page //if this column is NOT empty but the file is NOT there, it still generates the page
+   private static   $discipline_idx      = 11;
+   private static   $year_idx            = 12;
+   private static   $semester_idx        = 13;
 
 
   private static $row_events_begin = 1;
@@ -1692,12 +1683,17 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 
 } //end class
 
- 
-///@todo make a function that computes the week day automatically from year/month/day_number
-///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
-///@todo remember to input the speaker websites with https:// or http:// in front! (maybe do a check to find this)
-///@todo do a function that picks a rectangular image and makes it square by extending its smaller side with white
-///@todo We should do Colloquia, Seminars and also Other Events (Workshops, Lecture Series, Banquet, etc...)
 
+///@todo put the seminar items in reverse chronological order
+///@todo do buttons for Previous Week/Next Week
+///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
+///@todo do a function that picks a rectangular image and makes it square by extending its smaller side with black
+///@todo We should do Colloquia, Seminars and also Other Events (Workshops, Lecture Series, Banquet, etc...)
 ///@todo take an arbitrary image, find max between width and height, and make that max equal to N, and keep the aspect ratio for the other dimension; then put a background square of N x N; finally apply border-radius
+
+///@todo DOCUMENTATION
+///@todo remember to input the speaker websites with https:// or http:// in front! (maybe do a check to find this)
+///@todo Put all commas, even the last one
+
+
 ?>
