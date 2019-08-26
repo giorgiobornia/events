@@ -1768,7 +1768,7 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
     $week_month_day_begin[$index][0] . '_' . 
     $week_month_day_begin[$index][1] . '.php">' . 
 //     'Week of ' . 
-    'Monday, ' . Seminars::get_month_string($week_month_day_begin[$index][0]) . ' ' .  $week_month_day_begin[$index][1] . ' through ' . 
+    'Monday, ' . Seminars::get_month_string($week_month_day_begin[$index][0]) . ' ' .  $week_month_day_begin[$index][1] . ' - ' . 
     'Sunday, ' . Seminars::get_month_string($month_and_day_out[0]) . ' ' .  $month_and_day_out[1] . 
     '</a>';    
     
@@ -1927,7 +1927,7 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 ///@todo take an arbitrary image, find max between width and height, and make that max equal to N, and keep the aspect ratio for the other dimension; then put a background square of N x N; finally apply border-radius
 ///@todo see how I can fix the underlining that is missing under mathematical symbols in the title of a talk
 ///@todo Improve documentation with an example of how to use the week-based functions
-
+///@todo Implement a search engine to find colloquia and seminars along the whole database
 
 
 ?>
