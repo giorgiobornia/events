@@ -332,7 +332,7 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
      
     echo '<br/>';
  
-   Seminars::loop_over_semester_weeks($week_month_day_begin);
+   Seminars::loop_over_semester_weeks($year, $week_month_day_begin);
    
     echo '<br/>';
     
@@ -1742,15 +1742,21 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
  }
  
  
-public static function loop_over_semester_weeks($week_month_day_begin) {
+private static function loop_over_semester_weeks($year, $week_month_day_begin) {
 
 
     for ($index = 0; $index < count($week_month_day_begin); $index++) {
    
-    echo '&nbsp <a href="./week/' . 
+ $offset_wanted = 6;
+ $month_and_day_out = Seminars::compute_subsequent_day_with_offset($year, $week_month_day_begin[$index][0], $week_month_day_begin[$index][1], $offset_wanted);
+ 
+ echo '&nbsp <a href="./week/' . 
     $week_month_day_begin[$index][0] . '_' . 
     $week_month_day_begin[$index][1] . '.php">' . 
-    'Week of Monday, ' . Seminars::get_month_string($week_month_day_begin[$index][0]) . ' ' .  $week_month_day_begin[$index][1] . '</a>';    
+//     'Week of ' . 
+    'Monday, ' . Seminars::get_month_string($week_month_day_begin[$index][0]) . ' ' .  $week_month_day_begin[$index][1] . ' through ' . 
+    'Sunday, ' . Seminars::get_month_string($month_and_day_out[0]) . ' ' .  $month_and_day_out[1] . 
+    '</a>';    
     
     echo '<br/>';
     
