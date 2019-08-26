@@ -243,13 +243,71 @@ echo '</html>';
  }
 
 
+ 
+public static function generate_page_with_all_weeks_list_wrapper($filename,
+                                                                $relative_path_to_library,
+                                                               $icon_in_toolbar,
+                                                               $remote_url_base, $local_url_base, $are_input_files_local,
+                                                               $discipline_array, $colloquium_array,
+                                                               $seminar_container, $colloquium_container,
+                                                               $department,
+                                                               $institution) {   
+
+ $title = 'Colloquia and Seminars';
+ 
+  
+  $active_mondays = Seminars::read_csv_file(Seminars::$active_mondays_file);
+
+  $first_index = 0;
+  $last_index = 1;
+  $month_index = 0;
+  $day_index = 1;
+ 
+  $first_monday_month = $active_mondays[$first_index][$month_index];
+  $first_monday_day   = $active_mondays[$first_index][$day_index];
+  $last_monday_month  = $active_mondays[$last_index][$month_index];
+  $last_monday_day    = $active_mondays[$last_index][$day_index];
+  
+  
+ $array_coords = Seminars::get_discipline_year_semester($filename);
+    
+ $semester   = $array_coords[0];
+ $year       = $array_coords[1];
+ $discipline = $array_coords[2];  //this will be 'all'
+    
+    
+ $week_month_day_auto = Seminars::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day);
+
+//to generate all semester files (actually I do it with a shell script instead)
+//    Seminars::generate_initial_week_files($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day,'../../../src/sh/week_file.php','./week/');
+
+   $is_seminar_colloquium_all = 2;
+
+    
+ Seminars::generate_page_with_all_weeks_list($relative_path_to_library,
+                                             $title,
+                                             $icon_in_toolbar,
+                                             $remote_url_base, $local_url_base, $are_input_files_local,
+                                             $discipline,
+                                             $discipline_array, $colloquium_array,
+                                             $seminar_container, $colloquium_container,
+                                             $is_seminar_colloquium_all,
+                                             $department,
+                                             $institution,
+                                             $year,
+                                             $semester,
+                                             $week_month_day_auto);
+ 
+ 
+ }
+ 
+ 
+ 
 
 public static function generate_page_with_all_weeks_list($relative_path_to_library,
                                                                $title,
                                                                $icon_in_toolbar,
-                                                               $remote_url_base,
-                                                               $local_url_base,
-                                                               $are_input_files_local,
+                                                               $remote_url_base, $local_url_base, $are_input_files_local,
                                                                $discipline,
                                                                $discipline_array, $colloquium_array,
                                                                $seminar_container, $colloquium_container,
@@ -342,6 +400,8 @@ echo '</head>';
  $title = $title_in_toolbar;
  
  Seminars::main_banner($title, $department, $institution);
+ 
+ ///@todo here I should put two links Previous week/Next week... That's why I need to know what my week is, and what adjacent weeks are, among the ones that are ACTIVE
  
   echo '<h2> &nbsp <strong> ' . Seminars::$months_conv[$month_begin] . ' ' . $day_begin  . ' - ' . Seminars::$months_conv[$month_end] . ' ' . $day_end  . ' </strong> </h2>';
  
@@ -1624,9 +1684,10 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
    private static $images_folder        = "./images/";
    private static $events_file          = './events.csv';
    private static $about_file           = './about.txt';
-   private static $active_editions_file = './active_editions.csv';  ///@todo it is up to the user to write the same directories as the ones that are there, perhaps put a check on that
-                                                                    ///@todo you also have to check that the csv file does not have "empty cells"
-
+   private static $active_editions_file = './active_editions.csv';
+   private static $active_mondays_file  = 'active_mondays_first_and_last.csv';
+   ///@todo it is up to the user to write the same directories as the ones that are there, perhaps put a check on that
+   ///@todo you also have to check that the csv file does not have "empty cells"
  
  
  //array for conversion from month number to string
@@ -1702,6 +1763,8 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 ///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 ///@todo do a function that picks a rectangular image and makes it square by extending its smaller side with black
 ///@todo take an arbitrary image, find max between width and height, and make that max equal to N, and keep the aspect ratio for the other dimension; then put a background square of N x N; finally apply border-radius
+///@todo see how I can fix the underlining that is missing under mathematical symbols in the title of a talk
+
 
 ///@todo DOCUMENTATION
 ///@todo remember to input the speaker websites with https:// or http:// in front! (maybe do a check to find this)
