@@ -304,7 +304,7 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
  
  
 
-public static function generate_page_with_all_weeks_list($relative_path_to_library,
+private static function generate_page_with_all_weeks_list($relative_path_to_library,
                                                                $title,
                                                                $icon_in_toolbar,
                                                                $remote_url_base, $local_url_base, $are_input_files_local,
@@ -351,8 +351,68 @@ public static function generate_page_with_all_weeks_list($relative_path_to_libra
  }
  
  
+
+public static function generate_page_with_all_seminars_by_time_range_wrapper($filename,
+                                                                             $library_path,
+                                                                             $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                                             $institution,
+                                                                             $department,
+                                                                             $icon_in_toolbar,
+                                                                             $discipline_array, $colloquium_array,
+                                                                             $seminar_container, $colloquium_container) { 
+
+  $starting_pos = 2;
+  $how_many_backwards = 2;
+  $path_out =  Seminars::get_path_components_from_the_end($filename, $starting_pos, $how_many_backwards);
+  
+  $year = $path_out[1];
+  $semester = $path_out[0];
  
-public static function generate_page_with_all_seminars_by_time_range($library_path,  
+  $month_day_file_array =  Seminars::get_path_components_from_the_end($filename, 0, 1);
+  
+  $month_day_file = $month_day_file_array[0];
+  
+  $basestr = basename($month_day_file, '.php');
+  $basestr_array = Seminars::get_string_components_from_the_end('_', $basestr, 0, 2);
+  
+ $month_begin = $basestr_array[1];
+ $day_begin   = $basestr_array[0];
+ 
+
+ $offset_wanted = 6;
+ $month_and_day_out = Seminars::compute_subsequent_day_with_offset($year, $month_begin, $day_begin, $offset_wanted);
+
+ $month_end   = $month_and_day_out[0];
+ $day_end     = $month_and_day_out[1];
+ 
+ 
+ 
+ $is_seminar_colloquium_all = 2;
+ 
+ 
+ 
+ Seminars::generate_page_with_all_seminars_by_time_range($library_path,
+                                                         $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                         $institution,$department,
+                                                         $icon_in_toolbar,
+                                                         $year,
+                                                         $semester,
+                                                         $month_begin,
+                                                         $day_begin,
+                                                         $month_end,
+                                                         $day_end,
+                                                         $discipline_array,$colloquium_array,
+                                                         $seminar_container, $colloquium_container,
+                                                         $is_seminar_colloquium_all
+                                                         ); 
+ 
+ 
+}
+
+
+ 
+ 
+private static function generate_page_with_all_seminars_by_time_range($library_path,  
                                                                      $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                                      $institution, 
                                                                      $department,
@@ -402,6 +462,10 @@ echo '</head>';
  Seminars::main_banner($title, $department, $institution);
  
  ///@todo here I should put two links Previous week/Next week... That's why I need to know what my week is, and what adjacent weeks are, among the ones that are ACTIVE
+ //generate the list of all weeks
+ //identify the index of my own current week
+ //if my index is not at the extremes, do a Previous and Next
+ //otherwise, only one of them
  
   echo '<h2> &nbsp <strong> ' . Seminars::$months_conv[$month_begin] . ' ' . $day_begin  . ' - ' . Seminars::$months_conv[$month_end] . ' ' . $day_end  . ' </strong> </h2>';
  
