@@ -398,9 +398,9 @@ private static function read_csv_file($file) {
   
  $array_from_file = file($file); ///@todo this command seems to work only with CSV files coming from Linux/Mac, but not from Windows... the diff command says files are equal...!
  
-//  print_r($array_from_file);
 
   $csv_map = array_map('str_getcsv', $array_from_file); 
+  
 
   return $csv_map;
   
@@ -418,7 +418,9 @@ private static function read_events_file_and_attach_topic_year_semester($prefix,
 //   echo $discipline;
   
  $csv_map = Seminars::read_csv_file($file_to_parse);
-  
+ 
+ array_splice($csv_map,0,1); //remove the 1st row
+
   
   for ($row = 0; $row < count($csv_map); $row++) {
   
@@ -428,7 +430,6 @@ private static function read_events_file_and_attach_topic_year_semester($prefix,
   
   }
 
-//     print_r($csv_map);
 
   return $csv_map;
 
@@ -1449,12 +1450,25 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
                  $seminar_container, $colloquium_container, $is_seminar_colloquium_all);
                  
  
- $starting_row = Seminars::$row_events_begin;
- 
  
  $events_in_seminar = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester, $seminar_container, $colloquium_container, $is_seminar_colloquium_all);
  
  $bool_print_discipline = false;
+ 
+ //==========
+ //sort in reverse chronological order, first by month, then by day
+  $temp_column = array();
+    
+  foreach ($events_in_seminar as $key => $row) {
+     $sequential   = Seminars::compute_day_sequential_number($year, $events_in_seminar[$key][Seminars::$month_idx],  $events_in_seminar[$key][Seminars::$day_idx]);
+    $temp_column[$key] = $sequential;
+  }
+  
+  array_multisort($temp_column, SORT_DESC, $events_in_seminar);
+ //==========
+
+ $starting_row = Seminars::$row_events_begin;
+ 
     
  Seminars::loop_over_events($events_in_seminar, $starting_row,
                             $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
@@ -1471,7 +1485,7 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
  }
  
 
- private static function sort_array_of_arrays(& $array_of_arrays, $index, $sort_order) {
+ private static function sort_array_of_arrays_based_on_one_index(& $array_of_arrays, $index, $sort_order) {
  
 //  $index: column index with respect to which you intend to sort
 //  $sort_order: SORT_ASC, SORT_DESC, ...
@@ -1483,7 +1497,7 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
   }
 
   array_multisort($temp_column, $sort_order, $array_of_arrays);
-  
+  //in practice the first array is sorted, and the second one is sorted the same way as the first
 
  }
 
@@ -1509,9 +1523,7 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
                                                         $seminar_container, $colloquium_container, $is_seminar_colloquium_all);
     
     
-    Seminars::sort_array_of_arrays($events_in_week, Seminars::$month_idx, SORT_ASC);
-
-//     Seminars::sort_array_of_arrays($events_in_week, Seminars::$day_idx, SORT_ASC);
+    Seminars::sort_array_of_arrays_based_on_one_index($events_in_week, Seminars::$month_idx, SORT_ASC);
     
     
     $starting_row = 0;
@@ -1664,7 +1676,7 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
    private static   $semester_idx        = 13;
 
 
-  private static $row_events_begin = 1;
+  private static $row_events_begin = 0;
   
    private static   $discipline_idx_in_path_from_end = 2;
    private static   $year_idx_in_path_from_end       = 1;
@@ -1684,16 +1696,16 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 } //end class
 
 
-///@todo put the seminar items in reverse chronological order
+
 ///@todo do buttons for Previous Week/Next Week
+///@todo We should do Colloquia, Seminars and also Other Events (Workshops, Lecture Series, Banquet, etc...)
 ///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 ///@todo do a function that picks a rectangular image and makes it square by extending its smaller side with black
-///@todo We should do Colloquia, Seminars and also Other Events (Workshops, Lecture Series, Banquet, etc...)
 ///@todo take an arbitrary image, find max between width and height, and make that max equal to N, and keep the aspect ratio for the other dimension; then put a background square of N x N; finally apply border-radius
 
 ///@todo DOCUMENTATION
 ///@todo remember to input the speaker websites with https:// or http:// in front! (maybe do a check to find this)
 ///@todo Put all commas, even the last one
-
+///@todo If an item in the events.csv file has commas inside, just put quotes " ... " around it
 
 ?>
