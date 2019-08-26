@@ -1907,16 +1907,13 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 
 
 
-///@todo We should do Colloquia, Seminars and also Other Events (Workshops, Lecture Series, Banquet, etc...)
+///@todo We should also do Other Events (Workshops, Lecture Series, Banquet, etc...)
 ///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 ///@todo do a function that picks a rectangular image and makes it square by extending its smaller side with black
 ///@todo take an arbitrary image, find max between width and height, and make that max equal to N, and keep the aspect ratio for the other dimension; then put a background square of N x N; finally apply border-radius
 ///@todo see how I can fix the underlining that is missing under mathematical symbols in the title of a talk
+///@todo Improve documentation with an example of how to use the week-based functions
 
 
-///@todo DOCUMENTATION
-///@todo remember to input the speaker websites with https:// or http:// in front! (maybe do a check to find this)
-///@todo Put all commas, even the last one
-///@todo If an item in the events.csv file has commas inside, just put quotes " ... " around it
 
 ?>

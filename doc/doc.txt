@@ -1,0 +1,59 @@
+======================================================
+=== Each seminar or colloquium =======================
+======================================================
+The folder of each seminar (or the folder of colloquia) contains:
+
+- The folders of each year/semester (e.g., 2019/spring)
+
+- active_editions.csv
+    Say which year/semester pairs you want to be visible
+
+- about.txt
+    Say some general information about the seminar/colloquium
+
+- index.php 
+    It redirects to the current year/semester that you specify
+
+==========================
+The folder of each year/semester contains:
+
+- events.csv
+    Put all commas, even the last one
+    If an item in the events.csv file has commas inside, just put quotes " ... " around it
+    Remember to input the speaker websites with https:// or http:// in front! (maybe do a check to find this)
+
+- abstracts/
+
+- images/
+
+- index.php
+    Do not touch it
+
+
+
+
+
+====================================================
+=== The week-based functions =======================
+====================================================
+The week-based functions collect the info of all Colloquia and Seminars in each week, and automatically generate week-based pages.
+Typically, an 'all' folder is created that contains:
+
+- The folders of each year/semester
+
+- active_editions.csv
+    Say which year/semester pairs you want to be visible
+
+
+==========================
+The folder of each year/semester contains:
+
+- week/
+   It contains a different file for each week in that semester
+   
+- active_mondays_first_and_last.csv
+     The first  row contains the Monday of the first week that is active 
+     The second row contains the Monday of the last week that is active
+
+- index.php
+    Do not touch it
