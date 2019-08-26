@@ -258,15 +258,10 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
   
   $active_mondays = Seminars::read_csv_file(Seminars::$active_mondays_file);
 
-  $first_index = 0;
-  $last_index = 1;
-  $month_index = 0;
-  $day_index = 1;
- 
-  $first_monday_month = $active_mondays[$first_index][$month_index];
-  $first_monday_day   = $active_mondays[$first_index][$day_index];
-  $last_monday_month  = $active_mondays[$last_index][$month_index];
-  $last_monday_day    = $active_mondays[$last_index][$day_index];
+  $first_monday_month = $active_mondays[Seminars::$active_mondays_first_index][Seminars::$active_mondays_month_index];
+  $first_monday_day   = $active_mondays[Seminars::$active_mondays_first_index][Seminars::$active_mondays_day_index];
+  $last_monday_month  = $active_mondays[Seminars::$active_mondays_last_index][Seminars::$active_mondays_month_index];
+  $last_monday_day    = $active_mondays[Seminars::$active_mondays_last_index][Seminars::$active_mondays_day_index];
   
   
  $array_coords = Seminars::get_discipline_year_semester($filename);
@@ -410,7 +405,87 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
 }
 
 
+
+
+private static function previous_and_next_week_buttons($year, $month_begin, $day_begin) {
+
+
+ $active_mondays_path = '../' . Seminars::$active_mondays_file;
  
+ $active_mondays = Seminars::read_csv_file($active_mondays_path);
+
+ //generate the list of all mondays
+ $first_monday_month = $active_mondays[Seminars::$active_mondays_first_index][Seminars::$active_mondays_month_index];
+ $first_monday_day   = $active_mondays[Seminars::$active_mondays_first_index][Seminars::$active_mondays_day_index];
+ $last_monday_month  = $active_mondays[Seminars::$active_mondays_last_index][Seminars::$active_mondays_month_index];
+ $last_monday_day    = $active_mondays[Seminars::$active_mondays_last_index][Seminars::$active_mondays_day_index];
+ 
+ 
+ $all_mondays = Seminars::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day);
+ 
+ $current_monday_month = $month_begin;
+ $current_monday_day = $day_begin;
+ 
+ $row_matching = 0;
+ 
+ 
+ for ($row = 0; $row < count($all_mondays); $row++) {
+
+ if( $all_mondays[$row][0] == $current_monday_month && 
+     $all_mondays[$row][1] == $current_monday_day) { $row_matching = $row; }
+ 
+ }
+
+ 
+ //remember that these mondays are in REVERSE CHRONOLOGICAL order!!!
+
+ $next_week_index = -1;
+ $previous_week_index = +1;
+ $last_week_index = 0;
+ $first_week_index = count($all_mondays) - 1;
+
+ if (count($all_mondays) > 1) {
+ 
+ if ($row_matching > $last_week_index && $row_matching < $first_week_index) {
+     echo '<table>';
+     echo '<td style="padding: 10px;">';
+  $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous week </a>'; 
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+  $next_ind = $row_matching + $next_week_index;         echo '<a href="' . $all_mondays[$next_ind][0]     . '_' . $all_mondays[$next_ind][1]     . '.php' . '"> Next week </a>';     
+     echo '</td>';
+     echo '</table>';
+  }
+
+  else if ($row_matching == $last_week_index) {
+    echo '<table>';
+     echo '<td style="padding: 10px;">';
+   $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous week </a>'; 
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+     echo '</td>';
+     echo '</table>';
+   }
+
+  else if ($row_matching == $first_week_index) {
+    echo '<table>';
+     echo '<td style="padding: 10px;">';
+     echo str_repeat("&nbsp;", 26);  //how to add white spaces
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+    $next_ind = $row_matching + $next_week_index;        echo '<a href="' . $all_mondays[$next_ind][0] . '_' . $all_mondays[$next_ind][1] . '.php' . '"> Next week </a>';
+     echo '</td>';
+     echo '</table>';
+  }
+  
+ }
+ 
+
+
+}
+
+
+
  
 private static function generate_page_with_all_seminars_by_time_range($library_path,  
                                                                      $remote_path_prefix, $local_path_prefix, $are_input_files_local,
@@ -461,15 +536,13 @@ echo '</head>';
  
  Seminars::main_banner($title, $department, $institution);
  
- ///@todo here I should put two links Previous week/Next week... That's why I need to know what my week is, and what adjacent weeks are, among the ones that are ACTIVE
- //generate the list of all weeks
- //identify the index of my own current week
- //if my index is not at the extremes, do a Previous and Next
- //otherwise, only one of them
  
   echo '<h2> &nbsp <strong> ' . Seminars::$months_conv[$month_begin] . ' ' . $day_begin  . ' - ' . Seminars::$months_conv[$month_end] . ' ' . $day_end  . ' </strong> </h2>';
+  
  
- 
+  Seminars::previous_and_next_week_buttons($year, $month_begin, $day_begin);
+
+
   echo '<h3> &nbsp <strong> Colloquia </strong> </h3>';
   
     
@@ -1753,6 +1826,11 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
    ///@todo it is up to the user to write the same directories as the ones that are there, perhaps put a check on that
    ///@todo you also have to check that the csv file does not have "empty cells"
  
+   private static $active_mondays_first_index = 0;
+   private static $active_mondays_last_index = 1;
+   private static $active_mondays_month_index = 0;
+   private static $active_mondays_day_index = 1;
+ 
  
  //array for conversion from month number to string
  private static $months_conv = array(
@@ -1822,7 +1900,7 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 
 
 
-///@todo do buttons for Previous Week/Next Week
+
 ///@todo We should do Colloquia, Seminars and also Other Events (Workshops, Lecture Series, Banquet, etc...)
 ///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 ///@todo do a function that picks a rectangular image and makes it square by extending its smaller side with black
