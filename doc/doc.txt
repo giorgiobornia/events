@@ -21,6 +21,7 @@ The folder of each year/semester contains:
     Put all commas, even the last one
     If an item in the events.csv file has commas inside, just put quotes " ... " around it
     Remember to input the speaker websites with https:// or http:// in front! (maybe do a check to find this)
+    Events of a seminar are listed in reverse chronological order
 
 - abstracts/
 

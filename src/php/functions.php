@@ -407,7 +407,7 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
 
 
 
-private static function previous_and_next_week_buttons($year, $month_begin, $day_begin) {
+private static function previous_next_all_week_buttons($year, $month_begin, $day_begin) {
 
 
  $active_mondays_path = '../' . Seminars::$active_mondays_file;
@@ -454,6 +454,9 @@ private static function previous_and_next_week_buttons($year, $month_begin, $day
      echo '<td style="padding: 10px;">';
   $next_ind = $row_matching + $next_week_index;         echo '<a href="' . $all_mondays[$next_ind][0]     . '_' . $all_mondays[$next_ind][1]     . '.php' . '"> Next week </a>';     
      echo '</td>';
+     echo '<td style="padding: 10px;">';
+       echo '<a href="' . '..' . '"> All weeks </a>';
+     echo '</td>';
      echo '</table>';
   }
 
@@ -463,6 +466,10 @@ private static function previous_and_next_week_buttons($year, $month_begin, $day
    $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous week </a>'; 
      echo '</td>';
      echo '<td style="padding: 10px;">';
+     echo str_repeat("&nbsp;", 19);  //how to add white spaces
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+       echo '<a href="' . '..' . '"> All weeks </a>';
      echo '</td>';
      echo '</table>';
    }
@@ -474,6 +481,9 @@ private static function previous_and_next_week_buttons($year, $month_begin, $day
      echo '</td>';
      echo '<td style="padding: 10px;">';
     $next_ind = $row_matching + $next_week_index;        echo '<a href="' . $all_mondays[$next_ind][0] . '_' . $all_mondays[$next_ind][1] . '.php' . '"> Next week </a>';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+       echo '<a href="' . '..' . '"> All weeks </a>';
      echo '</td>';
      echo '</table>';
   }
@@ -501,6 +511,8 @@ private static function generate_page_with_all_seminars_by_time_range($library_p
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
 // if so, I will store that array and make a map that will be parsed by a function
+
+
 
 echo '<!DOCTYPE html>';
 
@@ -540,7 +552,9 @@ echo '</head>';
   echo '<h2> &nbsp <strong> ' . Seminars::$months_conv[$month_begin] . ' ' . $day_begin  . ' - ' . Seminars::$months_conv[$month_end] . ' ' . $day_end  . ' </strong> </h2>';
   
  
-  Seminars::previous_and_next_week_buttons($year, $month_begin, $day_begin);
+ $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+ 
+  Seminars::previous_next_all_week_buttons($year, $month_begin, $day_begin);
 
 
   echo '<h3> &nbsp <strong> Colloquia </strong> </h3>';
