@@ -1206,7 +1206,9 @@ private static function set_event_details($events_map, $row,
     echo $events_map[$row][Seminars::$speaker_idx];
     echo '</a>';
     echo "<br>";
-    echo  $events_map[$row][Seminars::$speaker_department_idx] . ', ' . $events_map[$row][Seminars::$speaker_institution_idx];
+    echo  $events_map[$row][Seminars::$speaker_department_idx];
+    if ($events_map[$row][Seminars::$speaker_department_idx] != '' && $events_map[$row][Seminars::$speaker_institution_idx] != '') echo ', ';
+    echo $events_map[$row][Seminars::$speaker_institution_idx];
     
     echo "<br>";
     
@@ -1675,7 +1677,7 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
     $temp_column[$key] = $sequential;
   }
   
-  array_multisort($temp_column, SORT_DESC, $events_in_seminar);
+  array_multisort($temp_column, SORT_ASC, $events_in_seminar);
  //==========
 
  $starting_row = Seminars::$row_events_begin;
