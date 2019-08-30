@@ -253,7 +253,7 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
                                                                $department,
                                                                $institution) {   
 
- $title = 'Colloquia and Seminars';
+ $title = Seminars::$general_title;
  
   
   $active_mondays = Seminars::read_csv_file(Seminars::$active_mondays_file);
@@ -538,7 +538,7 @@ echo '<html>';
 
 echo '<head>';
 
-  $title_in_toolbar = 'Colloquia and Seminars';
+  $title_in_toolbar = Seminars::$general_title;
 
   
   Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
@@ -575,27 +575,36 @@ echo '</head>';
  Seminars::previous_next_all_week_buttons($year, $month_begin, $day_begin, $sort_weeks_list);
 
 
-  echo '<h3> &nbsp <strong> Colloquia </strong> </h3>';
   
     
+  //==== NON-SEMINARS ====================
    $only_colloquia_bool_print_discipline = false;
    
    $is_colloquium = 1;
+
+   
+  foreach ($colloquium_array as $key => $value) {
+
+  $single_non_seminar_array = array($key => $value);
+  
+  echo '<h3> &nbsp <strong> ' . $value . ' </strong> </h3>';
 
     Seminars::set_seminars_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                               $institution, $department, 
                                               $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
                                               Seminars::$abstracts_folder, Seminars::$images_folder, 
-                                              $discipline_array,  $colloquium_array, 
+                                              $discipline_array,  $single_non_seminar_array, 
                                               $only_colloquia_bool_print_discipline,
                                               $seminar_container, $colloquium_container, 
                                               $is_colloquium);
-    
+  }
+  //====================
     
     
   echo '<h3> &nbsp <strong> Seminars </strong> </h3>';
 
     
+  //==== SEMINARS (they need separate treatment because they have an additional subfolder) ====================
     $only_seminars_bool_print_discipline = true;
  
     $is_seminar = 0;
@@ -608,6 +617,7 @@ echo '</head>';
                                               $only_seminars_bool_print_discipline,
                                               $seminar_container, $colloquium_container, 
                                               $is_seminar);  
+  //====================
     
     
   echo '<br>';
@@ -883,13 +893,13 @@ private static function navigation_bar_past_years($prefix, $discipline, $discipl
   
 
   if ($is_seminar_colloquium_all == 0) { $prefix_disc = $prefix .  $seminar_container . '/' . $discipline . '/'; 
-                                         $label_name = 'History:'/*$discipline_array[$discipline]*/; }
+                                         $label_name = 'History:'; }
 
   else if ($is_seminar_colloquium_all == 1) { $prefix_disc = $prefix /*.  $colloquium_container*/ /*. '/'*/ . $discipline . '/'; 
-                                              $label_name = 'History:'/*$colloquium_array['colloquia']*/; }
+                                              $label_name = 'History:'; }
   
   else if ($is_seminar_colloquium_all == 2) { $prefix_disc = $prefix /*.  $colloquium_container*/ /*. '/'*/ . $discipline . '/'; 
-                                              $label_name = 'History:'/*$colloquium_array['colloquia']*/; }
+                                              $label_name = 'History:'; }
    echo '<li class="nav-item">';
    echo '<a class="nav-link" href="'/* . $prefix_disc*/ . '">' . $label_name  . '</a>';
    echo '</li>';
@@ -933,18 +943,17 @@ private static function navigation_bar_seminars($prefix, $discipline_array) {
 
 }
 
-private static function navigation_bar_link_to_colloquia($prefix, $colloquia_array) {
+private static function navigation_bar_link_to_non_seminars($prefix, $colloquia_array) {
 
-//trick to get the only (key => value) pair
-  $key = $value = NULL;
+
   foreach ($colloquia_array as $key => $value) {
-      break;
-  }
 
    echo '<li class="nav-item">';
    echo '<a class="nav-link" href="' . $prefix . $key . '/' . '">' . $value . '</a>';
    echo '</li>';
 
+  }
+  
 }
 
 
@@ -969,9 +978,7 @@ private static function navigation_bar_content($id_target, $prefix, $discipline,
  echo '<ul class="navbar-nav mr-auto">';
  
  //===================
- $prefix_colloquium = $prefix . $colloquium_container . '/';
-
- Seminars::navigation_bar_link_to_colloquia($prefix, $colloquium_array);
+ Seminars::navigation_bar_link_to_non_seminars($prefix, $colloquium_array);
 
  $prefix_seminars = $prefix . $seminar_container . '/';
  
@@ -1844,14 +1851,14 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
   
   $events_array = array();
   
-   if ($is_seminar_colloquium_all == 0)       $events_array = $discipline_array;
-   else if ($is_seminar_colloquium_all == 1)  $events_array = $colloquium_array;
+   if ($is_seminar_colloquium_all == 0)       { $events_array = $discipline_array; }
+   else if ($is_seminar_colloquium_all == 1)  { $events_array = $colloquium_array; }
 
   $events_in_week = array();
      
     foreach ($events_array as $discipline => $discipline_string) {
     
-    
+
    $csv_map = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester, $seminar_container, $colloquium_container, $is_seminar_colloquium_all);
 
     
@@ -1956,6 +1963,9 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
    private static   $year_idx_in_path_from_end       = 1;
    private static   $semester_idx_in_path_from_end   = 0;
   
+// ===== bootstrap style
+   private static   $general_title   = 'Events';
+
 // ===== bootstrap style
   private static $bootstrap_container = 'container';              //centered page
   private static $bootstrap_container_fluid = 'container-fluid';  //all viewport width
