@@ -271,7 +271,8 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
  $discipline = $array_coords[2];  //this will be 'all'
     
     
- $week_month_day_auto = Seminars::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day);
+ $sort_weeks_list = Seminars::$sort_weeks;
+ $week_month_day_auto = Seminars::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day, $sort_weeks_list);
 
 //to generate all semester files (actually I do it with a shell script instead)
 //    Seminars::generate_initial_week_files($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day,'../../../src/sh/week_file.php','./week/');
@@ -407,7 +408,7 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
 
 
 
-private static function previous_next_all_week_buttons($year, $month_begin, $day_begin) {
+private static function previous_next_all_week_buttons($year, $month_begin, $day_begin, $sort_weeks_list) {
 
 
  $active_mondays_path = '../' . Seminars::$active_mondays_file;
@@ -421,7 +422,7 @@ private static function previous_next_all_week_buttons($year, $month_begin, $day
  $last_monday_day    = $active_mondays[Seminars::$active_mondays_last_index][Seminars::$active_mondays_day_index];
  
  
- $all_mondays = Seminars::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day);
+ $all_mondays = Seminars::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day, $sort_weeks_list);
  
  $current_monday_month = $month_begin;
  $current_monday_day = $day_begin;
@@ -437,16 +438,29 @@ private static function previous_next_all_week_buttons($year, $month_begin, $day
  }
 
  
- //remember that these mondays are in REVERSE CHRONOLOGICAL order!!!
-
- $next_week_index = -1;
- $previous_week_index = +1;
- $last_week_index = 0;
- $first_week_index = count($all_mondays) - 1;
+ //CHRONOLOGICAL order
+ $next_week_index     = '';
+ $previous_week_index = '';
+ $last_week_index     = '';
+ $first_week_index    = '';
+ 
+ if ($sort_weeks_list == SORT_DESC) {
+   $next_week_index = -1;
+   $previous_week_index = +1;
+   $last_week_index = 0;
+   $first_week_index = count($all_mondays) - 1;
+ }
+ else if ($sort_weeks_list == SORT_ASC) {
+   $next_week_index = +1;
+   $previous_week_index = -1;
+   $last_week_index = count($all_mondays) - 1;
+   $first_week_index = 0;
+ }
+ 
 
  if (count($all_mondays) > 1) {
  
- if ($row_matching > $last_week_index && $row_matching < $first_week_index) {
+ if ($row_matching != $last_week_index && $row_matching != $first_week_index) {//this control encompasses both cases, although it is "looser"
      echo '<table>';
      echo '<td style="padding: 10px;">';
   $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous week </a>'; 
@@ -490,6 +504,9 @@ private static function previous_next_all_week_buttons($year, $month_begin, $day
   
  }
  
+ else {
+   ///@todo do the case of only one week, maybe 
+ }
 
 
 }
@@ -554,7 +571,8 @@ echo '</head>';
  
  $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
  
-  Seminars::previous_next_all_week_buttons($year, $month_begin, $day_begin);
+ $sort_weeks_list = Seminars::$sort_weeks;
+ Seminars::previous_next_all_week_buttons($year, $month_begin, $day_begin, $sort_weeks_list);
 
 
   echo '<h3> &nbsp <strong> Colloquia </strong> </h3>';
@@ -1434,10 +1452,12 @@ private static function loop_over_events($events_map, $starting_row,
  
 
 public static function generate_initial_week_files($year_in, $month_begin, $day_begin, $month_end, $day_end, $src_file, $folder_out) {
-//@todo temporarily give Write access to all in the containing folder, and clean the output folder week/
+//@todo To use this function, temporarily give Write access to all in the containing folder, and clean the output folder week/
 // then, do a chown to remove the web user
+// Actually we do this with a shell script too
 
-$months_and_days = Seminars::generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end);
+ $sort_weeks_list = SORT_DESC; //here ascending or descending is equivalent
+ $months_and_days = Seminars::generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end, $sort_weeks_list);
 
     for ($index = 0; $index < count($months_and_days); $index++) {
     
@@ -1500,7 +1520,7 @@ private static function compute_week_day($year_in, $month_in, $day_in) {
 
 
 
-private static function generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end) {
+private static function generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end, $sort_weeks_list) {
 
 ///@todo check that the input and the output are a Monday
 
@@ -1523,8 +1543,8 @@ private static function generate_initial_week_days($year_in, $month_begin, $day_
  
    $new_day += $offset_wanted;
    $month_and_day_item = Seminars::compute_month_and_day_from_sequential_number($year_in, $new_day);
-   array_unshift($months_and_days, $month_and_day_item);  //the most recent is at the top: the alternative is array_push
-  
+   if      ($sort_weeks_list == SORT_DESC) array_unshift($months_and_days, $month_and_day_item);  //the most recent is at the top: the alternative is array_push
+   else if ($sort_weeks_list == SORT_ASC)     array_push($months_and_days, $month_and_day_item);  
  }
   
  return $months_and_days;
@@ -1881,6 +1901,7 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
    private static $active_mondays_month_index = 0;
    private static $active_mondays_day_index = 1;
  
+   private static $sort_weeks = SORT_ASC;  //or SORT_DESC
  
  //array for conversion from month number to string
  private static $months_conv = array(
