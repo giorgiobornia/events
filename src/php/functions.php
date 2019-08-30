@@ -1328,13 +1328,19 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
  
  $abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, '');
     
+
+ $abstract_field = $events_map[$row][Seminars::$abstract_file_idx];
+    
+ $arr1 = explode(' ',trim($abstract_field));
+ $txt_found = stristr($abstract_field,Seminars::$about_file_extension);  //case-insensitive match
+//     if (!($txt_found)) echo "---";  //it is either empty or it contains information
+
     $abstract_path =
     $after_prefix . 
     $events_map[$row][Seminars::$discipline_idx] . '/' .  
     $events_map[$row][Seminars::$year_idx] . '/' . 
     $events_map[$row][Seminars::$semester_idx] . '/' . 
     $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
-
 
 //----------------    
     echo '<span ';   ///@todo make this span CENTERED
@@ -1345,7 +1351,8 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
     
     echo '>';
     
-    Seminars::include_file( $remote_path_prefix, $local_path_prefix, $abstract_path, $are_input_files_local);
+    if (!($txt_found)) echo $abstract_field;
+    else               Seminars::include_file( $remote_path_prefix, $local_path_prefix, $abstract_path, $are_input_files_local);
     
     echo '</span>';
 //----------------    
@@ -1493,7 +1500,7 @@ private static function compute_week_day($year_in, $month_in, $day_in) {
 
 
 
-public static function generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end) {
+private static function generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end) {
 
 ///@todo check that the input and the output are a Monday
 
@@ -1526,7 +1533,7 @@ public static function generate_initial_week_days($year_in, $month_begin, $day_b
 
  
  
-public static function compute_subsequent_day_with_offset($year_in, $month_in, $day_in, $offset_wanted) {
+private static function compute_subsequent_day_with_offset($year_in, $month_in, $day_in, $offset_wanted) {
   
  $sequential_day_begin = Seminars::compute_day_sequential_number($year_in, $month_in, $day_in);
  
@@ -1535,8 +1542,6 @@ public static function compute_subsequent_day_with_offset($year_in, $month_in, $
  if ($sequential_day_end > Seminars::compute_year_days_number($year_in) - 1) echo '@todo Handling of year crossing not implemented';
    
  $month_and_day_out = Seminars::compute_month_and_day_from_sequential_number($year_in, $sequential_day_end);
-
-//  echo $month_and_day_out[0] . ' ' . $month_and_day_out[1];
 
  return $month_and_day_out;
  
@@ -1669,7 +1674,7 @@ public static function set_seminars_by_topic_body($remote_path_prefix,
  $bool_print_discipline = false;
  
  //==========
- //sort in reverse chronological order, first by month, then by day
+ //sort in chronological order, first by month, then by day
   $temp_column = array();
     
   foreach ($events_in_seminar as $key => $row) {
@@ -1760,18 +1765,40 @@ public static function set_seminars_by_time_range_body($remote_path_prefix, $loc
  
 private static function loop_over_semester_weeks($year, $week_month_day_begin) {
 
+   $current_year     = date("Y");
+   $current_month    = date("m");
+   $current_day      = date("d");
+   $current_week_day = date("l");
 
-    for ($index = 0; $index < count($week_month_day_begin); $index++) {
+   $sequential_current = Seminars::compute_day_sequential_number($current_year, $current_month, $current_day);
    
- $offset_wanted = 6;
- $month_and_day_out = Seminars::compute_subsequent_day_with_offset($year, $week_month_day_begin[$index][0], $week_month_day_begin[$index][1], $offset_wanted);
+
+   for ($index = 0; $index < count($week_month_day_begin); $index++) {
+    
+   $begin_month =  $week_month_day_begin[$index][0];
+   $begin_day   =  $week_month_day_begin[$index][1];
+   
+   $offset_wanted = 6;
+   $month_and_day_out = Seminars::compute_subsequent_day_with_offset($year, $begin_month, $begin_day, $offset_wanted);
+
+   $end_month = $month_and_day_out[0];
+   $end_day   = $month_and_day_out[1];
+
+   //make the current week bold  
+   $style ='';
+   $sequential_begin = Seminars::compute_day_sequential_number($year, $begin_month, $begin_day);
+   $sequential_end = $sequential_begin + $offset_wanted;
+   
+   if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end )   $style ='font-weight: bold;';
+   //make the current week bold  
+
  
- echo '&nbsp <a href="./week/' . 
+ echo '&nbsp <a ' . 'style="' . $style . '" ' . ' href="./week/' . 
     $week_month_day_begin[$index][0] . '_' . 
     $week_month_day_begin[$index][1] . '.php">' . 
 //     'Week of ' . 
-    'Monday, ' . Seminars::get_month_string($week_month_day_begin[$index][0]) . ' ' .  $week_month_day_begin[$index][1] . ' - ' . 
-    'Sunday, ' . Seminars::get_month_string($month_and_day_out[0]) . ' ' .  $month_and_day_out[1] . 
+    'Monday, ' . Seminars::get_month_string($begin_month) . ' ' .  $begin_day . ' - ' . 
+    'Sunday, ' . Seminars::get_month_string($end_month) . ' ' .  $end_day . 
     '</a>';    
     
     echo '<br/>';
@@ -1817,7 +1844,7 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
     
 
     if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end ) {
-    
+
     array_push($events_in_week, $csv_map[$row]);
     
        }
@@ -1842,6 +1869,7 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
    private static $abstracts_folder     = "./abstracts/";
    private static $images_folder        = "./images/";
    private static $events_file          = './events.csv';
+   private static $about_file_extension = '.txt';
    private static $about_file           = './about.txt';
    private static $active_editions_file = './active_editions.csv';
    private static $active_mondays_file  = 'active_mondays_first_and_last.csv';
@@ -1930,6 +1958,8 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 ///@todo see how I can fix the underlining that is missing under mathematical symbols in the title of a talk
 ///@todo Improve documentation with an example of how to use the week-based functions
 ///@todo Implement a search engine to find colloquia and seminars along the whole database
-
+///@todo Since the list of seminars changes from one semester to another, find a way to only show the seminars that are ACTIVE in the CURRENT semester;
+//       on the other hand, try to make the other ones visible, to avoid hiding a history of perhaps interesting past seminars
+///@todo Remove automatically potential whitespaces from fields such as month,day,time in events.csv
 
 ?>
