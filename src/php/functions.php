@@ -931,7 +931,7 @@ private static function navigation_bar_seminars($prefix, $discipline_array) {
   echo '<li class="nav-item dropdown">';
     echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $link_name . ' </a>';
 
-   echo '  <ul class="dropdown-menu">';
+   echo '  <ul class="dropdown-menu" style="min-width: 15rem;">';
     foreach ($discipline_array as $discipline => $discipline_string) {
      echo '    <li><a href="' . $prefix .  $discipline . '">' . $discipline_string . '</a></li>';
 
