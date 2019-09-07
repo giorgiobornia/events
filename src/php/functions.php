@@ -1982,7 +1982,6 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 
 
 
-///@todo We should also do Other Events (Workshops, Lecture Series, Banquet, etc...)
 ///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
 ///@todo do a function that picks a rectangular image and makes it square by extending its smaller side with black
 ///@todo take an arbitrary image, find max between width and height, and make that max equal to N, and keep the aspect ratio for the other dimension; then put a background square of N x N; finally apply border-radius
@@ -1992,5 +1991,9 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 ///@todo Since the list of seminars changes from one semester to another, find a way to only show the seminars that are ACTIVE in the CURRENT semester;
 //       on the other hand, try to make the other ones visible, to avoid hiding a history of perhaps interesting past seminars
 ///@todo Remove automatically potential whitespaces from fields such as month,day,time in events.csv
+///@todo Remove potential zeros in numbers of month and day such as 09 instead of 9
+///@todo If no title is specified, do not the dropdown arrow for the abstract
+///@todo If no image is specified, put some default (define DoubleT.jpg as a default)
+///@todo Make an arbitrary amount of seminars, or an arbitrary number of groups with an additional "depth level" to be specified, maybe only 1 additional depth level with a "container" folder to be specified
 
 ?>
