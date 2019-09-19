@@ -979,15 +979,16 @@ private static function navigation_bar_content($id_target, $prefix, $discipline,
  
  //===================
  Seminars::navigation_bar_link_to_non_seminars($prefix, $colloquium_array);
-
  $prefix_seminars = $prefix . $seminar_container . '/';
  
  Seminars::navigation_bar_seminars($prefix_seminars, $discipline_array);
  //===================
 
+ echo '<li class="dropdown-divider"></li>';
   
   Seminars::navigation_bar_past_years($prefix, $discipline, $discipline_array, $colloquium_array, $seminar_container, $colloquium_container, $is_seminar_colloquium_all);
   
+ echo '<li class="dropdown-divider"></li>';
 
   Seminars::navigation_bar_link_to_department($department);
   
@@ -1995,5 +1996,7 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 ///@todo If no title is specified, do not the dropdown arrow for the abstract
 ///@todo If no image is specified, put some default (define DoubleT.jpg as a default)
 ///@todo Make an arbitrary amount of seminars, or an arbitrary number of groups with an additional "depth level" to be specified, maybe only 1 additional depth level with a "container" folder to be specified
+///@todo Write a program that automatically generates the slideshows that may go both in the department screens and in the main cyclic banner in the department homepage (I will generate a bunch of pdf files, you need a software like PDF Slideshow)
+///@todo Check that it works also if we add 'summer' folders, for summer events
 
 ?>
