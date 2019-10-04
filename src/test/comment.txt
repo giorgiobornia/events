@@ -1,0 +1,2 @@
+These files seem to be exactly the same but the Windows-generated one does not work, while the other one works!
+ Even a 'diff' says they are equal but it seems like they are not!!! Where is the cause?
