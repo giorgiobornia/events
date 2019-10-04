@@ -4,6 +4,46 @@
 class Seminars {
 
 
+ public static function generate_pdf_slides_by_time_range($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                          $institution,
+                                                          $department, 
+                                                          $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
+                                                          $discipline_array, $colloquium_array,
+                                                          $seminar_container, $colloquium_container, $is_seminar_colloquium_all) {
+ 
+//  php -r " " for an in-line script on command line
+
+
+$sort_weeks_list = SORT_ASC;
+
+
+    $events_in_week =  Seminars::parse_all_event_tables($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                                                        $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
+                                                        $discipline_array, $colloquium_array, 
+                                                        $seminar_container, $colloquium_container, $is_seminar_colloquium_all);
+    
+
+//     Seminars::sort_array_of_arrays_based_on_one_index($events_in_week, Seminars::$month_idx, SORT_ASC);
+
+//latex file -----------------
+  $fp = fopen('test.tex', 'w');
+  fwrite($fp, '\documentclass[10pt,compress]{beamer}' . PHP_EOL);
+  fwrite($fp, '\begin{document}' . PHP_EOL);
+  fwrite($fp, '\begin{frame}' . PHP_EOL);
+  fwrite($fp, 'What up, world?' . PHP_EOL);
+  fwrite($fp, $year . PHP_EOL);
+  fwrite($fp, $department[0] . PHP_EOL);
+  fwrite($fp, count($events_in_week) . PHP_EOL);
+  fwrite($fp, '\end{frame}' . PHP_EOL);
+  fwrite($fp, '\end{document}' . PHP_EOL);
+  fclose($fp);
+
+  $output = shell_exec('pdflatex test.tex');
+  printf($output);
+  
+}
+
+
  public static function get_discipline_year_semester($file_in) {
  ///@todo actually this is semester/year/discipline now
  
