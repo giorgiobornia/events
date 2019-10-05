@@ -26,7 +26,7 @@ $is_seminar_colloquium_all = 0;
 
 //     Seminars::sort_array_of_arrays_based_on_one_index($events_in_week, Seminars::$month_idx, SORT_ASC);
 
-      for ($event_i = 0; $event_i < count($events_in_week); $event_i++)   Seminars::single_latex_pdf_slide($events_in_week, $event_i);
+      for ($event_i = 0; $event_i < count($events_in_week); $event_i++)   Seminars::single_latex_pdf_slide($events_in_week, $event_i, $discipline_array);
 
 
   ///@todo copy all pdf files over to the TV server
@@ -34,56 +34,80 @@ $is_seminar_colloquium_all = 0;
 }
 
 
- private static function single_latex_pdf_slide($events_in_week, $event_i) {
+ private static function single_latex_pdf_slide($events_in_week, $event_i, $discipline_array) {
  
 //latex file -----------------
   $slides_folder = 'slides';
 //   mkdir('slides');              //with PHP
   shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
-  $event_filename = 'test_' . $event_i;
+  $event_filename = 'slide_' . $event_i;
   $fp = fopen($slides_folder . '/' . $event_filename . '.tex', 'w');
 //   shell_exec('cd ' . $slides_folder);
     
   fwrite($fp, '\documentclass[10pt,compress]{beamer}' . PHP_EOL);
     
-//  fwrite($fp, '\usepackage[utf8]{inputenc}'. PHP_EOL);
+//  fwrite($fp, '\usepackage[T1]{fontenc}'. PHP_EOL);
+//  fwrite($fp, '\usepackage[latin1]{inputenc}'. PHP_EOL);
+ fwrite($fp, '\usepackage[utf8]{inputenc}'. PHP_EOL);
+ fwrite($fp, '\usepackage{verbatim}'. PHP_EOL);
+ fwrite($fp, '\usepackage{graphicx}'. PHP_EOL);
  fwrite($fp, '\usetheme{CambridgeUS}' . PHP_EOL);
   fwrite($fp, '\setbeamertemplate{navigation symbols}{}' . PHP_EOL);
   fwrite($fp, '\setbeamertemplate{page number in head/foot}{}' . PHP_EOL);
   fwrite($fp, '\date{}' . PHP_EOL);
 
   fwrite($fp, '\begin{document}' . PHP_EOL);
-  fwrite($fp, '\begin{frame}' . PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Seminars::$month_idx] . PHP_EOL);
+  fwrite($fp, '\begin{frame}[fragile]' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  
+  fwrite($fp, '\begin{columns}' . PHP_EOL);
+
+  fwrite($fp, '\begin{column}{0.5\textwidth}' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  fwrite($fp, '\textbf{' . PHP_EOL);
+  fwrite($fp, $discipline_array[$events_in_week[$event_i][Seminars::$discipline_idx]] . PHP_EOL);
+  fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
+  $year = $events_in_week[$event_i][Seminars::$year_idx];
+  $month = $events_in_week[$event_i][Seminars::$month_idx];
+  $day = $events_in_week[$event_i][Seminars::$day_idx];
+  $week_day = Seminars::compute_week_day($year, $month, $day);
+  fwrite($fp, $week_day);
+  fwrite($fp, ', ');
+  fwrite($fp, Seminars::$months_conv_long[$events_in_week[$event_i][Seminars::$month_idx] ] /*. PHP_EOL*/);
+  fwrite($fp, ' ');
   fwrite($fp, $events_in_week[$event_i][Seminars::$day_idx] . PHP_EOL);
   fwrite($fp, PHP_EOL);
   fwrite($fp, $events_in_week[$event_i][Seminars::$time_idx] . PHP_EOL);
   fwrite($fp, PHP_EOL);
   fwrite($fp, $events_in_week[$event_i][Seminars::$room_idx] . PHP_EOL);
   fwrite($fp, PHP_EOL);
+  fwrite($fp, '\end{column}' . PHP_EOL);
+
+  fwrite($fp, '\begin{column}{0.5\textwidth}' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  fwrite($fp, '\textbf{' . PHP_EOL);
   fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_idx] . PHP_EOL);
+  fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
-//   fwrite($fp, '\begin{verbatim}' . PHP_EOL);
-//   fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_department_idx] . PHP_EOL);  ///@todo this creates trouble, check why
-//   fwrite($fp, PHP_EOL);
-//   fwrite($fp, '\end{verbatim}' . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_department_idx] . PHP_EOL);  ///@todo this creates trouble, check why. There was an & that is not accepted in Latex!
+  fwrite($fp, PHP_EOL);
   fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_institution_idx] . PHP_EOL);
   fwrite($fp, PHP_EOL);
-//   fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_image_idx] . PHP_EOL);
-//   fwrite($fp, PHP_EOL);
-  fwrite($fp, '\textbf{' . PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Seminars::$title_idx] . PHP_EOL);
+  fwrite($fp, '\includegraphics[width=0.5\textwidth]{'.  '../../seminars/' /* path from where the command is launched!!!*/.  $events_in_week[$event_i][Seminars::$discipline_idx] . '/' . $events_in_week[$event_i][Seminars::$year_idx] . '/' . $events_in_week[$event_i][Seminars::$semester_idx]  . '/' . /*Seminars::$images_folder*/  'images/' . $events_in_week[$event_i][Seminars::$speaker_image_idx]  . '}' . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, '\end{column}' . PHP_EOL);
+  
+  fwrite($fp, '\end{columns}' . PHP_EOL);
+
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, '\textbf{'/* . PHP_EOL*/);
+  fwrite($fp, '\huge' . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$title_idx] /*. PHP_EOL*/);
   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
 // //   fwrite($fp, $events_in_week[$event_i][Seminars::$abstract_file_idx] . PHP_EOL);
 // //   fwrite($fp, PHP_EOL);
-//   fwrite($fp, $events_in_week[$event_i][Seminars::$discipline_idx] . PHP_EOL);
-//   fwrite($fp, PHP_EOL);
-//   fwrite($fp, $events_in_week[$event_i][Seminars::$year_idx] . PHP_EOL);
-//   fwrite($fp, PHP_EOL);
-//   fwrite($fp, $events_in_week[$event_i][Seminars::$semester_idx] . PHP_EOL);
-//   fwrite($fp, PHP_EOL);
   fwrite($fp, '\end{frame}' . PHP_EOL);
  
  
@@ -91,7 +115,8 @@ $is_seminar_colloquium_all = 0;
 
   fclose($fp);
 
-  $output = shell_exec('pdflatex '  . ' -output-directory ' . $slides_folder . ' ' .  $slides_folder . '/' . $event_filename . '.tex ' );
+  $output =  shell_exec('pdflatex '  . ' -output-directory ' . $slides_folder . ' ' .  $slides_folder . '/' . $event_filename . '.tex ' );
+//   $output += shell_exec('dvipng '  .  $slides_folder . '/' . $event_filename . '.dvi ' );
   printf($output);
 //latex file -----------------
  
@@ -2009,18 +2034,34 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
  
  //array for conversion from month number to string
  private static $months_conv = array(
- 1  =>  /*'January',   */    'Jan.',  
- 2  =>  /*'February',  */    'Feb.',  
- 3  =>  /*'March',     */    'Mar.',  
- 4  =>  /*'April',     */    'Apr.',  
- 5  =>  /*'May',       */    'May',   
- 6  =>  /*'June',      */    'Jun.',  
- 7  =>  /*'July',      */    'Jul.',  
- 8  =>  /*'August',    */    'Aug.',  
- 9  =>  /*'September', */    'Sep.',  
- 10 =>  /*'October',   */    'Oct.',  
- 11 =>  /*'November',  */    'Nov.',  
- 12 =>  /*'December'); */    'Dec.'); 
+ 1  =>    'Jan.',  
+ 2  =>    'Feb.',  
+ 3  =>    'Mar.',  
+ 4  =>    'Apr.',  
+ 5  =>    'May',   
+ 6  =>    'Jun.',  
+ 7  =>    'Jul.',  
+ 8  =>    'Aug.',  
+ 9  =>    'Sep.',  
+ 10 =>    'Oct.',  
+ 11 =>    'Nov.',  
+ 12 =>    'Dec.' 
+ ); 
+
+ private static $months_conv_long = array(
+ 1  =>  'January',  
+ 2  =>  'February', 
+ 3  =>  'March',    
+ 4  =>  'April',    
+ 5  =>  'May',      
+ 6  =>  'June',     
+ 7  =>  'July',     
+ 8  =>  'August',   
+ 9  =>  'September',
+ 10 =>  'October',  
+ 11 =>  'November', 
+ 12 =>  'December'
+ ); 
 
  private static $week_day_conv = array(
  0  =>    'Monday',  

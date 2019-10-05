@@ -58,3 +58,11 @@ The folder of each year/semester contains:
 
 - index.php
     Do not touch it
+
+
+    
+====================================================
+=== The generation of PDF slides ===================
+====================================================
+
+
