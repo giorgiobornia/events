@@ -9,13 +9,14 @@ class Seminars {
                                                           $department, 
                                                           $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
                                                           $discipline_array, $colloquium_array,
-                                                          $seminar_container, $colloquium_container, $is_seminar_colloquium_all) {
+                                                          $seminar_container, $colloquium_container) {
  
 //  php -r " " for an in-line script on command line
 
 
 $sort_weeks_list = SORT_ASC;
 
+$is_seminar_colloquium_all = 0; 
 
     $events_in_week =  Seminars::parse_all_event_tables($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                                         $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
@@ -25,23 +26,78 @@ $sort_weeks_list = SORT_ASC;
 
 //     Seminars::sort_array_of_arrays_based_on_one_index($events_in_week, Seminars::$month_idx, SORT_ASC);
 
-//latex file -----------------
-  $fp = fopen('test.tex', 'w');
-  fwrite($fp, '\documentclass[10pt,compress]{beamer}' . PHP_EOL);
-  fwrite($fp, '\begin{document}' . PHP_EOL);
-  fwrite($fp, '\begin{frame}' . PHP_EOL);
-  fwrite($fp, 'What up, world?' . PHP_EOL);
-  fwrite($fp, $year . PHP_EOL);
-  fwrite($fp, $department[0] . PHP_EOL);
-  fwrite($fp, count($events_in_week) . PHP_EOL);
-  fwrite($fp, '\end{frame}' . PHP_EOL);
-  fwrite($fp, '\end{document}' . PHP_EOL);
-  fclose($fp);
+      for ($event_i = 0; $event_i < count($events_in_week); $event_i++)   Seminars::single_latex_pdf_slide($events_in_week, $event_i);
 
-  $output = shell_exec('pdflatex test.tex');
-  printf($output);
+
+  ///@todo copy all pdf files over to the TV server
   
 }
+
+
+ private static function single_latex_pdf_slide($events_in_week, $event_i) {
+ 
+//latex file -----------------
+  $slides_folder = 'slides';
+//   mkdir('slides');              //with PHP
+  shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
+  $event_filename = 'test_' . $event_i;
+  $fp = fopen($slides_folder . '/' . $event_filename . '.tex', 'w');
+//   shell_exec('cd ' . $slides_folder);
+    
+  fwrite($fp, '\documentclass[10pt,compress]{beamer}' . PHP_EOL);
+    
+//  fwrite($fp, '\usepackage[utf8]{inputenc}'. PHP_EOL);
+ fwrite($fp, '\usetheme{CambridgeUS}' . PHP_EOL);
+  fwrite($fp, '\setbeamertemplate{navigation symbols}{}' . PHP_EOL);
+  fwrite($fp, '\setbeamertemplate{page number in head/foot}{}' . PHP_EOL);
+  fwrite($fp, '\date{}' . PHP_EOL);
+
+  fwrite($fp, '\begin{document}' . PHP_EOL);
+  fwrite($fp, '\begin{frame}' . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$month_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$day_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$time_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$room_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+//   fwrite($fp, '\begin{verbatim}' . PHP_EOL);
+//   fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_department_idx] . PHP_EOL);  ///@todo this creates trouble, check why
+//   fwrite($fp, PHP_EOL);
+//   fwrite($fp, '\end{verbatim}' . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_institution_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+//   fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_image_idx] . PHP_EOL);
+//   fwrite($fp, PHP_EOL);
+  fwrite($fp, '\textbf{' . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$title_idx] . PHP_EOL);
+  fwrite($fp, '}' . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+// //   fwrite($fp, $events_in_week[$event_i][Seminars::$abstract_file_idx] . PHP_EOL);
+// //   fwrite($fp, PHP_EOL);
+//   fwrite($fp, $events_in_week[$event_i][Seminars::$discipline_idx] . PHP_EOL);
+//   fwrite($fp, PHP_EOL);
+//   fwrite($fp, $events_in_week[$event_i][Seminars::$year_idx] . PHP_EOL);
+//   fwrite($fp, PHP_EOL);
+//   fwrite($fp, $events_in_week[$event_i][Seminars::$semester_idx] . PHP_EOL);
+//   fwrite($fp, PHP_EOL);
+  fwrite($fp, '\end{frame}' . PHP_EOL);
+ 
+ 
+  fwrite($fp, '\end{document}' . PHP_EOL);
+
+  fclose($fp);
+
+  $output = shell_exec('pdflatex '  . ' -output-directory ' . $slides_folder . ' ' .  $slides_folder . '/' . $event_filename . '.tex ' );
+  printf($output);
+//latex file -----------------
+ 
+ }
+
+
 
 
  public static function get_discipline_year_semester($file_in) {
