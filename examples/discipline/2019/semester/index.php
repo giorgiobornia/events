@@ -66,6 +66,7 @@
                                                         $seminar_container,
                                                         $colloquium_container,
                                                         $is_seminar_colloquium_all
+                                                        ///@todo I am adding a new argument here, and later I will remove several others
                                                         );                                                         
   
  ?>

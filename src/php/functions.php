@@ -4,6 +4,35 @@
 class Seminars {
 
 
+public static function get_scheme_depth($all_schemes) {
+
+ $depth = array();
+
+  for ($i = 0; $i < count($all_schemes); $i++) {
+
+    foreach ($all_schemes[$i] as $key => $value) {
+//     echo $key;
+    $depth[$i] = '';
+           if ( sizeof($value) == 1 ) { $depth[$i] = 0; }
+     else  if ( sizeof($value) == 2 ) { 
+           foreach ($value as $key2 => $value2) {
+                      if ( sizeof($value2) == 1 ) { $depth[$i] = 1; }
+                else  if ( sizeof($value2) == 2 ) { $depth[$i] = 1 + 1; }
+
+             }
+           }
+
+//      echo $depth[$i];
+     
+    }
+  
+  }
+  
+  return $depth;
+  
+}
+  
+  
  public static function generate_pdf_slides_by_time_range($remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                           $institution,
                                                           $department, 
@@ -16,7 +45,7 @@ class Seminars {
 
 $sort_weeks_list = SORT_ASC;
 
-$is_seminar_colloquium_all = 0; 
+$is_seminar_colloquium_all = 1; 
 
     $events_in_week =  Seminars::parse_all_event_tables($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                                         $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
@@ -306,7 +335,17 @@ public static function generate_seminar_page_by_topic_year_semester($library_pat
                                                                     $icon_in_toolbar, 
                                                                     $discipline_array, $colloquium_array, 
                                                                     $seminar_container, $colloquium_container,
-                                                   $is_seminar_colloquium_all ) {
+                                                                    $is_seminar_colloquium_all,
+                                                                    $all_schemes
+                                                                    ) {
+
+   $depths = array();
+   $depths = Seminars::get_scheme_depth($all_schemes);
+
+//     for ($i = 0; $i < count($depths); $i++) {
+//      echo ' ' . $depths[$i];
+//    }
+
 
    $discipline = $t_y_s[Seminars::$discipline_idx_in_path_from_end];
    $year       = $t_y_s[Seminars::$year_idx_in_path_from_end];
