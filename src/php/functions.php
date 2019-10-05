@@ -335,8 +335,8 @@ public static function generate_seminar_page_by_topic_year_semester($library_pat
                                                                     $icon_in_toolbar, 
                                                                     $discipline_array, $colloquium_array, 
                                                                     $seminar_container, $colloquium_container,
-                                                                    $is_seminar_colloquium_all,
-                                                                    $all_schemes
+                                                                    $is_all_or_single,
+                                                                    $all_schemes ///@todo this will be added as well to: the Weekly pages, the Week List pages
                                                                     ) {
 
    $depths = array();
@@ -356,7 +356,7 @@ public static function generate_seminar_page_by_topic_year_semester($library_pat
                                             $discipline, $year, $semester, 
                                             $icon_in_toolbar, 
                                             $discipline_array, $colloquium_array, $seminar_container, $colloquium_container,
-                                                   $is_seminar_colloquium_all );
+                                                   $is_all_or_single );
 
 }
 
@@ -366,7 +366,7 @@ private static function generate_seminar_page_by_topic($library_path, $remote_pa
                                                        $discipline, $year, $semester,
                                                        $icon_in_toolbar, 
                                                        $discipline_array, $colloquium_array, $seminar_container, $colloquium_container,
-                                                   $is_seminar_colloquium_all ) {
+                                                   $is_all_or_single ) {
 
  
 echo '<!DOCTYPE html>';
@@ -391,7 +391,7 @@ echo '</head>';
     $discipline, $year, $semester,
     Seminars::$abstracts_folder, Seminars::$images_folder, 
     $discipline_array, $colloquium_array, $seminar_container, $colloquium_container,
-                                                   $is_seminar_colloquium_all );
+                                                   $is_all_or_single );
 
     
   echo '</body>';
@@ -437,7 +437,7 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
 //to generate all semester files (actually I do it with a shell script instead)
 //    Seminars::generate_initial_week_files($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day,'../../../src/sh/week_file.php','./week/');
 
-   $is_seminar_colloquium_all = 2;
+   $is_all_or_single = 2;
 
     
  Seminars::generate_page_with_all_weeks_list($relative_path_to_library,
@@ -447,7 +447,7 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
                                              $discipline,
                                              $discipline_array, $colloquium_array,
                                              $seminar_container, $colloquium_container,
-                                             $is_seminar_colloquium_all,
+                                             $is_all_or_single,
                                              $department,
                                              $institution,
                                              $year,
@@ -467,7 +467,7 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
                                                                $discipline,
                                                                $discipline_array, $colloquium_array,
                                                                $seminar_container, $colloquium_container,
-                                                               $is_seminar_colloquium_all, 
+                                                               $is_all_or_single, 
                                                                $department,
                                                                $institution,
                                                                $year,
@@ -482,7 +482,7 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
                            $discipline,
                            $discipline_array, $colloquium_array, 
                            $seminar_container, $colloquium_container, 
-                           $is_seminar_colloquium_all, 
+                           $is_all_or_single, 
                            $department);
   
   Seminars::main_banner($title, $department, $institution);  
@@ -543,7 +543,7 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
  
  
  
- $is_seminar_colloquium_all = 2;
+ $is_all_or_single = 2;
  
  
  
@@ -559,7 +559,7 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
                                                          $day_end,
                                                          $discipline_array,$colloquium_array,
                                                          $seminar_container, $colloquium_container,
-                                                         $is_seminar_colloquium_all
+                                                         $is_all_or_single
                                                          ); 
  
  
@@ -684,7 +684,7 @@ private static function generate_page_with_all_seminars_by_time_range($library_p
                                                                      $month_begin, $day_begin, $month_end, $day_end,
                                                                      $discipline_array, $colloquium_array, 
                                                                      $seminar_container, $colloquium_container, 
-                                                                     $is_seminar_colloquium_all ) {
+                                                                     $is_all_or_single ) {
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
 // if so, I will store that array and make a map that will be parsed by a function
@@ -717,7 +717,7 @@ echo '</head>';
                            $discipline, 
                            $discipline_array,  $colloquium_array, 
                            $seminar_container, $colloquium_container, 
-                           $is_seminar_colloquium_all, 
+                           $is_all_or_single, 
                            $department);
  
 
@@ -1044,7 +1044,7 @@ private static function navigation_bar_brand($depth_all_sems, $home_all_sems) {
 }
 
 
-private static function navigation_bar_past_years($prefix, $discipline, $discipline_array, $colloquium_array, $seminar_container, $colloquium_container, $is_seminar_colloquium_all) {
+private static function navigation_bar_past_years($prefix, $discipline, $discipline_array, $colloquium_array, $seminar_container, $colloquium_container, $is_all_or_single) {
 
 
   $prefix_disc = '';
@@ -1052,13 +1052,13 @@ private static function navigation_bar_past_years($prefix, $discipline, $discipl
   
   
 
-  if ($is_seminar_colloquium_all == 0) { $prefix_disc = $prefix .  $seminar_container . '/' . $discipline . '/'; 
+  if ($is_all_or_single == 0) { $prefix_disc = $prefix .  $seminar_container . '/' . $discipline . '/'; 
                                          $label_name = 'History:'; }
 
-  else if ($is_seminar_colloquium_all == 1) { $prefix_disc = $prefix /*.  $colloquium_container*/ /*. '/'*/ . $discipline . '/'; 
+  else if ($is_all_or_single == 1) { $prefix_disc = $prefix /*.  $colloquium_container*/ /*. '/'*/ . $discipline . '/'; 
                                               $label_name = 'History:'; }
   
-  else if ($is_seminar_colloquium_all == 2) { $prefix_disc = $prefix /*.  $colloquium_container*/ /*. '/'*/ . $discipline . '/'; 
+  else if ($is_all_or_single == 2) { $prefix_disc = $prefix /*.  $colloquium_container*/ /*. '/'*/ . $discipline . '/'; 
                                               $label_name = 'History:'; }
    echo '<li class="nav-item">';
    echo '<a class="nav-link" href="'/* . $prefix_disc*/ . '">' . $label_name  . '</a>';
@@ -1127,7 +1127,7 @@ private static function navigation_bar_link_to_department($department) {
 
 
 
-private static function navigation_bar_content($id_target, $prefix, $discipline, $discipline_array, $colloquium_array, $seminar_container, $colloquium_container, $is_seminar_colloquium_all, $department) {
+private static function navigation_bar_content($id_target, $prefix, $discipline, $discipline_array, $colloquium_array, $seminar_container, $colloquium_container, $is_all_or_single, $department) {
 
 
 
@@ -1146,7 +1146,7 @@ private static function navigation_bar_content($id_target, $prefix, $discipline,
 
  echo '<li class="dropdown-divider"></li>';
   
-  Seminars::navigation_bar_past_years($prefix, $discipline, $discipline_array, $colloquium_array, $seminar_container, $colloquium_container, $is_seminar_colloquium_all);
+  Seminars::navigation_bar_past_years($prefix, $discipline, $discipline_array, $colloquium_array, $seminar_container, $colloquium_container, $is_all_or_single);
   
  echo '<li class="dropdown-divider"></li>';
 
@@ -1164,7 +1164,7 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
                                       $discipline,
                                       $discipline_array, $colloquium_array, 
                                       $seminar_container, $colloquium_container, 
-                                      $is_seminar_colloquium_all,
+                                      $is_all_or_single,
                                       $department) {
 
  
@@ -1182,7 +1182,7 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
  
  Seminars::navigation_bar_menu_button($target_past_years);
 
- Seminars::navigation_bar_content($target_past_years, $prefix, $discipline, $discipline_array,  $colloquium_array, $seminar_container, $colloquium_container, $is_seminar_colloquium_all, $department);
+ Seminars::navigation_bar_content($target_past_years, $prefix, $discipline, $discipline_array,  $colloquium_array, $seminar_container, $colloquium_container, $is_all_or_single, $department);
 
 
  echo '</nav>';
