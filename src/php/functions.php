@@ -4,22 +4,50 @@
 class Seminars {
 
 
+public static function recursive_depth($assoc_array, & $depth) {
+
+ 
+  foreach ($assoc_array as $key => $value) {
+//   echo $key;
+//   echo $value;
+    
+           if ( sizeof($value) == 1 ) { $depth = $depth + 0; break; }
+     else  if ( sizeof($value) == 2 ) { $depth = $depth + 1;  Seminars::recursive_depth($value[1], $depth); /*break;*/ }
+
+
+   }
+
+   return $depth;
+
+ }
+
+
+
 public static function get_scheme_depth($all_schemes) {
+///@todo this could be implemented as a RECURSIVE FUNCTION
+//For now it is done statically and it only supports depths 0,1,2
 
  $depth = array();
 
   for ($i = 0; $i < count($all_schemes); $i++) {
 
     foreach ($all_schemes[$i] as $key => $value) {
-//     echo $key;
-    $depth[$i] = '';
+
+    $depth[$i] = 0;
            if ( sizeof($value) == 1 ) { $depth[$i] = 0; }
-     else  if ( sizeof($value) == 2 ) { 
+     else  if ( sizeof($value) == 2 ) {
+     
            foreach ($value as $key2 => $value2) {
                       if ( sizeof($value2) == 1 ) { $depth[$i] = 1; }
-                else  if ( sizeof($value2) == 2 ) { $depth[$i] = 1 + 1; }
+                else  if ( sizeof($value2) == 2 ) { $depth[$i] = 1 + 1; 
+                
+                           foreach ($value2 as $key3 => $value3) { if ( sizeof($value3) == 2 )  exit('Depth 3 not implemented yet'); }
+ 
+                
+                }
 
              }
+             
            }
 
 //      echo $depth[$i];
@@ -45,7 +73,7 @@ public static function get_scheme_depth($all_schemes) {
 
 $sort_weeks_list = SORT_ASC;
 
-$is_seminar_colloquium_all = 1; 
+$is_seminar_colloquium_all = 0; 
 
     $events_in_week =  Seminars::parse_all_event_tables($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                                         $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
@@ -150,17 +178,76 @@ $is_seminar_colloquium_all = 1;
 //latex file -----------------
  
  }
+ 
+ 
+ 
+ 
+ public static function get_father_scheme_index($father_scheme_string, $all_schemes) {
 
+ 
+ 
+ $i = 0;
 
+ do {
+ 
+ foreach ($all_schemes[$i] as $key => $val) break;
+   $i++;
+ 
+ }  while($key != $father_scheme_string);
+ 
+ 
+//  echo $key;
+ 
+//  while($key != $father_scheme_string) {
+//  
+//    $i++;
+//  }
+ 
+  
+  return $i - 1;
+ 
+ }
+ 
+ 
+ 
+ 
+ public static function get_father_scheme($file_in, $base_folder) {
 
+ 
+  $first_pos_from_the_end_to_read = Seminars::$first_position_from_the_end_to_read;
 
+  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $first_pos_from_the_end_to_read + 1);
+
+  $depth = 0;
+  
+ while ($array[0] != $base_folder) {
+ 
+ $depth ++;
+
+ $first_pos_from_the_end_to_read += 1;
+ 
+  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $first_pos_from_the_end_to_read + 1);
+
+ }
+ 
+ $father_scheme =  Seminars::get_path_components_from_the_end($file_in, $depth, $depth + 1);
+ 
+ 
+//  $depth_cleaned = $depth - Seminars::$num_positions_from_the_end_to_read;
+ 
+ 
+ return $father_scheme[0]/*$depth_cleaned*/;
+ 
+ }
+ 
+ 
+  
  public static function get_discipline_year_semester($file_in) {
  ///@todo actually this is semester/year/discipline now
  
- $first_pos_from_the_end_to_read = 1;
- $num_positions_from_the_end_to_read = 3;
+ $first_pos_from_the_end_to_read = Seminars::$first_position_from_the_end_to_read;
  
-  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $num_positions_from_the_end_to_read);
+  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, Seminars::$num_positions_from_the_end_to_read);
  
   return $array;
 
@@ -336,11 +423,12 @@ public static function generate_seminar_page_by_topic_year_semester($library_pat
                                                                     $discipline_array, $colloquium_array, 
                                                                     $seminar_container, $colloquium_container,
                                                                     $is_all_or_single,
-                                                                    $all_schemes ///@todo this will be added as well to: the Weekly pages, the Week List pages
+                                                                    $all_schemes, ///@todo this will be added as well to: the Weekly pages, the Week List pages
+                                                                    $father_scheme_idx
                                                                     ) {
 
-   $depths = array();
-   $depths = Seminars::get_scheme_depth($all_schemes);
+//    $depths = array();
+//    $depths = Seminars::get_scheme_depth($all_schemes);
 
 //     for ($i = 0; $i < count($depths); $i++) {
 //      echo ' ' . $depths[$i];
@@ -354,9 +442,11 @@ public static function generate_seminar_page_by_topic_year_semester($library_pat
    Seminars::generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                             $institution, $department, 
                                             $discipline, $year, $semester, 
-                                            $icon_in_toolbar, 
+                                            $icon_in_toolbar,
+                                            $all_schemes,
+                                            $father_scheme_idx,
                                             $discipline_array, $colloquium_array, $seminar_container, $colloquium_container,
-                                                   $is_all_or_single );
+                                            $is_all_or_single );
 
 }
 
@@ -365,6 +455,8 @@ private static function generate_seminar_page_by_topic($library_path, $remote_pa
                                                        $institution, $department, 
                                                        $discipline, $year, $semester,
                                                        $icon_in_toolbar, 
+                                                       $all_schemes,
+                                                       $father_scheme_idx,
                                                        $discipline_array, $colloquium_array, $seminar_container, $colloquium_container,
                                                    $is_all_or_single ) {
 
@@ -373,10 +465,15 @@ echo '<!DOCTYPE html>';
 
 echo '<html>';
 
-
 echo '<head>';
 
-  $title_in_toolbar = $discipline_current[ $discipline ];
+//go to the final depth of the current scheme, and convert to the string you want to see
+//      $all_schemes[$father_scheme_idx][$father_scheme_string]
+
+  $last_array = array();
+
+
+  $title_in_toolbar =  $discipline;  ///@todo convert to letters
   
   Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
   
@@ -2139,8 +2236,10 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
    private static   $discipline_idx_in_path_from_end = 2;
    private static   $year_idx_in_path_from_end       = 1;
    private static   $semester_idx_in_path_from_end   = 0;
-  
-// ===== bootstrap style
+   private static   $num_positions_from_the_end_to_read = 3;
+   private static   $first_position_from_the_end_to_read = 1; //to discard 'index.php' from the absolute filename
+   
+// ===== 
    private static   $general_title   = 'Events';
 
 // ===== bootstrap style
@@ -2174,5 +2273,8 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
 ///@todo Make an arbitrary amount of seminars, or an arbitrary number of groups with an additional "depth level" to be specified, maybe only 1 additional depth level with a "container" folder to be specified
 ///@todo Write a program that automatically generates the slideshows that may go both in the department screens and in the main cyclic banner in the department homepage (I will generate a bunch of pdf files, you need a software like PDF Slideshow)
 ///@todo Check that it works also if we add 'summer' folders, for summer events
+///@todo rename Seminars with Events
+///@todo write a function that checks that the directories of the inputs are there
+
 
 ?>
