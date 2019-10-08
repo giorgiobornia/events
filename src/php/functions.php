@@ -4,20 +4,43 @@
 class Seminars {
 
 
-public static function recursive_depth($assoc_array, & $depth) {
+public static function get_current_leaf($scheme, $current_leaf, & $translation) {
 
- 
-  foreach ($assoc_array as $key => $value) {
+
+  foreach ($scheme as $key => $value) {
+//   echo $key;
+//   echo $value;
+  if ($key == $current_leaf)  { $translation = $value; break; }
+  else                        { Seminars::get_current_leaf($value[1], $current_leaf, $translation); }
+  
+  }
+
+//    echo $translation; 
+  return $translation;
+  
+  
+}
+
+
+
+public static function get_depth_recursively($assoc_array, & $depth) {
+///@todo the constraint is that all branches of the tree have the same length
+// That's why here we take the first pair as representative of the tree depth
+
+$first_pair = array_slice($assoc_array, 0, 1, true);
+
+
+  foreach ($first_pair as $key => $value) {
 //   echo $key;
 //   echo $value;
     
            if ( sizeof($value) == 1 ) { $depth = $depth + 0; break; }
-     else  if ( sizeof($value) == 2 ) { $depth = $depth + 1;  Seminars::recursive_depth($value[1], $depth); /*break;*/ }
-
+     else  if ( sizeof($value) == 2 ) { $depth = $depth + 1;  Seminars::get_depth_recursively($value[1], $depth); /*break;*/ }
 
    }
 
-   return $depth;
+//     echo $depth;
+  return $depth;
 
  }
 
@@ -427,13 +450,6 @@ public static function generate_seminar_page_by_topic_year_semester($library_pat
                                                                     $father_scheme_idx
                                                                     ) {
 
-//    $depths = array();
-//    $depths = Seminars::get_scheme_depth($all_schemes);
-
-//     for ($i = 0; $i < count($depths); $i++) {
-//      echo ' ' . $depths[$i];
-//    }
-
 
    $discipline = $t_y_s[Seminars::$discipline_idx_in_path_from_end];
    $year       = $t_y_s[Seminars::$year_idx_in_path_from_end];
@@ -453,7 +469,7 @@ public static function generate_seminar_page_by_topic_year_semester($library_pat
 
 private static function generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                        $institution, $department, 
-                                                       $discipline, $year, $semester,
+                                                       $page_topic, $year, $semester,
                                                        $icon_in_toolbar, 
                                                        $all_schemes,
                                                        $father_scheme_idx,
@@ -467,14 +483,12 @@ echo '<html>';
 
 echo '<head>';
 
-//go to the final depth of the current scheme, and convert to the string you want to see
-//      $all_schemes[$father_scheme_idx][$father_scheme_string]
-
-  $last_array = array();
 
 
-  $title_in_toolbar =  $discipline;  ///@todo convert to letters
+  $title_in_toolbar =  Seminars::get_current_leaf($all_schemes[$father_scheme_idx], $page_topic, $title_in_toolbar);
   
+// echo $title_in_toolbar;
+
   Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
   
 echo '</head>';
@@ -485,7 +499,7 @@ echo '</head>';
 
     Seminars::set_seminars_by_topic_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
     $institution, $department, 
-    $discipline, $year, $semester,
+    $page_topic, $year, $semester,
     Seminars::$abstracts_folder, Seminars::$images_folder, 
     $discipline_array, $colloquium_array, $seminar_container, $colloquium_container,
                                                    $is_all_or_single );
