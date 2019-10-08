@@ -415,7 +415,7 @@ public static function generate_seminar_page_by_topic_year_semester($library_pat
                                                                     $discipline_array, $colloquium_array, 
                                                                     $seminar_container, $colloquium_container,
                                                                     $is_all_or_single,
-                                                                    $all_schemes, ///@todo this will be added as well to: the Weekly pages, the Week List pages
+                                                                    $all_schemes,
                                                                     $father_scheme_idx
                                                                     ) {
 
@@ -484,7 +484,7 @@ echo '</html>';
  }
 
 
- ///@todo change args
+ ///@todo change args: $father_scheme_idx is missing
 public static function generate_page_with_all_weeks_list_wrapper($filename,
                                                                 $relative_path_to_library,
                                                                $icon_in_toolbar,
@@ -1395,15 +1395,16 @@ private static function set_browser_toolbar($title, $icon_in_toolbar) {
 
 
 
-private static function about($discipline, 
+private static function about($page_topic, 
                               $remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                              $seminar_container, $colloquium_container, $is_seminar_colloquium_all) {
+                              $all_schemes, $father_scheme_idx) {
+ 
+ $prefix_base = Seminars::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
 
- $after_prefix = Seminars::get_event_container($seminar_container, $colloquium_container, $is_seminar_colloquium_all);
  
     $about_txt_file =
-    $after_prefix .
-    $discipline . '/' .  
+    $prefix_base .
+    $page_topic . '/' .  
     Seminars::$about_file;
 
   echo '<div class="' . Seminars::$bootstrap_container . '">';
@@ -1964,8 +1965,9 @@ public static function set_seminars_by_topic_body($remote_path_prefix, $local_pa
   
 //  Seminars::default_meeting_coords_banner_map('./default.csv', $year, $semester);
   
- Seminars::about($page_topic, $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                 $seminar_container, $colloquium_container, $is_seminar_colloquium_all);
+ Seminars::about($page_topic,
+                 $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                 $all_schemes, $father_scheme_idx);
                  
  
  
