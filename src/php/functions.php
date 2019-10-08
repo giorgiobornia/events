@@ -543,7 +543,7 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
                                                                $remote_url_base, $local_url_base, $are_input_files_local,
                                                                $discipline,
                                                    $all_schemes,
-                                                   $father_scheme_idx,
+                                                   $father_scheme_idx, ///@todo I think this variable is not needed
                                                                $discipline_array, $colloquium_array,
                                                                $seminar_container, $colloquium_container,
                                                                $is_all_or_single, 
@@ -596,8 +596,8 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
                                                                              $department,
                                                                              $icon_in_toolbar,
                                                                              $discipline_array, $colloquium_array,
-                                                                             $seminar_container, $colloquium_container
-//                                                                              $all_schemes,
+                                                                             $seminar_container, $colloquium_container,
+                                                                             $all_schemes
 //                                                                              $father_scheme_idx
                                                                              ) { 
 
@@ -1136,6 +1136,8 @@ private static function navigation_bar_brand($depth_all_sems, $home_all_sems) {
 
 private static function navigation_bar_past_years($prefix, $discipline, $discipline_array, $colloquium_array, $seminar_container, $colloquium_container, $is_all_or_single) {
 
+//if it's an all-page, take the links from all
+//otherwise, take the links from the current discipline
 
   $prefix_disc = '';
   $label_name  = '';
