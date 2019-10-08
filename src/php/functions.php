@@ -486,7 +486,8 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
                                                                $discipline_array, $colloquium_array,
                                                                $seminar_container, $colloquium_container,
                                                                $department,
-                                                               $institution) {   
+                                                               $institution,
+                                                               $all_schemes) {   
 
  $title = Seminars::$general_title;
  
@@ -598,7 +599,6 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
                                                                              $discipline_array, $colloquium_array,
                                                                              $seminar_container, $colloquium_container,
                                                                              $all_schemes
-//                                                                              $father_scheme_idx
                                                                              ) { 
 
   $starting_pos = 2;
