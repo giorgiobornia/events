@@ -195,7 +195,13 @@ $is_seminar_colloquium_all = 0;
  }
  
  
- 
+ private static function get_father_scheme_from_itself($scheme) {
+  
+ foreach ($scheme as $key => $val) break;
+  
+  return $key;
+  
+}
  
  public static function get_father_scheme($file_in, $base_folder) {
 
@@ -523,8 +529,6 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
                                              $discipline,
                                                    $all_schemes,
                                                    $father_scheme_idx,
-                                             $discipline_array, $colloquium_array,
-                                             $seminar_container, $colloquium_container,
                                              $is_all_or_single,
                                              $department,
                                              $institution,
@@ -545,8 +549,6 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
                                                                $discipline,
                                                    $all_schemes,
                                                    $father_scheme_idx, ///@todo I think this variable is not needed
-                                                               $discipline_array, $colloquium_array,
-                                                               $seminar_container, $colloquium_container,
                                                                $is_all_or_single, 
                                                                $department,
                                                                $institution,
@@ -560,10 +562,8 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
   
   Seminars::navigation_bar($remote_url_base, $local_url_base, $are_input_files_local, 
                            $discipline,
-                                                   $all_schemes,
-                                                   $father_scheme_idx,
-                           $discipline_array, $colloquium_array, 
-                           $seminar_container, $colloquium_container, 
+                           $all_schemes,
+                           $father_scheme_idx,
                            $is_all_or_single, 
                            $department);
   
@@ -803,10 +803,8 @@ echo '</head>';
   
   Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                            $discipline, 
-                                                   $all_schemes,
-                                                   $father_scheme_idx,
-                           $discipline_array,  $colloquium_array, 
-                           $seminar_container, $colloquium_container, 
+                           $all_schemes,
+                           $father_scheme_idx,
                            $is_all_or_single, 
                            $department);
  
@@ -1134,24 +1132,24 @@ private static function navigation_bar_brand($depth_all_sems, $home_all_sems) {
 }
 
 
-private static function navigation_bar_past_years($prefix, $discipline, $discipline_array, $colloquium_array, $seminar_container, $colloquium_container, $is_all_or_single) {
+private static function navigation_bar_past_years($prefix, $page_topic, $is_all_or_single, $all_schemes, $father_scheme_idx) {
 
 //if it's an all-page, take the links from all
 //otherwise, take the links from the current discipline
 
+  $label_name  = 'History:';
+  
   $prefix_disc = '';
-  $label_name  = '';
   
-  
+   $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
 
-  if ($is_all_or_single == 0) { $prefix_disc = $prefix .  $seminar_container . '/' . $discipline . '/'; 
-                                         $label_name = 'History:'; }
 
-  else if ($is_all_or_single == 1) { $prefix_disc = $prefix /*.  $colloquium_container*/ /*. '/'*/ . $discipline . '/'; 
-                                              $label_name = 'History:'; }
+  if ($is_all_or_single == 2) { $prefix_disc = $prefix . 'all' . '/'; }
   
-  else if ($is_all_or_single == 2) { $prefix_disc = $prefix /*.  $colloquium_container*/ /*. '/'*/ . $discipline . '/'; 
-                                              $label_name = 'History:'; }
+  else                        { $prefix_disc = $prefix_base  . $page_topic . '/'; }
+
+  
+  
    echo '<li class="nav-item">';
    echo '<a class="nav-link" href="'/* . $prefix_disc*/ . '">' . $label_name  . '</a>';
    echo '</li>';
@@ -1175,16 +1173,18 @@ private static function navigation_bar_past_years($prefix, $discipline, $discipl
 
 }
 
-private static function navigation_bar_seminars($prefix, $discipline_array) {
 
 
-  $link_name = 'Seminars';
+private static function navigation_bar_depth_1_scheme($prefix, $discipline_array) {
+
+
+  $link_name = $discipline_array[0];
 
   echo '<li class="nav-item dropdown">';
     echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $link_name . ' </a>';
 
    echo '  <ul class="dropdown-menu" style="min-width: 15rem;">';
-    foreach ($discipline_array as $discipline => $discipline_string) {
+    foreach ($discipline_array[1] as $discipline => $discipline_string) {
      echo '    <li><a href="' . $prefix .  $discipline . '">' . $discipline_string . '</a></li>';
 
 }
@@ -1195,7 +1195,7 @@ private static function navigation_bar_seminars($prefix, $discipline_array) {
 
 }
 
-private static function navigation_bar_link_to_non_seminars($prefix, $colloquia_array) {
+private static function navigation_bar_depth_0_scheme($prefix, $colloquia_array) {
 
 
   foreach ($colloquia_array as $key => $value) {
@@ -1218,27 +1218,55 @@ private static function navigation_bar_link_to_department($department) {
 }
 
 
+private static function get_prefix_up_to_current_leaf($prefix, $scheme) {
+///@todo if depth > 1 it has to be modified: it has to reconstruct all the branch up to that leaf
+/// Then, you should pass the info about the current leaf, which now you are not passing
 
-private static function navigation_bar_content($id_target, $prefix, $discipline, $discipline_array, $colloquium_array, $seminar_container, $colloquium_container, $is_all_or_single, $department) {
+ $depth = 0;
+ Seminars::get_depth_recursively($scheme, $depth);
 
+ $prefix_base = $prefix;
 
+ for ($j = 0; $j < $depth; $j++) $prefix_base = $prefix_base . Seminars::get_father_scheme_from_itself($scheme) . '/';
 
+ return $prefix_base;
  
+}
+
+
+
+private static function navigation_bar_content($id_target, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx) {
+
+
  
  echo '<div class="collapse navbar-collapse" id="' . $id_target . '"' . '>';
 
  echo '<ul class="navbar-nav mr-auto">';
  
  //===================
- Seminars::navigation_bar_link_to_non_seminars($prefix, $colloquium_array);
- $prefix_seminars = $prefix . $seminar_container . '/';
  
- Seminars::navigation_bar_seminars($prefix_seminars, $discipline_array);
+  for ($i = 0; $i < count($all_schemes); $i++) {
+
+ $depth = 0;
+ Seminars::get_depth_recursively($all_schemes[$i], $depth);
+//  echo $depth;
+
+ $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$i]);
+
+ 
+ if ($depth == 0)        Seminars::navigation_bar_depth_0_scheme($prefix_base, $all_schemes[$i]);
+ else if ($depth == 1)   Seminars::navigation_bar_depth_1_scheme($prefix_base, $all_schemes[$i][Seminars::get_father_scheme_from_itself($all_schemes[$i])]);
+ ///@todo implement the other depths
+ 
+ }
+ 
+ 
+ 
  //===================
 
  echo '<li class="dropdown-divider"></li>';
   
-  Seminars::navigation_bar_past_years($prefix, $discipline, $discipline_array, $colloquium_array, $seminar_container, $colloquium_container, $is_all_or_single);
+  Seminars::navigation_bar_past_years($prefix, $page_topic, $is_all_or_single_page, $all_schemes, $father_scheme_idx);
   
  echo '<li class="dropdown-divider"></li>';
 
@@ -1253,12 +1281,10 @@ private static function navigation_bar_content($id_target, $prefix, $discipline,
 
 
 public static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                                      $discipline,
-                                                   $all_schemes,
-                                                   $father_scheme_idx,
-                                      $discipline_array, $colloquium_array, 
-                                      $seminar_container, $colloquium_container, 
-                                      $is_all_or_single,
+                                      $page_topic,
+                                      $all_schemes,
+                                      $father_scheme_idx,
+                                      $is_all_or_single_page,
                                       $department) {
 
  
@@ -1276,7 +1302,7 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
  
  Seminars::navigation_bar_menu_button($target_past_years);
 
- Seminars::navigation_bar_content($target_past_years, $prefix, $discipline, $discipline_array,  $colloquium_array, $seminar_container, $colloquium_container, $is_all_or_single, $department);
+ Seminars::navigation_bar_content($target_past_years, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx);
 
 
  echo '</nav>';
@@ -1926,10 +1952,8 @@ public static function set_seminars_by_topic_body($remote_path_prefix, $local_pa
 
  Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local,
                           $page_topic,
-                                                   $all_schemes,
-                                                   $father_scheme_idx,
-                          $discipline_array, $colloquium_array, 
-                          $seminar_container, $colloquium_container, 
+                          $all_schemes,
+                          $father_scheme_idx,
                           $is_seminar_colloquium_all, 
                           $department);
                           
