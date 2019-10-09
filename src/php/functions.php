@@ -4,14 +4,114 @@
 class Seminars {
 
 
-private static function get_current_leaf($scheme, $current_leaf, & $translation) {
+  
+ public static function get_father_scheme_index($father_scheme_string, $all_schemes) {
+
+ 
+ 
+ $i = 0;
+
+ do {
+ 
+ foreach ($all_schemes[$i] as $key => $val) break;
+   $i++;
+ 
+ }  while($key != $father_scheme_string);
+ 
+ 
+//  echo $key;
+ 
+//  while($key != $father_scheme_string) {
+//  
+//    $i++;
+//  }
+ 
+  
+  return $i - 1;
+ 
+ }
+ 
+ 
+ private static function get_father_scheme_from_itself($scheme) {
+  
+ foreach ($scheme as $key => $val) break;
+  
+  return $key;
+  
+}
+ 
+ public static function get_father_scheme_from_filename($file_in, $base_folder) {
+
+ 
+  $first_pos_from_the_end_to_read = Seminars::$first_position_from_the_end_to_read;
+
+  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $first_pos_from_the_end_to_read + 1);
+
+  $depth = 0;
+  
+ while ($array[0] != $base_folder) {
+ 
+ $depth ++;
+
+ $first_pos_from_the_end_to_read += 1;
+ 
+  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $first_pos_from_the_end_to_read + 1);
+
+ }
+ 
+ $father_scheme =  Seminars::get_path_components_from_the_end($file_in, $depth, $depth + 1);
+ 
+ 
+//  $depth_cleaned = $depth - Seminars::$num_positions_from_the_end_to_read;
+ 
+ 
+ return $father_scheme[0]/*$depth_cleaned*/;
+ 
+ }
+ 
+ 
+ 
+ private static function get_father_scheme_name($scheme) {
+
+ $scheme_root = Seminars::get_father_scheme_from_itself($scheme);
+
+  $depth = 0; Seminars::get_depth_recursively($scheme, $depth);
+ 
+ $title = '';
+ 
+ if ($depth == 0)  $title = $scheme[$scheme_root];
+ else              $title = $scheme[$scheme_root][0];  //that's because we don't use "array" at the leaf stage
+ 
+ return $title;
+ 
+ }
+
+
+
+private static function get_prefix_up_to_current_leaf($prefix, $scheme) {
+///@todo if depth > 1 it has to be modified: it has to reconstruct all the branch up to that leaf
+/// Then, you should pass the info about the current leaf, which now you are not passing
+
+ $depth = 0;
+ Seminars::get_depth_recursively($scheme, $depth);
+
+ $prefix_base = $prefix;
+
+ for ($j = 0; $j < $depth; $j++) $prefix_base = $prefix_base . Seminars::get_father_scheme_from_itself($scheme) . '/';
+
+ return $prefix_base;
+ 
+}
+
+
+private static function get_current_leaf_translation($scheme, $current_leaf, & $translation) {
 
 
   foreach ($scheme as $key => $value) {
 //   echo $key;
 //   echo $value;
   if ($key == $current_leaf)  { $translation = $value; break; }
-  else                        { Seminars::get_current_leaf($value[1], $current_leaf, $translation); }
+  else                        { Seminars::get_current_leaf_translation($value[1], $current_leaf, $translation); }
   
   }
 
@@ -130,6 +230,7 @@ $is_seminar_colloquium_all = 0;
   fwrite($fp, '\begin{column}{0.5\textwidth}' . PHP_EOL);
   fwrite($fp, '\centering' . PHP_EOL);
   fwrite($fp, '\textbf{' . PHP_EOL);
+//   fwrite($fp, Normalizer::normalize($events_in_week[$event_i][Seminars::$speaker_idx]) . PHP_EOL); //need to recompile php with --enable-intl
   fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_idx] . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
@@ -167,70 +268,7 @@ $is_seminar_colloquium_all = 0;
  
  
  
- 
- public static function get_father_scheme_index($father_scheme_string, $all_schemes) {
 
- 
- 
- $i = 0;
-
- do {
- 
- foreach ($all_schemes[$i] as $key => $val) break;
-   $i++;
- 
- }  while($key != $father_scheme_string);
- 
- 
-//  echo $key;
- 
-//  while($key != $father_scheme_string) {
-//  
-//    $i++;
-//  }
- 
-  
-  return $i - 1;
- 
- }
- 
- 
- private static function get_father_scheme_from_itself($scheme) {
-  
- foreach ($scheme as $key => $val) break;
-  
-  return $key;
-  
-}
- 
- public static function get_father_scheme($file_in, $base_folder) {
-
- 
-  $first_pos_from_the_end_to_read = Seminars::$first_position_from_the_end_to_read;
-
-  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $first_pos_from_the_end_to_read + 1);
-
-  $depth = 0;
-  
- while ($array[0] != $base_folder) {
- 
- $depth ++;
-
- $first_pos_from_the_end_to_read += 1;
- 
-  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $first_pos_from_the_end_to_read + 1);
-
- }
- 
- $father_scheme =  Seminars::get_path_components_from_the_end($file_in, $depth, $depth + 1);
- 
- 
-//  $depth_cleaned = $depth - Seminars::$num_positions_from_the_end_to_read;
- 
- 
- return $father_scheme[0]/*$depth_cleaned*/;
- 
- }
  
  
   
@@ -454,7 +492,7 @@ echo '<head>';
 
 
 
-  $title_in_toolbar =  Seminars::get_current_leaf($all_schemes[$father_scheme_idx], $page_topic, $title_in_toolbar);
+  $title_in_toolbar =  Seminars::get_current_leaf_translation($all_schemes[$father_scheme_idx], $page_topic, $title_in_toolbar);
   
 
   Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
@@ -824,13 +862,14 @@ echo '</head>';
 
 
   
-    
-  //==== NON-SEMINARS ====================
+
+
+
+//==== NON-SEMINARS ====================
    $only_colloquia_bool_print_discipline = false;
    
    $is_colloquium = 1;
 
-   
   foreach ($colloquium_array as $key => $value) {
 
   $single_non_seminar_array = array($key => $value);
@@ -866,7 +905,37 @@ echo '</head>';
                                               $seminar_container, $colloquium_container, 
                                               $is_seminar, $all_schemes, $father_scheme_idx);  
   //====================
+
+  
     
+  //====================================================================
+     for ($i = 0; $i < count($all_schemes); $i++) {
+      //get to each leaf
+      //read the file of each leaf
+      
+
+//   foreach ($leaf_array as $key => $value) break;
+     
+
+$branch_name = Seminars::get_father_scheme_name($all_schemes[$i]);
+
+  echo '<h3> &nbsp <strong> ' . $branch_name . ' </strong> </h3>';
+  
+       $leaf_array = Seminars::get_output_array( $all_schemes[$i] );
+
+//     Seminars::set_seminars_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+//                                               $institution, $department, 
+//                                               $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
+//                                               Seminars::$abstracts_folder, Seminars::$images_folder, 
+//                                               $discipline_array,  $leaf_array, 
+//                                               /*$only_colloquia_bool_print_discipline*/false,
+//                                               $seminar_container, $colloquium_container, 
+//                                               $is_colloquium, $all_schemes, $father_scheme_idx);
+     
+     
+}
+ //====================================================================
+
     
   echo '<br>';
   echo '<br>';
@@ -879,7 +948,7 @@ echo '</head>';
 echo '</html>';
   
  }
-
+ 
 
 private static function read_csv_file($file) {
   
@@ -899,6 +968,7 @@ private static function read_events_file_and_attach_topic_year_semester($prefix,
    $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
 
 //    echo $prefix_base;
+//    echo $prefix;
    
 //  $file_to_parse = $prefix_base . $discipline . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
  
@@ -1222,21 +1292,6 @@ private static function navigation_bar_link_to_department($department) {
 }
 
 
-private static function get_prefix_up_to_current_leaf($prefix, $scheme) {
-///@todo if depth > 1 it has to be modified: it has to reconstruct all the branch up to that leaf
-/// Then, you should pass the info about the current leaf, which now you are not passing
-
- $depth = 0;
- Seminars::get_depth_recursively($scheme, $depth);
-
- $prefix_base = $prefix;
-
- for ($j = 0; $j < $depth; $j++) $prefix_base = $prefix_base . Seminars::get_father_scheme_from_itself($scheme) . '/';
-
- return $prefix_base;
- 
-}
-
 
 
 private static function navigation_bar_content($id_target, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx) {
@@ -1253,7 +1308,7 @@ private static function navigation_bar_content($id_target, $prefix, $page_topic,
 
  $depth = 0;
  Seminars::get_depth_recursively($all_schemes[$i], $depth);
-//  echo $depth;
+
 
  $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$i]);
 
@@ -1965,7 +2020,7 @@ public static function set_seminars_by_topic_body($remote_path_prefix, $local_pa
                           $department);
                           
  
-   $title =  Seminars::get_current_leaf($all_schemes[$father_scheme_idx], $page_topic, $title);
+   $title =  Seminars::get_current_leaf_translation($all_schemes[$father_scheme_idx], $page_topic, $title);
 
  Seminars::main_banner($title, $department, $institution);
   
@@ -2121,6 +2176,28 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
 }
 
 
+
+private static function get_output_array($scheme) {
+
+$depth = 0;
+       Seminars::get_depth_recursively($scheme, $depth);
+       
+       $output_array = array();
+//        echo Seminars::get_father_scheme_from_itself($scheme);
+//         echo $depth;
+
+        if ($depth == 0)       $output_array = $scheme;
+       else if  ($depth == 1)  $output_array = $scheme[Seminars::get_father_scheme_from_itself($scheme)][1];
+ 
+ 
+//  print_r($output_array);
+//  echo "\n";
+ 
+ return $output_array;
+ 
+}
+
+
  
 private static function parse_all_event_tables($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                                $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
@@ -2140,7 +2217,10 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
    else if ($is_seminar_colloquium_all == 1)  { $events_array = $colloquium_array; }
 
   $events_in_week = array();
-     
+    
+    
+//---------------    
+    
     foreach ($events_array as $discipline => $discipline_string) {
     
 
@@ -2167,6 +2247,45 @@ private static function parse_all_event_tables($remote_path_prefix, $local_path_
     
   }
 
+//---------------    
+  
+  
+ 
+// //       for ($i = 0; $i < count($all_schemes); $i++) {
+// //       //get to each leaf
+// //       //read the file of each leaf
+// //       
+// //        $leaf_array = Seminars::get_output_array( $all_schemes[$i] );
+// //        
+// //     foreach ($leaf_array  as $discipline => $discipline_string) {
+// //     
+// //     $csv_map = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester, $seminar_container, $colloquium_container, $is_seminar_colloquium_all, $all_schemes, $i/*$father_scheme_idx*/);
+// //       
+// //     
+// //     for ($row = $starting_row; $row < count($csv_map); $row++) {
+// // 
+// //     //best thing is probably to convert into an increasing number, to avoid non-monotone behavior
+// //     $sequential_begin   = Seminars::compute_day_sequential_number($year, $month_begin, $day_begin);
+// //     $sequential_end     = Seminars::compute_day_sequential_number($year, $month_end, $day_end);
+// //     $sequential_current = Seminars::compute_day_sequential_number($year, $csv_map[$row][Seminars::$month_idx], $csv_map[$row][Seminars::$day_idx]);
+// //     
+// // 
+// //     if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end ) {
+// // 
+// //     array_push($events_in_week, $csv_map[$row]);
+// //     
+// //        }
+// //     
+// //     
+// //     }  
+// //     
+// //     
+// //       }
+// //       
+// //       }
+
+ 
+ 
  
  return $events_in_week;
  
