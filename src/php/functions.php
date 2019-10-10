@@ -5,7 +5,7 @@ class Seminars {
 
 
   
- public static function get_father_scheme_index($father_scheme_string, $all_schemes) {
+ public static function get_father_scheme_index_from_string($father_scheme_string, $all_schemes) {
 
  
  
@@ -32,7 +32,7 @@ class Seminars {
  }
  
  
- private static function get_father_scheme_from_itself($scheme) {
+ private static function get_father_scheme_string_from_itself($scheme) {
   
  foreach ($scheme as $key => $val) break;
   
@@ -73,7 +73,7 @@ class Seminars {
  
  private static function get_father_scheme_name($scheme) {
 
- $scheme_root = Seminars::get_father_scheme_from_itself($scheme);
+ $scheme_root = Seminars::get_father_scheme_string_from_itself($scheme);
 
   $depth = 0; Seminars::get_depth_recursively($scheme, $depth);
  
@@ -97,7 +97,7 @@ private static function get_prefix_up_to_current_leaf($prefix, $scheme) {
 
  $prefix_base = $prefix;
 
- for ($j = 0; $j < $depth; $j++) $prefix_base = $prefix_base . Seminars::get_father_scheme_from_itself($scheme) . '/';
+ for ($j = 0; $j < $depth; $j++) $prefix_base = $prefix_base . Seminars::get_father_scheme_string_from_itself($scheme) . '/';
 
  return $prefix_base;
  
@@ -151,8 +151,7 @@ $first_pair = array_slice($assoc_array, 0, 1, true);
                                                           $institution,
                                                           $department, 
                                                           $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                                          $discipline_array, $colloquium_array,
-                                                          $seminar_container, $colloquium_container, $all_schemes) {
+                                                          $discipline_array, $all_schemes) {
  
 //  php -r " " for an in-line script on command line
 
@@ -163,8 +162,7 @@ $is_seminar_colloquium_all = 0;
 
     $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                                         $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                                        $discipline_array, $colloquium_array, 
-                                                        $seminar_container, $colloquium_container, $is_seminar_colloquium_all, $all_schemes, $father_scheme_idx);
+                                                        $discipline_array, $all_schemes, $father_scheme_idx);
     
 
 //     Seminars::sort_array_of_arrays_based_on_one_index($events_in_week, Seminars::$month_idx, SORT_ASC);
@@ -522,7 +520,6 @@ echo '</html>';
  }
 
 
- ///@todo change args: $father_scheme_idx is missing
 public static function generate_page_with_all_weeks_list_wrapper($filename,
                                                                 $relative_path_to_library,
                                                                $icon_in_toolbar,
@@ -566,7 +563,6 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
                                              $remote_url_base, $local_url_base, $are_input_files_local,
                                              $discipline,
                                                    $all_schemes,
-                                                   $father_scheme_idx,
                                              $is_all_or_single,
                                              $department,
                                              $institution,
@@ -586,7 +582,6 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
                                                                $remote_url_base, $local_url_base, $are_input_files_local,
                                                                $discipline,
                                                    $all_schemes,
-                                                   $father_scheme_idx, ///@todo I think this variable is not needed
                                                                $is_all_or_single, 
                                                                $department,
                                                                $institution,
@@ -601,7 +596,7 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
   Seminars::navigation_bar($remote_url_base, $local_url_base, $are_input_files_local, 
                            $discipline,
                            $all_schemes,
-                           $father_scheme_idx,
+                           $father_scheme_idx,   ///@todo change args: $father_scheme_idx is not needed here
                            $is_all_or_single, 
                            $department);
   
@@ -868,73 +863,71 @@ echo '</head>';
    
    $is_colloquium = 1;
 
-  foreach ($colloquium_array as $key => $value) {
-
-  $single_non_seminar_array = array($key => $value);
-  
-  echo '<h3> &nbsp <strong> ' . $value . ' </strong> </h3>';
-
-    Seminars::set_scheme_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                                              $institution, $department, 
-                                              $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                              Seminars::$abstracts_folder, Seminars::$images_folder, 
-                                              $single_non_seminar_array,  $single_non_seminar_array, 
-                                              $only_colloquia_bool_print_discipline,
-                                              $seminar_container, $colloquium_container, 
-                                              $is_colloquium, $all_schemes, $father_scheme_idx);
-  }
-  //====================
-    
-    
-  echo '<h3> &nbsp <strong> Seminars </strong> </h3>';
-
-    
-  //==== SEMINARS (they need separate treatment because they have an additional subfolder) ====================
-    $only_seminars_bool_print_discipline = true;
- 
-    $is_seminar = 0;
-    
-    Seminars::set_scheme_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                              $institution, $department, 
-                                              $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                              Seminars::$abstracts_folder, Seminars::$images_folder, 
-                                              $discipline_array,  $discipline_array,
-                                              $only_seminars_bool_print_discipline,
-                                              $seminar_container, $colloquium_container, 
-                                              $is_seminar, $all_schemes, $father_scheme_idx);  ///@todo this father index is actually not passed correctly
-  //====================
-
-  
-    
-//   //====================================================================
-//      for ($i = 0; $i < count($all_schemes); $i++) {
-//       //get to each leaf
-//       //read the file of each leaf
-//       
+//   foreach ($colloquium_array as $key => $value) {
 // 
-// //   foreach ($leaf_array as $key => $value) break;
-//      
-// 
-// $branch_name = Seminars::get_father_scheme_name($all_schemes[$i]);
-// 
-//   echo '<h3> &nbsp <strong> ' . $branch_name . ' </strong> </h3>';
+//   $single_non_seminar_array = array($key => $value);
 //   
-//        $leaf_array = Seminars::get_output_array( $all_schemes[$i] );
+//   echo '<h3> &nbsp <strong> ' . $value . ' </strong> </h3>';
 // 
-//        print_r($leaf_array);
-//        
-//     Seminars::set_scheme_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+//     Seminars::set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
 //                                               $institution, $department, 
 //                                               $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
 //                                               Seminars::$abstracts_folder, Seminars::$images_folder, 
-//                                               /*$discipline_array*/$leaf_array,  $leaf_array, 
-//                                               /*$only_colloquia_bool_print_discipline*/false,
+//                                               $single_non_seminar_array, 
+//                                               $only_colloquia_bool_print_discipline,
 //                                               $seminar_container, $colloquium_container, 
-//                                               /*$is_colloquium*/0, $all_schemes, $father_scheme_idx);
-//      
-//      
-// }
-//  //====================================================================
+//                                               $is_colloquium, $all_schemes, $father_scheme_idx);
+//   }
+  //====================
+    
+    
+//   echo '<h3> &nbsp <strong> Seminars </strong> </h3>';
+// 
+//     
+//   //==== SEMINARS (they need separate treatment because they have an additional subfolder) ====================
+//     $only_seminars_bool_print_discipline = true;
+//  
+//     $is_seminar = 0;
+//     
+//     Seminars::set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+//                                               $institution, $department, 
+//                                               $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
+//                                               Seminars::$abstracts_folder, Seminars::$images_folder, 
+//                                               $discipline_array,
+//                                               $only_seminars_bool_print_discipline,
+//                                               $seminar_container, $colloquium_container, 
+//                                               $is_seminar, $all_schemes, 1/*$father_scheme_idx*/);  ///@todo this father index is actually not passed correctly
+//   //====================
+// 
+  
+    
+  //====================================================================
+     for ($i = 0; $i < count($all_schemes); $i++) {
+      //get to each leaf
+      //read the file of each leaf
+      
+
+//   foreach ($leaf_array as $key => $value) break;
+     
+$branch_name = Seminars::get_father_scheme_name($all_schemes[$i]);
+  echo '<h3> &nbsp <strong> ' . $branch_name . ' </strong> </h3>';
+  
+       $leaf_array = Seminars::get_output_array( $all_schemes[$i] );
+
+//        print_r($leaf_array);
+       
+    Seminars::set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                                              $institution, $department, 
+                                              $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
+                                              Seminars::$abstracts_folder, Seminars::$images_folder, 
+                                              /*$discipline_array*/$leaf_array,  
+                                              /*$only_colloquia_bool_print_discipline*/true,
+                                              $seminar_container, $colloquium_container, 
+                                              /*$is_colloquium*/0, $all_schemes, $i/*$father_scheme_idx*/);
+     
+     
+}
+ //====================================================================
 
     
   echo '<br>';
@@ -963,22 +956,12 @@ private static function read_csv_file($file) {
 }
 
 
-private static function read_events_file_and_attach_topic_year_semester($prefix, $leaf_topic, $year, $semester, $seminar_container, $colloquium_container, $is_seminar_colloquium_all, $all_schemes, $father_scheme_idx) {
+private static function read_events_file_and_attach_topic_year_semester($prefix, $leaf_topic, $year, $semester, $all_schemes, $father_scheme_idx) {
 
    $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
 
-//    echo $prefix_base;
-//    echo $prefix;
-//    echo    $prefix . $seminar_container;
-//    echo    $prefix . $colloquium_container;
-//    echo $leaf_topic;
-//  $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
+ $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
  
- if ($is_seminar_colloquium_all == 0)      $file_to_parse = $prefix . $seminar_container . '/' . $leaf_topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
- else if ($is_seminar_colloquium_all == 1) $file_to_parse = $prefix . $colloquium_container . '' . $leaf_topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
- 
-//  echo $file_to_parse;
-//   echo $leaf_topic;
   
  $csv_map = Seminars::read_csv_file($file_to_parse);
  
@@ -1222,7 +1205,8 @@ private static function navigation_bar_past_years($prefix, $page_topic, $is_all_
 
   if ($is_all_or_single == 2) { $prefix_disc = $prefix . 'all' . '/'; }
   
-  else                        { $prefix_disc = $prefix_base  . $page_topic . '/'; }
+  else                        {    $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
+                                   $prefix_disc = $prefix_base  . $page_topic . '/'; }
 
   
   
@@ -1316,7 +1300,7 @@ private static function navigation_bar_content($id_target, $prefix, $page_topic,
 
  
  if ($depth == 0)        Seminars::navigation_bar_depth_0_scheme($prefix_base, $all_schemes[$i]);
- else if ($depth == 1)   Seminars::navigation_bar_depth_1_scheme($prefix_base, $all_schemes[$i][Seminars::get_father_scheme_from_itself($all_schemes[$i])]);
+ else if ($depth == 1)   Seminars::navigation_bar_depth_1_scheme($prefix_base, $all_schemes[$i][Seminars::get_father_scheme_string_from_itself($all_schemes[$i])]);
  ///@todo implement the other depths
  
  }
@@ -1606,13 +1590,15 @@ private static function set_event_image($remote_path_prefix,
                                         $images_folder,
                                         $events_map,
                                         $row,
-                                        $seminar_container, $colloquium_container, $is_seminar_colloquium_all)  {
+                                                   $all_schemes,
+                                                   $father_scheme_idx)  {
                                         
                                         
  $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
 
- $after_prefix = Seminars::get_event_container($seminar_container, $colloquium_container, $is_seminar_colloquium_all);
- 
+//  $after_prefix = Seminars::get_event_container($seminar_container, $colloquium_container, $is_seminar_colloquium_all);
+ $after_prefix = Seminars::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+
    echo '<td>'; 
    
    echo '<img class="' . Seminars::$sem_image . '" ' .  'src="' .
@@ -1636,7 +1622,8 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
                                                     $discipline_array, $bool_print_discipline,
                                                     $toggle_abstract_id,
                                                     $arrow_abstract_id,
-                                                    $seminar_container, $colloquium_container, $is_seminar_colloquium_all) {
+                                                   $all_schemes,
+                                                   $father_scheme_idx) {
 
 
     echo '<table class="' . Seminars::$sem_item . '">';
@@ -1648,7 +1635,8 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
 
      Seminars::set_event_image($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                $images_folder, $events_map, $row,
-                               $seminar_container, $colloquium_container, $is_seminar_colloquium_all);
+                                                   $all_schemes,
+                                                   $father_scheme_idx);
     
      Seminars::set_event_day($events_map, $row);
      
@@ -1689,9 +1677,15 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
                                      $row,
                                      $toggle_abstract_id,
                                      $arrow_abstract_id,
-                                     $seminar_container, $colloquium_container, $is_seminar_colloquium_all) {
+                                     $seminar_container, $colloquium_container, $is_seminar_colloquium_all,
+                                                   $all_schemes,
+                                                   $father_scheme_idx) {
                                      
- $after_prefix = Seminars::get_event_container($seminar_container, $colloquium_container, $is_seminar_colloquium_all);
+//   $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+//  $after_prefix = Seminars::get_event_container($seminar_container, $colloquium_container, $is_seminar_colloquium_all);
+   $after_prefix = Seminars::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+
+ $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
 
  
  $abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, '');
@@ -1786,13 +1780,16 @@ private static function loop_over_events($events_map, $starting_row,
                                           $images_folder, $events_map, $row, 
                                           $discipline_array, $bool_print_discipline,
                                           $toggle_abstract_id, $arrow_abstract_id,
-                                          $seminar_container, $colloquium_container, $is_seminar_colloquium_all);
+                                                   $all_schemes,
+                                                   $father_scheme_idx);
     
     Seminars::set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                            $abstracts_folder, 
                            $events_map, $row,
                            $toggle_abstract_id, $arrow_abstract_id,
-                           $seminar_container, $colloquium_container, $is_seminar_colloquium_all);
+                           $seminar_container, $colloquium_container, $is_seminar_colloquium_all,
+                                                   $all_schemes,
+                                                   $father_scheme_idx);
     
     }
     
@@ -2034,7 +2031,7 @@ public static function set_single_leaf_body($remote_path_prefix, $local_path_pre
                  
  
  
- $events_in_seminar = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $page_topic, $year, $semester, $seminar_container, $colloquium_container, $is_seminar_colloquium_all, $all_schemes, $father_scheme_idx);
+ $events_in_seminar = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $page_topic, $year, $semester, $all_schemes, $father_scheme_idx);
  
  $bool_print_discipline = false;
  
@@ -2087,7 +2084,7 @@ public static function set_single_leaf_body($remote_path_prefix, $local_path_pre
  }
 
  
-private static function set_scheme_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+private static function set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                       $institution, 
                                                   $department, 
                                                   $year,
@@ -2098,15 +2095,14 @@ private static function set_scheme_events_by_time_range_body($remote_path_prefix
                                                   $day_end, 
                                                   $abstracts_folder,
                                                   $images_folder,
-                                                  $discipline_array, $colloquium_array,  
+                                                  $discipline_array,  
                                                   $bool_print_discipline,
                                                   $seminar_container, $colloquium_container, $is_seminar_colloquium_all, $all_schemes, $father_scheme_idx)  {
  
 
     $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                                         $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                                        $discipline_array, $colloquium_array, 
-                                                        $seminar_container, $colloquium_container, $is_seminar_colloquium_all, $all_schemes, $father_scheme_idx);
+                                                        $discipline_array, $all_schemes, $father_scheme_idx);
     
     
     Seminars::sort_array_of_arrays_based_on_one_index($events_in_week, Seminars::$month_idx, SORT_ASC);
@@ -2186,11 +2182,11 @@ $depth = 0;
        Seminars::get_depth_recursively($scheme, $depth);
        
        $output_array = array();
-//        echo Seminars::get_father_scheme_from_itself($scheme);
+//        echo Seminars::get_father_scheme_string_from_itself($scheme);
 //         echo $depth;
 
         if ($depth == 0)       $output_array = $scheme;
-       else if  ($depth == 1)  $output_array = $scheme[Seminars::get_father_scheme_from_itself($scheme)][1];
+       else if  ($depth == 1)  $output_array = $scheme[Seminars::get_father_scheme_string_from_itself($scheme)][1];
  
  
 //  print_r($output_array);
@@ -2204,8 +2200,7 @@ $depth = 0;
  
 private static function parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                                $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                               $discipline_array, $colloquium_array, 
-                                               $seminar_container, $colloquium_container, $is_seminar_colloquium_all, $all_schemes, $father_scheme_idx)  {
+                                               $discipline_array, $all_schemes, $father_scheme_idx)  {
  
  
   $starting_row = Seminars::$row_events_begin;
@@ -2216,8 +2211,6 @@ private static function parse_all_event_tables_single_leaf($remote_path_prefix, 
   
   $events_array = $discipline_array;
   
-/*   if ($is_seminar_colloquium_all == 0)       {*/ /*}*/
-//    else if ($is_seminar_colloquium_all == 1)  { $events_array = $colloquium_array; }
 
   $events_in_week = array();
     
@@ -2227,7 +2220,7 @@ private static function parse_all_event_tables_single_leaf($remote_path_prefix, 
     foreach ($events_array as $discipline => $discipline_string) {
     
 
-   $csv_map = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester, $seminar_container, $colloquium_container, $is_seminar_colloquium_all, $all_schemes, $father_scheme_idx);
+   $csv_map = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester, $all_schemes, $father_scheme_idx);
 
     
     for ($row = $starting_row; $row < count($csv_map); $row++) {
