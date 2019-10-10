@@ -564,7 +564,6 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
                                              $title,
                                              $icon_in_toolbar,
                                              $remote_url_base, $local_url_base, $are_input_files_local,
-                                             $discipline,  ///@todo is this needed?
                                                    $all_schemes,
                                              $is_all_or_single,
                                              $department,
@@ -583,7 +582,6 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
                                                                $title,
                                                                $icon_in_toolbar,
                                                                $remote_url_base, $local_url_base, $are_input_files_local,
-                                                               $discipline,
                                                    $all_schemes,
                                                                $is_all_or_single, 
                                                                $department,
@@ -632,8 +630,6 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
                                                                              $institution,
                                                                              $department,
                                                                              $icon_in_toolbar,
-                                                                             $discipline_array, $colloquium_array,
-                                                                             $seminar_container, $colloquium_container,
                                                                              $all_schemes
                                                                              ) { 
 
@@ -1474,6 +1470,7 @@ private static function set_event_details($events_map, $row,
 
    if ( $bool_print_discipline == true ) {                                
       echo "<strong>";
+      //name of the current leaf
         echo $discipline_array[ $events_map[$row][Seminars::$discipline_idx] ];
       echo "</strong>";
       echo "<br>";
