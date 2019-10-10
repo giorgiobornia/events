@@ -151,20 +151,21 @@ $first_pair = array_slice($assoc_array, 0, 1, true);
                                                           $institution,
                                                           $department, 
                                                           $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                                          $discipline_array, $all_schemes) {
+                                                          $all_schemes) {
  
 //  php -r " " for an in-line script on command line
 
 
      for ($i = 0; $i < count($all_schemes); $i++) {
-
+     
+    $leaf_array = Seminars::get_array_of_leaves( $all_schemes[$i] ); 
 $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                                         $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                                        $discipline_array, $all_schemes, $i);
+                                                        $leaf_array, $all_schemes, $i);
     
 
 
-      for ($event_i = 0; $event_i < count($events_in_week); $event_i++)   Seminars::single_latex_pdf_slide($events_in_week, $event_i, $discipline_array);
+      for ($event_i = 0; $event_i < count($events_in_week); $event_i++)   Seminars::single_latex_pdf_slide($events_in_week, $event_i, $leaf_array, $all_schemes[$i]);
 
 }
 
@@ -174,20 +175,23 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
 }
 
 
- private static function single_latex_pdf_slide($events_in_week, $event_i, $discipline_array) {
- 
+ private static function single_latex_pdf_slide($events_in_week, $event_i, $discipline_array, $scheme) {
+
+ $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $scheme);
+
 //latex file -----------------
   $slides_folder = 'slides';
 //   mkdir('slides');              //with PHP
   shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
-  $event_filename = 'slide_' . $event_i;
+  
+  $tree_string = Seminars::get_father_scheme_string_from_itself($scheme);
+  $event_filename = $tree_string . '_slide_' . $event_i;
   $fp = fopen($slides_folder . '/' . $event_filename . '.tex', 'w');
 //   shell_exec('cd ' . $slides_folder);
     
   fwrite($fp, '\documentclass[10pt,compress]{beamer}' . PHP_EOL);
     
 //  fwrite($fp, '\usepackage[T1]{fontenc}'. PHP_EOL);
-//  fwrite($fp, '\usepackage[latin1]{inputenc}'. PHP_EOL);
  fwrite($fp, '\usepackage[utf8]{inputenc}'. PHP_EOL);
  fwrite($fp, '\usepackage{verbatim}'. PHP_EOL);
  fwrite($fp, '\usepackage{graphicx}'. PHP_EOL);
@@ -200,12 +204,19 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
   fwrite($fp, '\begin{frame}[fragile]' . PHP_EOL);
   fwrite($fp, '\centering' . PHP_EOL);
   
+  
+  fwrite($fp, '\textbf{'/* . PHP_EOL*/);
+  fwrite($fp, '\huge' . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$title_idx] /*. PHP_EOL*/);
+  fwrite($fp, '}' . PHP_EOL);
+  
+  
   fwrite($fp, '\begin{columns}' . PHP_EOL);
 
   fwrite($fp, '\begin{column}{0.5\textwidth}' . PHP_EOL);
   fwrite($fp, '\centering' . PHP_EOL);
   fwrite($fp, '\textbf{' . PHP_EOL);
-  fwrite($fp, /*$discipline_array[*/$events_in_week[$event_i][Seminars::$discipline_idx]/*]*/ . PHP_EOL);
+//   fwrite($fp, /*$discipline_array[*/$events_in_week[$event_i][Seminars::$discipline_idx]/*]*/ . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
   $year = $events_in_week[$event_i][Seminars::$year_idx];
@@ -235,17 +246,14 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
   fwrite($fp, PHP_EOL);
   fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_institution_idx] . PHP_EOL);
   fwrite($fp, PHP_EOL);
-  fwrite($fp, '\includegraphics[width=0.5\textwidth]{'.  '../../seminars/' /* path from where the command is launched!!!*/.  $events_in_week[$event_i][Seminars::$discipline_idx] . '/' . $events_in_week[$event_i][Seminars::$year_idx] . '/' . $events_in_week[$event_i][Seminars::$semester_idx]  . '/' . /*Seminars::$images_folder*/  'images/' . $events_in_week[$event_i][Seminars::$speaker_image_idx]  . '}' . PHP_EOL);
+  fwrite($fp, '\includegraphics[width=0.5\textwidth]{'.  '../../' . $prefix_base /* path from where the command is launched!!!*/.  $events_in_week[$event_i][Seminars::$discipline_idx] . '/' . $events_in_week[$event_i][Seminars::$year_idx] . '/' . $events_in_week[$event_i][Seminars::$semester_idx]  . '/' . /*Seminars::$images_folder*/  'images/' . $events_in_week[$event_i][Seminars::$speaker_image_idx]  . '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
   fwrite($fp, '\end{column}' . PHP_EOL);
   
   fwrite($fp, '\end{columns}' . PHP_EOL);
 
   fwrite($fp, PHP_EOL);
-  fwrite($fp, '\textbf{'/* . PHP_EOL*/);
-  fwrite($fp, '\huge' . PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Seminars::$title_idx] /*. PHP_EOL*/);
-  fwrite($fp, '}' . PHP_EOL);
+
   fwrite($fp, PHP_EOL);
 // //   fwrite($fp, $events_in_week[$event_i][Seminars::$abstract_file_idx] . PHP_EOL);
 // //   fwrite($fp, PHP_EOL);
@@ -848,16 +856,11 @@ echo '</head>';
     
   //====================================================================
      for ($i = 0; $i < count($all_schemes); $i++) {
-      //get to each leaf
-      //read the file of each leaf
-      
-
-//   foreach ($leaf_array as $key => $value) break;
-     
+  
 $branch_name = Seminars::get_father_scheme_name($all_schemes[$i]);
   echo '<h3> &nbsp <strong> ' . $branch_name . ' </strong> </h3>';
   
-       $leaf_array = Seminars::get_output_array( $all_schemes[$i] );
+    $leaf_array = Seminars::get_array_of_leaves( $all_schemes[$i] );  ///@todo this is all leaves, I think this only works with depth 0 and 1; one should get all leaves at all depths
 
        
     Seminars::set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
@@ -2103,7 +2106,7 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
 
 
 
-private static function get_output_array($scheme) {
+private static function get_array_of_leaves($scheme) {
 
 $depth = 0;
        Seminars::get_depth_recursively($scheme, $depth);
