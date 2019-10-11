@@ -185,7 +185,7 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
   $fp = fopen($slides_folder . '/' . $event_filename . '.tex', 'w');
 //   shell_exec('cd ' . $slides_folder);
     
-  fwrite($fp, '\documentclass[10pt,compress]{beamer}' . PHP_EOL);
+  fwrite($fp, '\documentclass[compress,aspectratio=169]{beamer}' . PHP_EOL);
     
  fwrite($fp, '\usepackage[utf8]{inputenc}'. PHP_EOL);
  fwrite($fp, '\usepackage{verbatim}'. PHP_EOL);
@@ -193,7 +193,9 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
  fwrite($fp, '\usetheme{CambridgeUS}' . PHP_EOL);
   fwrite($fp, '\setbeamertemplate{navigation symbols}{}' . PHP_EOL);
   fwrite($fp, '\setbeamertemplate{page number in head/foot}{}' . PHP_EOL);
-  fwrite($fp, '\date{}' . PHP_EOL);
+  fwrite($fp, '\setbeamercolor{background canvas}{bg=lightgray}' . PHP_EOL);
+
+fwrite($fp, '\date{}' . PHP_EOL);
 
   fwrite($fp, '\begin{document}' . PHP_EOL);
   fwrite($fp, '\begin{frame}[fragile]' . PHP_EOL);
@@ -255,10 +257,22 @@ fwrite($fp, '\end{column}' . PHP_EOL);
 
   fwrite($fp, '\begin{column}{0.45\textwidth}' . PHP_EOL);
   fwrite($fp, '\centering' . PHP_EOL);
-  fwrite($fp, '\includegraphics[width=0.7\textwidth]{'.  '../../' . $prefix_base /* path from where the command is launched!!!*/.  
+  
+// ---------------------------------  
+//copy the file over to ease export to other computers
+  shell_exec('cp '  .  '../../' . $prefix_base /* path from where the command is launched!!!*/.  
              $events_in_week[$event_i][Seminars::$discipline_idx] . '/' . 
              $events_in_week[$event_i][Seminars::$year_idx] . '/' . 
-             $events_in_week[$event_i][Seminars::$semester_idx]  . '/' . Seminars::$images_folder . $events_in_week[$event_i][Seminars::$speaker_image_idx]  . '}' . PHP_EOL);
+             $events_in_week[$event_i][Seminars::$semester_idx]  . '/' . Seminars::$images_folder . $events_in_week[$event_i][Seminars::$speaker_image_idx] . ' ./' . $slides_folder);
+  fwrite($fp, '\includegraphics[width=0.7\textwidth]{' .   /*$slides_folder . '/' .*/ $events_in_week[$event_i][Seminars::$speaker_image_idx]  . '}' . PHP_EOL);
+  
+//including the file without copying it
+//   fwrite($fp, '\includegraphics[width=0.7\textwidth]{' .  '../../' . $prefix_base /* path from where the command is launched!!!*/.  
+//              $events_in_week[$event_i][Seminars::$discipline_idx] . '/' . 
+//              $events_in_week[$event_i][Seminars::$year_idx] . '/' . 
+//              $events_in_week[$event_i][Seminars::$semester_idx]  . '/' . Seminars::$images_folder . $events_in_week[$event_i][Seminars::$speaker_image_idx]  . '}' . PHP_EOL);
+// ---------------------------------  
+
   fwrite($fp, PHP_EOL);
   fwrite($fp, '\end{column}' . PHP_EOL);
   
@@ -274,8 +288,13 @@ fwrite($fp, '\end{column}' . PHP_EOL);
 
   fclose($fp);
 
-  $output =  shell_exec('pdflatex '  . ' -output-directory ' . $slides_folder . ' ' .  $slides_folder . '/' . $event_filename . '.tex ' );
-//   $output += shell_exec('dvipng '  .  $slides_folder . '/' . $event_filename . '.dvi ' );
+// ---------------------------------  
+//enter inside the slides folder each time for a shorter compile command (need all the shell commands to be in the same shell_exec, because separate ones would be independent and restart from the original path)
+  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $event_filename . '.tex ' . ';' . 'cd ..');
+  
+//   $output =  shell_exec('pdflatex '  . ' -output-directory ' . $slides_folder . ' ' .  $slides_folder . '/' . $event_filename . '.tex ' . PHP_EOL );
+// ---------------------------------  
+  
   printf($output);
  
  }
@@ -460,16 +479,17 @@ private static function generate_seminar_page_list($discipline_array, $colloquia
 }
 
 
-public static function generate_seminar_page_by_topic_year_semester($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+public static function generate_topic_page_by_topic_year_semester($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                                     $institution, $department, 
                                                                     $t_y_s,
                                                                     $icon_in_toolbar, 
-                                                                    $is_all_or_single,
                                                                     $all_schemes,
                                                                     $father_scheme_idx
                                                                     ) {
 
 
+ $is_all_or_single = 0;
+ 
    $discipline = $t_y_s[Seminars::$discipline_idx_in_path_from_end];
    $year       = $t_y_s[Seminars::$year_idx_in_path_from_end];
    $semester   = $t_y_s[Seminars::$semester_idx_in_path_from_end];
