@@ -192,10 +192,28 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
  fwrite($fp, '\usepackage{graphicx}'. PHP_EOL);
  fwrite($fp, '\usetheme{CambridgeUS}' . PHP_EOL);
   fwrite($fp, '\setbeamertemplate{navigation symbols}{}' . PHP_EOL);
-  fwrite($fp, '\setbeamertemplate{page number in head/foot}{}' . PHP_EOL);
+  
+  fwrite($fp, '  \makeatletter                                                                                                                                             ' . PHP_EOL);
+  fwrite($fp, '\setbeamertemplate{footline}{%                                                                                                                              ' . PHP_EOL);
+  fwrite($fp, '  \leavevmode%                                                                                                                                              ' . PHP_EOL);
+  fwrite($fp, '  \hbox{%                                                                                                                                                   ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%                                                               ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{author in head/foot}\insertshortauthor\expandafter\beamer@ifempty\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}       ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%                                                                ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{title in head/foot}\insertshorttitle                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%                                                                  ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}                                                                                        ' . PHP_EOL);
+  fwrite($fp, '    %\insertframenumber{} / \inserttotalframenumber\hspace*{2ex}   %% comment this                                                                          ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}}%                                                                                                                                    ' . PHP_EOL);
+  fwrite($fp, '  \vskip0pt%                                                                                                                                                ' . PHP_EOL);
+  fwrite($fp, '}                                                                                                                                                           ' . PHP_EOL);
+  fwrite($fp, '\makeatother                                                                                                                                                ' . PHP_EOL);
+
   fwrite($fp, '\setbeamercolor{background canvas}{bg=lightgray}' . PHP_EOL);
 
-fwrite($fp, '\date{}' . PHP_EOL);
+  fwrite($fp, '\date{}' . PHP_EOL);
 
   fwrite($fp, '\begin{document}' . PHP_EOL);
   fwrite($fp, '\begin{frame}[fragile]' . PHP_EOL);
