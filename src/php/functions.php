@@ -19,13 +19,6 @@ class Seminars {
  }  while($key != $father_scheme_string);
  
  
-//  echo $key;
- 
-//  while($key != $father_scheme_string) {
-//  
-//    $i++;
-//  }
- 
   
   return $i - 1;
  
@@ -176,8 +169,11 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
 
 
  private static function single_latex_pdf_slide($events_in_week, $event_i, $discipline_array, $scheme) {
-
- $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $scheme);
+  ///@todo The font &  is not accepted in Latex!
+  
+  
+  
+ $prefix_base = Seminars::get_prefix_up_to_current_leaf('', $scheme);
 
 //latex file -----------------
   $slides_folder = 'slides';
@@ -191,7 +187,6 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
     
   fwrite($fp, '\documentclass[10pt,compress]{beamer}' . PHP_EOL);
     
-//  fwrite($fp, '\usepackage[T1]{fontenc}'. PHP_EOL);
  fwrite($fp, '\usepackage[utf8]{inputenc}'. PHP_EOL);
  fwrite($fp, '\usepackage{verbatim}'. PHP_EOL);
  fwrite($fp, '\usepackage{graphicx}'. PHP_EOL);
@@ -209,44 +204,61 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
   fwrite($fp, '\huge' . PHP_EOL);
   fwrite($fp, $events_in_week[$event_i][Seminars::$title_idx] /*. PHP_EOL*/);
   fwrite($fp, '}' . PHP_EOL);
+  fwrite($fp, '\vspace{1em}' . PHP_EOL);
   
   
   fwrite($fp, '\begin{columns}' . PHP_EOL);
 
-  fwrite($fp, '\begin{column}{0.5\textwidth}' . PHP_EOL);
+  fwrite($fp, '\begin{column}{0.55\textwidth}' . PHP_EOL);
   fwrite($fp, '\centering' . PHP_EOL);
+  
   fwrite($fp, '\textbf{' . PHP_EOL);
 //   fwrite($fp, /*$discipline_array[*/$events_in_week[$event_i][Seminars::$discipline_idx]/*]*/ . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
+  
+//-------------
+  fwrite($fp, '\textbf{' . PHP_EOL);
+  fwrite($fp, '\large' . PHP_EOL);
+//   fwrite($fp, Normalizer::normalize($events_in_week[$event_i][Seminars::$speaker_idx]) . PHP_EOL); //need to recompile php with --enable-intl
+  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_idx] . PHP_EOL);
+  fwrite($fp, '}' . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_department_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_institution_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+//-------------
+
+  fwrite($fp, '\vspace{2em}' . PHP_EOL);
+
+//-------------
   $year = $events_in_week[$event_i][Seminars::$year_idx];
   $month = $events_in_week[$event_i][Seminars::$month_idx];
   $day = $events_in_week[$event_i][Seminars::$day_idx];
   $week_day = Seminars::compute_week_day($year, $month, $day);
+  fwrite($fp, '\textbf{' . PHP_EOL);
   fwrite($fp, $week_day);
   fwrite($fp, ', ');
   fwrite($fp, Seminars::$months_conv_long[$events_in_week[$event_i][Seminars::$month_idx] ] /*. PHP_EOL*/);
   fwrite($fp, ' ');
   fwrite($fp, $events_in_week[$event_i][Seminars::$day_idx] . PHP_EOL);
+  fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
   fwrite($fp, $events_in_week[$event_i][Seminars::$time_idx] . PHP_EOL);
   fwrite($fp, PHP_EOL);
   fwrite($fp, $events_in_week[$event_i][Seminars::$room_idx] . PHP_EOL);
   fwrite($fp, PHP_EOL);
-  fwrite($fp, '\end{column}' . PHP_EOL);
+//-------------
 
-  fwrite($fp, '\begin{column}{0.5\textwidth}' . PHP_EOL);
+fwrite($fp, '\end{column}' . PHP_EOL);
+
+  fwrite($fp, '\begin{column}{0.45\textwidth}' . PHP_EOL);
   fwrite($fp, '\centering' . PHP_EOL);
-  fwrite($fp, '\textbf{' . PHP_EOL);
-//   fwrite($fp, Normalizer::normalize($events_in_week[$event_i][Seminars::$speaker_idx]) . PHP_EOL); //need to recompile php with --enable-intl
-  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_idx] . PHP_EOL);
-  fwrite($fp, '}' . PHP_EOL);
-  fwrite($fp, PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_department_idx] . PHP_EOL);  ///@todo this creates trouble, check why. There was an & that is not accepted in Latex!
-  fwrite($fp, PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_institution_idx] . PHP_EOL);
-  fwrite($fp, PHP_EOL);
-  fwrite($fp, '\includegraphics[width=0.5\textwidth]{'.  '../../' . $prefix_base /* path from where the command is launched!!!*/.  $events_in_week[$event_i][Seminars::$discipline_idx] . '/' . $events_in_week[$event_i][Seminars::$year_idx] . '/' . $events_in_week[$event_i][Seminars::$semester_idx]  . '/' . /*Seminars::$images_folder*/  'images/' . $events_in_week[$event_i][Seminars::$speaker_image_idx]  . '}' . PHP_EOL);
+  fwrite($fp, '\includegraphics[width=0.7\textwidth]{'.  '../../' . $prefix_base /* path from where the command is launched!!!*/.  
+             $events_in_week[$event_i][Seminars::$discipline_idx] . '/' . 
+             $events_in_week[$event_i][Seminars::$year_idx] . '/' . 
+             $events_in_week[$event_i][Seminars::$semester_idx]  . '/' . Seminars::$images_folder . $events_in_week[$event_i][Seminars::$speaker_image_idx]  . '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
   fwrite($fp, '\end{column}' . PHP_EOL);
   
@@ -255,8 +267,6 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
   fwrite($fp, PHP_EOL);
 
   fwrite($fp, PHP_EOL);
-// //   fwrite($fp, $events_in_week[$event_i][Seminars::$abstract_file_idx] . PHP_EOL);
-// //   fwrite($fp, PHP_EOL);
   fwrite($fp, '\end{frame}' . PHP_EOL);
  
  
@@ -267,7 +277,6 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
   $output =  shell_exec('pdflatex '  . ' -output-directory ' . $slides_folder . ' ' .  $slides_folder . '/' . $event_filename . '.tex ' );
 //   $output += shell_exec('dvipng '  .  $slides_folder . '/' . $event_filename . '.dvi ' );
   printf($output);
-//latex file -----------------
  
  }
  
@@ -471,7 +480,6 @@ public static function generate_seminar_page_by_topic_year_semester($library_pat
                                             $icon_in_toolbar,
                                             $all_schemes,
                                             $father_scheme_idx,
-                                            $discipline_array, $colloquium_array, $seminar_container, $colloquium_container,
                                             $is_all_or_single );
 
 }
@@ -483,7 +491,6 @@ private static function generate_seminar_page_by_topic($library_path, $remote_pa
                                                        $icon_in_toolbar, 
                                                        $all_schemes,
                                                        $father_scheme_idx,
-                                                       $discipline_array, $colloquium_array, $seminar_container, $colloquium_container,
                                                    $is_all_or_single ) {
 
  
@@ -512,7 +519,6 @@ echo '</head>';
                                          Seminars::$abstracts_folder, Seminars::$images_folder,
                                                        $all_schemes,
                                                        $father_scheme_idx,
-                                         $discipline_array, $colloquium_array, $seminar_container, $colloquium_container,
                                          $is_all_or_single );
 
     
@@ -932,7 +938,7 @@ public static function set_html_head($library_path, $title_in_toolbar, $icon_in_
 //So it is muuuuch better in the end to use the function!
 
 
-$description = "Seminars";
+$description = "Events";
 $author = "Giorgio Bornia";
 
  Seminars::set_meta($description, $author);
@@ -1923,16 +1929,13 @@ public static function get_month_string($number) {
 }
 
 
-///@todo check the intersession file if it needs this, otherwise this should better be private
-public static function set_single_leaf_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+private static function set_single_leaf_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                   $institution, $department,
                                                    $page_topic, $year, $semester, 
                                                    $abstracts_folder, $images_folder,
                                                    $all_schemes,
                                                    $father_scheme_idx,
-                                                   $discipline_array,  $colloquium_array,
-                                                   $seminar_container, $colloquium_container,
-                                                   $is_seminar_colloquium_all ) {
+                                                   $is_all_or_single ) {
                                                    
  
  $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
@@ -1943,7 +1946,7 @@ public static function set_single_leaf_body($remote_path_prefix, $local_path_pre
                           $page_topic,
                           $all_schemes,
                           $father_scheme_idx,
-                          $is_seminar_colloquium_all, 
+                          $is_all_or_single, 
                           $department);
                           
  
@@ -1977,11 +1980,15 @@ public static function set_single_leaf_body($remote_path_prefix, $local_path_pre
 
  $starting_row = Seminars::$row_events_begin;
  
-    
+ 
+ $leaf_array = Seminars::get_array_of_leaves( $all_schemes[$father_scheme_idx] );
+ 
+ 
  Seminars::loop_over_events($events_in_seminar, $starting_row,
                             $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                             $abstracts_folder, $images_folder, 
-                            $discipline_array, $bool_print_discipline,
+                            $leaf_array, 
+                            $bool_print_discipline,
                             $all_schemes,
                             $father_scheme_idx);
  

@@ -1,14 +1,26 @@
-Seminars: PHP library to handle an arbitrary number of seminars
+ PHP library to handle an arbitrary number of events in a website
 
 Features:
 
-- Generation of seminar pages is available in two ways:
+- Events are organized as an array of Trees with variable depth (depth 0 and 1 are fully supported for now).
 
-    - by discipline & year & semester
-    
-    - by a specified time range (e.g., a week), for a given list of disciplines
-    
-- Colloquia can be treated as a particular instance of a discipline
+- The Leaves at the highest depth of each Tree contain a list of events of a certain topic.
+
+- Each Leaf is organized according to the folder scheme "topic/year/semester/":
+
+    - "topic" (e.g., applied_math, analysis, number_theory, etc.)
+
+    - "year"  (e.g., 2019)
+
+    - "semester"  (e.g., "spring", "fall", "summer")
+
+- Pages of the Leaves of each Tree can be generated
+
+- Pages involving all Leaves of Trees for a specified time range (e.g., a week) can be generated (The all folder)
+
+- A list of past editions of each Leaf can be handled easily
+
+- PDF slides of each Leaf can be generated (using the beamer LaTeX package)
 
 - LaTeX is typeset directly on the webpage through the MathJax libraries (very convenient for math formulas)
 
@@ -19,16 +31,6 @@ Features:
 - Optional: generation of navigation bars and banners through Bootstrap
 
 - The calls can be embedded inside an arbitrary <body> field that is taken care of by the user
-
-- Each seminar will be grouped according to the folder scheme "discipline/year/semester/", where typically
-
-    - "discipline" is the field of the seminar (e.g., applied_math, analysis, number_theory, etc.)
-
-    - "year" is the current year (e.g., 2019)
-
-    - "semester" is the current semester (e.g., "spring", "fall")
-
-- A list of past editions can be handled easily
 
 
 
