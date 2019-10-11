@@ -505,8 +505,6 @@ public static function generate_topic_page_by_topic_year_semester($library_path,
                                                                     $father_scheme_idx
                                                                     ) {
 
-
- $is_all_or_single = 0;
  
    $discipline = $t_y_s[Seminars::$discipline_idx_in_path_from_end];
    $year       = $t_y_s[Seminars::$year_idx_in_path_from_end];
@@ -517,8 +515,7 @@ public static function generate_topic_page_by_topic_year_semester($library_path,
                                             $discipline, $year, $semester, 
                                             $icon_in_toolbar,
                                             $all_schemes,
-                                            $father_scheme_idx,
-                                            $is_all_or_single );
+                                            $father_scheme_idx);
 
 }
 
@@ -528,8 +525,7 @@ private static function generate_seminar_page_by_topic($library_path, $remote_pa
                                                        $page_topic, $year, $semester,
                                                        $icon_in_toolbar, 
                                                        $all_schemes,
-                                                       $father_scheme_idx,
-                                                   $is_all_or_single ) {
+                                                       $father_scheme_idx) {
 
  
 echo '<!DOCTYPE html>';
@@ -556,8 +552,7 @@ echo '</head>';
                                          $page_topic, $year, $semester,
                                          Seminars::$abstracts_folder, Seminars::$images_folder,
                                                        $all_schemes,
-                                                       $father_scheme_idx,
-                                         $is_all_or_single );
+                                                       $father_scheme_idx);
 
     
   echo '</body>';
@@ -601,15 +596,12 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
 //to generate all semester files (actually I do it with a shell script instead)
 //    Seminars::generate_initial_week_files($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day,'../../../src/sh/week_file.php','./week/');
 
-   $is_all_or_single = 2;
-
     
  Seminars::generate_page_with_all_weeks_list($relative_path_to_library,
                                              $title,
                                              $icon_in_toolbar,
                                              $remote_url_base, $local_url_base, $are_input_files_local,
                                                    $all_schemes,
-                                             $is_all_or_single,
                                              $department,
                                              $institution,
                                              $year,
@@ -627,7 +619,6 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
                                                                $icon_in_toolbar,
                                                                $remote_url_base, $local_url_base, $are_input_files_local,
                                                    $all_schemes,
-                                                               $is_all_or_single, 
                                                                $department,
                                                                $institution,
                                                                $year,
@@ -642,7 +633,7 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
                            $discipline,  ///@todo not needed here
                            $all_schemes,
                            $father_scheme_idx,   ///@todo change args: $father_scheme_idx is not needed here
-                           $is_all_or_single, 
+                           Seminars::$is_all_page, 
                            $department);
   
   Seminars::main_banner($title, $department, $institution);  
@@ -703,7 +694,7 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
  
  
  
- $is_all_or_single = 2;
+ $is_all_or_single = Seminars::$is_all_page;
  
  
  
@@ -717,9 +708,7 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
                                                          $day_begin,
                                                          $month_end,
                                                          $day_end,
-                                                   $all_schemes,
-                                                         $is_all_or_single
-                                                         ); 
+                                                   $all_schemes); 
  
  
 }
@@ -841,8 +830,7 @@ private static function generate_page_with_all_trees_by_time_range($library_path
                                                                      $year,
                                                                      $semester,
                                                                      $month_begin, $day_begin, $month_end, $day_end,
-                                                                     $all_schemes,
-                                                                     $is_all_or_single ) {
+                                                                     $all_schemes) {
 
 // Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
 // if so, I will store that array and make a map that will be parsed by a function
@@ -868,14 +856,13 @@ echo '</head>';
   echo '<body>';
   
   
-  
-  $discipline = 'all';
+$discipline = 'all';
   
   Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                            $discipline, 
                            $all_schemes,
                            $father_scheme_idx,  ///@todo this variable is not defined here
-                           $is_all_or_single, 
+                           Seminars::$is_all_page, 
                            $department);
  
 
@@ -1190,7 +1177,7 @@ private static function navigation_bar_past_years($prefix, $page_topic, $is_all_
    $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
 
 
-  if ($is_all_or_single == 2) { $prefix_disc = $prefix . 'all' . '/'; }
+  if ($is_all_or_single == true) { $prefix_disc = $prefix . 'all' . '/'; }
   
   else                        {    $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
                                    $prefix_disc = $prefix_base  . $page_topic . '/'; }
@@ -1972,10 +1959,9 @@ private static function set_single_leaf_body($remote_path_prefix, $local_path_pr
                                                    $page_topic, $year, $semester, 
                                                    $abstracts_folder, $images_folder,
                                                    $all_schemes,
-                                                   $father_scheme_idx,
-                                                   $is_all_or_single ) {
+                                                   $father_scheme_idx) {
                                                    
- 
+  
  $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
 
 
@@ -1984,7 +1970,7 @@ private static function set_single_leaf_body($remote_path_prefix, $local_path_pr
                           $page_topic,
                           $all_schemes,
                           $father_scheme_idx,
-                          $is_all_or_single, 
+                          Seminars::$is_leaf_page, 
                           $department);
                           
  
@@ -2317,6 +2303,8 @@ private static function parse_all_event_tables_single_leaf($remote_path_prefix, 
    private static   $first_position_from_the_end_to_read = 1; //to discard 'index.php' from the absolute filename
    
 // ===== 
+   private static   $is_all_page   = true;
+   private static   $is_leaf_page  = false;
    private static   $general_title   = 'Events';
 
 // ===== bootstrap style
