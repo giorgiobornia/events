@@ -11,7 +11,7 @@
  
  $path = $current_discipline . '/' . $current_year . '/' . $current_semester;
  
- Seminars::redirect_page_with_path($path);
+ Events::redirect_page_with_path($path);
  
 
  ?>

@@ -8,7 +8,7 @@
  $current_year = 2019;
  $current_semester = 'semester';
  
- Seminars::redirect_page($current_year, $current_semester);
+ Events::redirect_page($current_year, $current_semester);
  
 
  ?>

@@ -14,7 +14,7 @@
  
  $filename = __FILE__;
   
- $array = Seminars::get_discipline_year_semester($filename);
+ $array = Events::get_discipline_year_semester($filename);
 
  
  $institution = "University of Nowhere";  //this string is what you'll see on the page
@@ -41,7 +41,7 @@
  $are_input_files_local = true;
  
  
- $array = Seminars::get_discipline_year_semester(__FILE__);
+ $array = Events::get_discipline_year_semester(__FILE__);
 
  
  $event_container_remote_path_prefix = ''; //no final slash here!!!
@@ -50,7 +50,7 @@
 
  
  
- Seminars::generate_seminar_page_by_topic_year_semester($relative_path_to_library,  //to find src/ in the library
+ Events::generate_seminar_page_by_topic_year_semester($relative_path_to_library,  //to find src/ in the library
  
                                                         $event_container_remote_path_prefix,
                                                         $event_container_local_path_prefix,

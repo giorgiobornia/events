@@ -1,7 +1,7 @@
 ======================================================
-=== Each seminar or colloquium =======================
+=== Each Leaf of a Tree (Each Topic) =======================
 ======================================================
-The folder of each seminar (or the folder of colloquia) contains:
+The folder of each Leaf contains:
 
 - The folders of each year/semester (e.g., 2019/spring)
 
@@ -9,7 +9,7 @@ The folder of each seminar (or the folder of colloquia) contains:
     Say which year/semester pairs you want to be visible
 
 - about.txt
-    Say some general information about the seminar/colloquium
+    Say some general information about the Leaf
 
 - index.php 
     It redirects to the current year/semester that you specify
@@ -21,7 +21,6 @@ The folder of each year/semester contains:
     Put all commas, even the last one
     If an item in the events.csv file has commas inside, just put quotes " ... " around it
     Remember to input the speaker websites with https:// or http:// in front! (maybe do a check to find this)
-    Events of a seminar are listed in reverse chronological order
 
 - abstracts/
 
@@ -35,9 +34,9 @@ The folder of each year/semester contains:
 
 
 ====================================================
-=== The week-based functions =======================
+=== The week-based functions ('all' folder) =======================
 ====================================================
-The week-based functions collect the info of all Colloquia and Seminars in each week, and automatically generate week-based pages.
+The week-based functions collect the info from all Leaves in each week, and automatically generate week-based pages.
 Typically, an 'all' folder is created that contains:
 
 - The folders of each year/semester
@@ -65,4 +64,4 @@ The folder of each year/semester contains:
 === The generation of PDF slides ===================
 ====================================================
 
-
+Done!

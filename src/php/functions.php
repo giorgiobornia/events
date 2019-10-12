@@ -1,7 +1,7 @@
 <?php
 
 
-class Seminars {
+class Events {
 
 
   
@@ -36,9 +36,9 @@ class Seminars {
  public static function get_father_scheme_from_filename($file_in, $base_folder) {
 
  
-  $first_pos_from_the_end_to_read = Seminars::$first_position_from_the_end_to_read;
+  $first_pos_from_the_end_to_read = Events::$first_position_from_the_end_to_read;
 
-  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $first_pos_from_the_end_to_read + 1);
+  $array = Events::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $first_pos_from_the_end_to_read + 1);
 
   $depth = 0;
   
@@ -48,14 +48,14 @@ class Seminars {
 
  $first_pos_from_the_end_to_read += 1;
  
-  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $first_pos_from_the_end_to_read + 1);
+  $array = Events::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, $first_pos_from_the_end_to_read + 1);
 
  }
  
- $father_scheme =  Seminars::get_path_components_from_the_end($file_in, $depth, $depth + 1);
+ $father_scheme =  Events::get_path_components_from_the_end($file_in, $depth, $depth + 1);
  
  
-//  $depth_cleaned = $depth - Seminars::$num_positions_from_the_end_to_read;
+//  $depth_cleaned = $depth - Events::$num_positions_from_the_end_to_read;
  
  
  return $father_scheme[0]/*$depth_cleaned*/;
@@ -66,9 +66,9 @@ class Seminars {
  
  private static function get_father_scheme_name($scheme) {
 
- $scheme_root = Seminars::get_father_scheme_string_from_itself($scheme);
+ $scheme_root = Events::get_father_scheme_string_from_itself($scheme);
 
-  $depth = 0; Seminars::get_depth_recursively($scheme, $depth);
+  $depth = 0; Events::get_depth_recursively($scheme, $depth);
  
  $title = '';
  
@@ -86,11 +86,11 @@ private static function get_prefix_up_to_current_leaf($prefix, $scheme) {
 /// Then, you should pass the info about the current leaf, which now you are not passing
 
  $depth = 0;
- Seminars::get_depth_recursively($scheme, $depth);
+ Events::get_depth_recursively($scheme, $depth);
 
  $prefix_base = $prefix;
 
- for ($j = 0; $j < $depth; $j++) $prefix_base = $prefix_base . Seminars::get_father_scheme_string_from_itself($scheme) . '/';
+ for ($j = 0; $j < $depth; $j++) $prefix_base = $prefix_base . Events::get_father_scheme_string_from_itself($scheme) . '/';
 
  return $prefix_base;
  
@@ -104,7 +104,7 @@ private static function get_leaf_name_from_father_scheme_recursively($scheme, $c
 //   echo $key;
 //   echo $value;
   if ($key == $current_leaf)  { $translation = $value; break; }
-  else                        { Seminars::get_leaf_name_from_father_scheme_recursively($value[1], $current_leaf, $translation); }
+  else                        { Events::get_leaf_name_from_father_scheme_recursively($value[1], $current_leaf, $translation); }
   
   }
 
@@ -128,7 +128,7 @@ $first_pair = array_slice($assoc_array, 0, 1, true);
 //   echo $value;
     
            if ( sizeof($value) == 1 ) { $depth = $depth + 0; break; }
-     else  if ( sizeof($value) == 2 ) { $depth = $depth + 1;  Seminars::get_depth_recursively($value[1], $depth); /*break;*/ }
+     else  if ( sizeof($value) == 2 ) { $depth = $depth + 1;  Events::get_depth_recursively($value[1], $depth); /*break;*/ }
 
    }
 
@@ -151,14 +151,14 @@ $first_pair = array_slice($assoc_array, 0, 1, true);
 
      for ($i = 0; $i < count($all_schemes); $i++) {
      
-    $leaf_array = Seminars::get_array_of_leaves( $all_schemes[$i] ); 
-$events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+    $leaf_array = Events::get_array_of_leaves( $all_schemes[$i] ); 
+$events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                                         $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
                                                         $leaf_array, $all_schemes, $i);
     
 
 
-      for ($event_i = 0; $event_i < count($events_in_week); $event_i++)   Seminars::single_latex_pdf_slide($events_in_week, $event_i, $leaf_array, $all_schemes[$i]);
+      for ($event_i = 0; $event_i < count($events_in_week); $event_i++)   Events::single_latex_pdf_slide($events_in_week, $event_i, $leaf_array, $all_schemes[$i]);
 
 }
 
@@ -173,14 +173,14 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
   
   
   
- $prefix_base = Seminars::get_prefix_up_to_current_leaf('', $scheme);
+ $prefix_base = Events::get_prefix_up_to_current_leaf('', $scheme);
 
 //latex file -----------------
   $slides_folder = 'slides';
 //   mkdir('slides');              //with PHP
   shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
   
-  $tree_string = Seminars::get_father_scheme_string_from_itself($scheme);
+  $tree_string = Events::get_father_scheme_string_from_itself($scheme);
   $event_filename = $tree_string . '_slide_' . $event_i;
   $fp = fopen($slides_folder . '/' . $event_filename . '.tex', 'w');
 //   shell_exec('cd ' . $slides_folder);
@@ -222,7 +222,7 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
   
   fwrite($fp, '\textbf{'/* . PHP_EOL*/);
   fwrite($fp, '\huge' . PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Seminars::$title_idx] /*. PHP_EOL*/);
+  fwrite($fp, $events_in_week[$event_i][Events::$title_idx] /*. PHP_EOL*/);
   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, '\vspace{1em}' . PHP_EOL);
   
@@ -233,41 +233,41 @@ $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_pre
   fwrite($fp, '\centering' . PHP_EOL);
   
   fwrite($fp, '\textbf{' . PHP_EOL);
-//   fwrite($fp, /*$discipline_array[*/$events_in_week[$event_i][Seminars::$discipline_idx]/*]*/ . PHP_EOL);
+//   fwrite($fp, /*$discipline_array[*/$events_in_week[$event_i][Events::$discipline_idx]/*]*/ . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
   
 //-------------
   fwrite($fp, '\textbf{' . PHP_EOL);
   fwrite($fp, '\large' . PHP_EOL);
-//   fwrite($fp, Normalizer::normalize($events_in_week[$event_i][Seminars::$speaker_idx]) . PHP_EOL); //need to recompile php with --enable-intl
-  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_idx] . PHP_EOL);
+//   fwrite($fp, Normalizer::normalize($events_in_week[$event_i][Events::$speaker_idx]) . PHP_EOL); //need to recompile php with --enable-intl
+  fwrite($fp, $events_in_week[$event_i][Events::$speaker_idx] . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_department_idx] . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Events::$speaker_department_idx] . PHP_EOL);
   fwrite($fp, PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Seminars::$speaker_institution_idx] . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Events::$speaker_institution_idx] . PHP_EOL);
   fwrite($fp, PHP_EOL);
 //-------------
 
   fwrite($fp, '\vspace{2em}' . PHP_EOL);
 
 //-------------
-  $year = $events_in_week[$event_i][Seminars::$year_idx];
-  $month = $events_in_week[$event_i][Seminars::$month_idx];
-  $day = $events_in_week[$event_i][Seminars::$day_idx];
-  $week_day = Seminars::compute_week_day($year, $month, $day);
+  $year = $events_in_week[$event_i][Events::$year_idx];
+  $month = $events_in_week[$event_i][Events::$month_idx];
+  $day = $events_in_week[$event_i][Events::$day_idx];
+  $week_day = Events::compute_week_day($year, $month, $day);
   fwrite($fp, '\textbf{' . PHP_EOL);
   fwrite($fp, $week_day);
   fwrite($fp, ', ');
-  fwrite($fp, Seminars::$months_conv_long[$events_in_week[$event_i][Seminars::$month_idx] ] /*. PHP_EOL*/);
+  fwrite($fp, Events::$months_conv_long[$events_in_week[$event_i][Events::$month_idx] ] /*. PHP_EOL*/);
   fwrite($fp, ' ');
-  fwrite($fp, $events_in_week[$event_i][Seminars::$day_idx] . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Events::$day_idx] . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Seminars::$time_idx] . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Events::$time_idx] . PHP_EOL);
   fwrite($fp, PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Seminars::$room_idx] . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Events::$room_idx] . PHP_EOL);
   fwrite($fp, PHP_EOL);
 //-------------
 
@@ -279,16 +279,16 @@ fwrite($fp, '\end{column}' . PHP_EOL);
 // ---------------------------------  
 //copy the file over to ease export to other computers
   shell_exec('cp '  .  '../../' . $prefix_base /* path from where the command is launched!!!*/.  
-             $events_in_week[$event_i][Seminars::$discipline_idx] . '/' . 
-             $events_in_week[$event_i][Seminars::$year_idx] . '/' . 
-             $events_in_week[$event_i][Seminars::$semester_idx]  . '/' . Seminars::$images_folder . $events_in_week[$event_i][Seminars::$speaker_image_idx] . ' ./' . $slides_folder);
-  fwrite($fp, '\includegraphics[width=0.7\textwidth]{' .   /*$slides_folder . '/' .*/ $events_in_week[$event_i][Seminars::$speaker_image_idx]  . '}' . PHP_EOL);
+             $events_in_week[$event_i][Events::$discipline_idx] . '/' . 
+             $events_in_week[$event_i][Events::$year_idx] . '/' . 
+             $events_in_week[$event_i][Events::$semester_idx]  . '/' . Events::$images_folder . $events_in_week[$event_i][Events::$speaker_image_idx] . ' ./' . $slides_folder);
+  fwrite($fp, '\includegraphics[width=0.7\textwidth]{' .   /*$slides_folder . '/' .*/ $events_in_week[$event_i][Events::$speaker_image_idx]  . '}' . PHP_EOL);
   
 //including the file without copying it
 //   fwrite($fp, '\includegraphics[width=0.7\textwidth]{' .  '../../' . $prefix_base /* path from where the command is launched!!!*/.  
-//              $events_in_week[$event_i][Seminars::$discipline_idx] . '/' . 
-//              $events_in_week[$event_i][Seminars::$year_idx] . '/' . 
-//              $events_in_week[$event_i][Seminars::$semester_idx]  . '/' . Seminars::$images_folder . $events_in_week[$event_i][Seminars::$speaker_image_idx]  . '}' . PHP_EOL);
+//              $events_in_week[$event_i][Events::$discipline_idx] . '/' . 
+//              $events_in_week[$event_i][Events::$year_idx] . '/' . 
+//              $events_in_week[$event_i][Events::$semester_idx]  . '/' . Events::$images_folder . $events_in_week[$event_i][Events::$speaker_image_idx]  . '}' . PHP_EOL);
 // ---------------------------------  
 
   fwrite($fp, PHP_EOL);
@@ -326,9 +326,9 @@ fwrite($fp, '\end{column}' . PHP_EOL);
  public static function get_discipline_year_semester($file_in) {
  ///@todo actually this is semester/year/discipline now
  
- $first_pos_from_the_end_to_read = Seminars::$first_position_from_the_end_to_read;
+ $first_pos_from_the_end_to_read = Events::$first_position_from_the_end_to_read;
  
-  $array = Seminars::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, Seminars::$num_positions_from_the_end_to_read);
+  $array = Events::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, Events::$num_positions_from_the_end_to_read);
  
   return $array;
 
@@ -344,7 +344,7 @@ fwrite($fp, '\end{column}' . PHP_EOL);
  $current_file = $file_in;
  $current_file = str_replace('\\', '/', $current_file);  //Windows file paths have backslash
 
- $array = Seminars::get_string_components_from_the_end($delimiter, $current_file, $starting_pos_from_end, $how_many_backwards);
+ $array = Events::get_string_components_from_the_end($delimiter, $current_file, $starting_pos_from_end, $how_many_backwards);
 
  return $array;
 
@@ -356,7 +356,7 @@ fwrite($fp, '\end{column}' . PHP_EOL);
  
  $explosion = explode($delimiter, $string_in);
  
- $array = Seminars::get_array_components_from_the_end($explosion, $starting_pos_from_end, $how_many_backwards);
+ $array = Events::get_array_components_from_the_end($explosion, $starting_pos_from_end, $how_many_backwards);
 
  return $array;
 
@@ -379,7 +379,7 @@ fwrite($fp, '\end{column}' . PHP_EOL);
  
  
 private static function get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local) {
-//this is the prefix wrt. the seminars folder
+//this is the prefix wrt. the main folder
 
   $prefix = '';
 
@@ -435,7 +435,7 @@ public static function redirect_page($year, $semester) {
 
  $redir_path = $year .'/' . $semester . '/';
 
-  Seminars::redirect_page_with_path($redir_path);
+  Events::redirect_page_with_path($redir_path);
 
 
 }
@@ -460,43 +460,6 @@ public static function redirect_page_with_path($redir_path) {
 
 
 
-private static function generate_seminar_page_list($discipline_array, $colloquia, $prefix) {
-//not used at present, the navigation bar does this job
-
-    $depth_all_sems = $prefix;
-
-     echo '<br/>';
-     
-     echo '<h3> &nbsp <strong> Colloquia and seminars by topic </strong> </h3>';
-
-     echo '<br/>';
-     echo '<br/>';
-     
-     echo '<ul>';
-     echo '<li>';
-     echo '<a href="' . $depth_all_sems  . $colloquia . '/' . '"> Colloquia </a>';
-     echo '</li>';
-     echo '</ul>';
-     
-     echo '<br/>';
-     echo '<br/>';
-     
-     echo '<ul>';
-     
-    foreach ($discipline_array as $discipline => $discipline_string) {
-    
-     echo '<li>';
-     echo '<a href="' . $depth_all_sems . './' . $discipline . '">' . $discipline_string . '</a>';
-     echo '</li>';
-     echo '<br/>';
-     
-    }
-
-     echo '</ul>';
-     
-}
-
-
 public static function generate_topic_page_by_topic_year_semester($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                                     $institution, $department, 
                                                                     $t_y_s,
@@ -506,11 +469,11 @@ public static function generate_topic_page_by_topic_year_semester($library_path,
                                                                     ) {
 
  
-   $discipline = $t_y_s[Seminars::$discipline_idx_in_path_from_end];
-   $year       = $t_y_s[Seminars::$year_idx_in_path_from_end];
-   $semester   = $t_y_s[Seminars::$semester_idx_in_path_from_end];
+   $discipline = $t_y_s[Events::$discipline_idx_in_path_from_end];
+   $year       = $t_y_s[Events::$year_idx_in_path_from_end];
+   $semester   = $t_y_s[Events::$semester_idx_in_path_from_end];
 
-   Seminars::generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+   Events::generate_topic_page($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                             $institution, $department, 
                                             $discipline, $year, $semester, 
                                             $icon_in_toolbar,
@@ -520,7 +483,7 @@ public static function generate_topic_page_by_topic_year_semester($library_path,
 }
 
 
-private static function generate_seminar_page_by_topic($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+private static function generate_topic_page($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                        $institution, $department, 
                                                        $page_topic, $year, $semester,
                                                        $icon_in_toolbar, 
@@ -536,10 +499,10 @@ echo '<head>';
 
 
 
-  $title_in_toolbar =  Seminars::get_leaf_name_from_father_scheme_recursively($all_schemes[$father_scheme_idx], $page_topic, $title_in_toolbar);
+  $title_in_toolbar =  Events::get_leaf_name_from_father_scheme_recursively($all_schemes[$father_scheme_idx], $page_topic, $title_in_toolbar);
   
 
-  Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
+  Events::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
   
 echo '</head>';
 
@@ -547,10 +510,10 @@ echo '</head>';
   echo '<body>';
 
 
-    Seminars::set_single_leaf_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+    Events::set_single_leaf_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                          $institution, $department,
                                          $page_topic, $year, $semester,
-                                         Seminars::$abstracts_folder, Seminars::$images_folder,
+                                         Events::$abstracts_folder, Events::$images_folder,
                                                        $all_schemes,
                                                        $father_scheme_idx);
 
@@ -572,32 +535,32 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
                                                                $institution,
                                                                $all_schemes) {   
 
- $title = Seminars::$general_title;
+ $title = Events::$general_title;
  
   
-  $active_mondays = Seminars::read_csv_file(Seminars::$active_mondays_file);
+  $active_mondays = Events::read_csv_file(Events::$active_mondays_file);
 
-  $first_monday_month = $active_mondays[Seminars::$active_mondays_first_index][Seminars::$active_mondays_month_index];
-  $first_monday_day   = $active_mondays[Seminars::$active_mondays_first_index][Seminars::$active_mondays_day_index];
-  $last_monday_month  = $active_mondays[Seminars::$active_mondays_last_index][Seminars::$active_mondays_month_index];
-  $last_monday_day    = $active_mondays[Seminars::$active_mondays_last_index][Seminars::$active_mondays_day_index];
+  $first_monday_month = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_month_index];
+  $first_monday_day   = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_day_index];
+  $last_monday_month  = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_month_index];
+  $last_monday_day    = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_day_index];
   
   
- $array_coords = Seminars::get_discipline_year_semester($filename);
+ $array_coords = Events::get_discipline_year_semester($filename);
     
  $semester   = $array_coords[0];
  $year       = $array_coords[1];
  $discipline = $array_coords[2];  //this will be 'all'
     
     
- $sort_weeks_list = Seminars::$sort_weeks;
- $week_month_day_auto = Seminars::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day, $sort_weeks_list);
+ $sort_weeks_list = Events::$sort_weeks;
+ $week_month_day_auto = Events::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day, $sort_weeks_list);
 
 //to generate all semester files (actually I do it with a shell script instead)
-//    Seminars::generate_initial_week_files($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day,'../../../src/sh/week_file.php','./week/');
+//    Events::generate_initial_week_files($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day,'../../../src/sh/week_file.php','./week/');
 
     
- Seminars::generate_page_with_all_weeks_list($relative_path_to_library,
+ Events::generate_page_with_all_weeks_list($relative_path_to_library,
                                              $title,
                                              $icon_in_toolbar,
                                              $remote_url_base, $local_url_base, $are_input_files_local,
@@ -625,26 +588,26 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
                                                                $semester,
                                                                $week_month_day_begin) {  
 
-  Seminars::set_html_head($relative_path_to_library, $title, $icon_in_toolbar);
+  Events::set_html_head($relative_path_to_library, $title, $icon_in_toolbar);
 
   echo '<body>';
   
-  Seminars::navigation_bar($remote_url_base, $local_url_base, $are_input_files_local, 
+  Events::navigation_bar($remote_url_base, $local_url_base, $are_input_files_local, 
                            $discipline,  ///@todo not needed here
                            $all_schemes,
                            $father_scheme_idx,   ///@todo change args: $father_scheme_idx is not needed here
-                           Seminars::$is_all_page, 
+                           Events::$is_all_page, 
                            $department);
   
-  Seminars::main_banner($title, $department, $institution);  
+  Events::main_banner($title, $department, $institution);  
   
-    echo '<h2> &nbsp <strong> ' . Seminars::capitalize($semester) . ' ' . $year . ' </strong> </h2>';
+    echo '<h2> &nbsp <strong> ' . Events::capitalize($semester) . ' ' . $year . ' </strong> </h2>';
     
-    echo '<div class="' . Seminars::$bootstrap_container . '">';
+    echo '<div class="' . Events::$bootstrap_container . '">';
      
     echo '<br/>';
  
-   Seminars::loop_over_semester_weeks($year, $week_month_day_begin);
+   Events::loop_over_semester_weeks($year, $week_month_day_begin);
    
     echo '<br/>';
     
@@ -670,35 +633,35 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
 
   $starting_pos = 2;
   $how_many_backwards = 2;
-  $path_out =  Seminars::get_path_components_from_the_end($filename, $starting_pos, $how_many_backwards);
+  $path_out =  Events::get_path_components_from_the_end($filename, $starting_pos, $how_many_backwards);
   
   $year = $path_out[1];
   $semester = $path_out[0];
  
-  $month_day_file_array =  Seminars::get_path_components_from_the_end($filename, 0, 1);
+  $month_day_file_array =  Events::get_path_components_from_the_end($filename, 0, 1);
   
   $month_day_file = $month_day_file_array[0];
   
   $basestr = basename($month_day_file, '.php');
-  $basestr_array = Seminars::get_string_components_from_the_end('_', $basestr, 0, 2);
+  $basestr_array = Events::get_string_components_from_the_end('_', $basestr, 0, 2);
   
  $month_begin = $basestr_array[1];
  $day_begin   = $basestr_array[0];
  
 
  $offset_wanted = 6;
- $month_and_day_out = Seminars::compute_subsequent_day_with_offset($year, $month_begin, $day_begin, $offset_wanted);
+ $month_and_day_out = Events::compute_subsequent_day_with_offset($year, $month_begin, $day_begin, $offset_wanted);
 
  $month_end   = $month_and_day_out[0];
  $day_end     = $month_and_day_out[1];
  
  
  
- $is_all_or_single = Seminars::$is_all_page;
+ $is_all_or_single = Events::$is_all_page;
  
  
  
- Seminars::generate_page_with_all_trees_by_time_range($library_path,
+ Events::generate_page_with_all_trees_by_time_range($library_path,
                                                          $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                          $institution,$department,
                                                          $icon_in_toolbar,
@@ -719,18 +682,18 @@ public static function generate_page_with_all_seminars_by_time_range_wrapper($fi
 private static function previous_next_all_week_buttons($year, $month_begin, $day_begin, $sort_weeks_list) {
 
 
- $active_mondays_path = '../' . Seminars::$active_mondays_file;
+ $active_mondays_path = '../' . Events::$active_mondays_file;
  
- $active_mondays = Seminars::read_csv_file($active_mondays_path);
+ $active_mondays = Events::read_csv_file($active_mondays_path);
 
  //generate the list of all mondays
- $first_monday_month = $active_mondays[Seminars::$active_mondays_first_index][Seminars::$active_mondays_month_index];
- $first_monday_day   = $active_mondays[Seminars::$active_mondays_first_index][Seminars::$active_mondays_day_index];
- $last_monday_month  = $active_mondays[Seminars::$active_mondays_last_index][Seminars::$active_mondays_month_index];
- $last_monday_day    = $active_mondays[Seminars::$active_mondays_last_index][Seminars::$active_mondays_day_index];
+ $first_monday_month = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_month_index];
+ $first_monday_day   = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_day_index];
+ $last_monday_month  = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_month_index];
+ $last_monday_day    = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_day_index];
  
  
- $all_mondays = Seminars::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day, $sort_weeks_list);
+ $all_mondays = Events::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day, $sort_weeks_list);
  
  $current_monday_month = $month_begin;
  $current_monday_day = $day_begin;
@@ -844,10 +807,10 @@ echo '<html>';
 
 echo '<head>';
 
-  $title_in_toolbar = Seminars::$general_title;
+  $title_in_toolbar = Events::$general_title;
 
   
-  Seminars::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
+  Events::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
    
 echo '</head>';
 
@@ -858,46 +821,47 @@ echo '</head>';
   
 $discipline = 'all';
   
-  Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+  Events::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                            $discipline, 
                            $all_schemes,
                            $father_scheme_idx,  ///@todo this variable is not defined here
-                           Seminars::$is_all_page, 
+                           Events::$is_all_page, 
                            $department);
  
 
  $title = $title_in_toolbar;
  
- Seminars::main_banner($title, $department, $institution);
+ Events::main_banner($title, $department, $institution);
  
  
-  echo '<h2> &nbsp <strong> ' . Seminars::$months_conv[$month_begin] . ' ' . $day_begin  . ' - ' . Seminars::$months_conv[$month_end] . ' ' . $day_end  . ' </strong> </h2>';
+  echo '<h2> &nbsp <strong> ' . Events::$months_conv[$month_begin] . ' ' . $day_begin  . ' - ' . Events::$months_conv[$month_end] . ' ' . $day_end  . ' </strong> </h2>';
   
  
- $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
  
- $sort_weeks_list = Seminars::$sort_weeks;
- Seminars::previous_next_all_week_buttons($year, $month_begin, $day_begin, $sort_weeks_list);
+ $sort_weeks_list = Events::$sort_weeks;
+ Events::previous_next_all_week_buttons($year, $month_begin, $day_begin, $sort_weeks_list);
 
   
+  $bool_print_discipline = true;
     
   //====================================================================
      for ($i = 0; $i < count($all_schemes); $i++) {
   
-$branch_name = Seminars::get_father_scheme_name($all_schemes[$i]);
+$branch_name = Events::get_father_scheme_name($all_schemes[$i]);
   echo '<h3> &nbsp <strong> ' . $branch_name . ' </strong> </h3>';
   
-    $leaf_array = Seminars::get_array_of_leaves( $all_schemes[$i] );  ///@todo this is all leaves, I think this only works with depth 0 and 1; one should get all leaves at all depths
+    $leaf_array = Events::get_array_of_leaves( $all_schemes[$i] );  ///@todo this is all leaves, I think this only works with depth 0 and 1; one should get all leaves at all depths
 
        
-    Seminars::set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+    Events::set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                               $institution, $department, 
                                               $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                              Seminars::$abstracts_folder, Seminars::$images_folder, 
+                                              Events::$abstracts_folder, Events::$images_folder, 
                                               $leaf_array,  
-                                              /*$only_colloquia_bool_print_discipline*/true,
-                                               $all_schemes, 
-                                               $i);
+                                              $bool_print_discipline,
+                                              $all_schemes, 
+                                              $i);
      
      
 }
@@ -932,12 +896,12 @@ private static function read_csv_file($file) {
 
 private static function read_events_file_and_attach_topic_year_semester($prefix, $leaf_topic, $year, $semester, $all_schemes, $father_scheme_idx) {
 
-   $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
+   $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
 
- $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
+ $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Events::$events_file;
  
   
- $csv_map = Seminars::read_csv_file($file_to_parse);
+ $csv_map = Events::read_csv_file($file_to_parse);
  
  array_splice($csv_map,0,1); //remove the 1st row
 
@@ -966,19 +930,19 @@ public static function set_html_head($library_path, $title_in_toolbar, $icon_in_
 $description = "Events";
 $author = "Giorgio Bornia";
 
- Seminars::set_meta($description, $author);
+ Events::set_meta($description, $author);
 
- Seminars::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
+ Events::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
 
 
 
- Seminars::set_jquery_lib();
+ Events::set_jquery_lib();
  
- Seminars::set_bootstrap_css_and_javascript_libs();
+ Events::set_bootstrap_css_and_javascript_libs();
 
 
 
- Seminars::set_mandatory_libs($library_path);
+ Events::set_mandatory_libs($library_path);
 
 
 
@@ -989,9 +953,9 @@ $author = "Giorgio Bornia";
 
 public static function set_mandatory_libs($library_path) {
 
- Seminars::set_sem_css($library_path);
+ Events::set_sem_css($library_path);
  
- Seminars::set_latex_rendering_lib();
+ Events::set_latex_rendering_lib();
  
 } 
  
@@ -1104,11 +1068,11 @@ private static function convert_to_associative_array($array_in) {
 public static function generate_list_past_editions($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline) {
 
 
- $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
 
  $prefix_disc = $prefix . $discipline . '/';
  
- $past_years = Seminars::get_active_years($prefix_disc);
+ $past_years = Events::get_active_years($prefix_disc);
 
  echo 'All terms';
 
@@ -1135,10 +1099,10 @@ public static function generate_list_past_editions($remote_path_prefix, $local_p
 private static function get_active_years($prefix_disc) {
 
  
- $past_editions = Seminars::read_csv_file($prefix_disc . Seminars::$active_editions_file);
+ $past_editions = Events::read_csv_file($prefix_disc . Events::$active_editions_file);
 
 
- $past_years = Seminars::convert_to_associative_array($past_editions);
+ $past_years = Events::convert_to_associative_array($past_editions);
  
  return $past_years;
 
@@ -1174,12 +1138,12 @@ private static function navigation_bar_past_years($prefix, $page_topic, $is_all_
   
   $prefix_disc = '';
   
-   $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
+   $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
 
 
   if ($is_all_or_single == true) { $prefix_disc = $prefix . 'all' . '/'; }
   
-  else                        {    $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
+  else                        {    $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
                                    $prefix_disc = $prefix_base  . $page_topic . '/'; }
 
   
@@ -1188,7 +1152,7 @@ private static function navigation_bar_past_years($prefix, $page_topic, $is_all_
    echo '<a class="nav-link" href="'/* . $prefix_disc*/ . '">' . $label_name  . '</a>';
    echo '</li>';
    
- $past_years = Seminars::get_active_years($prefix_disc);
+ $past_years = Events::get_active_years($prefix_disc);
  
  foreach ($past_years as $year => $value) {
    
@@ -1229,10 +1193,10 @@ private static function navigation_bar_depth_1_scheme($prefix, $discipline_array
 
 }
 
-private static function navigation_bar_depth_0_scheme($prefix, $colloquia_array) {
+private static function navigation_bar_depth_0_scheme($prefix, $leaf_array) {
 
 
-  foreach ($colloquia_array as $key => $value) {
+  foreach ($leaf_array as $key => $value) {
 
    echo '<li class="nav-item">';
    echo '<a class="nav-link" href="' . $prefix . $key . '/' . '">' . $value . '</a>';
@@ -1267,14 +1231,14 @@ private static function navigation_bar_content($id_target, $prefix, $page_topic,
   for ($i = 0; $i < count($all_schemes); $i++) {
 
  $depth = 0;
- Seminars::get_depth_recursively($all_schemes[$i], $depth);
+ Events::get_depth_recursively($all_schemes[$i], $depth);
 
 
- $prefix_base = Seminars::get_prefix_up_to_current_leaf($prefix, $all_schemes[$i]);
+ $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$i]);
 
  
- if ($depth == 0)        Seminars::navigation_bar_depth_0_scheme($prefix_base, $all_schemes[$i]);
- else if ($depth == 1)   Seminars::navigation_bar_depth_1_scheme($prefix_base, $all_schemes[$i][Seminars::get_father_scheme_string_from_itself($all_schemes[$i])]);
+ if ($depth == 0)        Events::navigation_bar_depth_0_scheme($prefix_base, $all_schemes[$i]);
+ else if ($depth == 1)   Events::navigation_bar_depth_1_scheme($prefix_base, $all_schemes[$i][Events::get_father_scheme_string_from_itself($all_schemes[$i])]);
  ///@todo implement the other depths
  
  }
@@ -1285,11 +1249,11 @@ private static function navigation_bar_content($id_target, $prefix, $page_topic,
 
  echo '<li class="dropdown-divider"></li>';
   
-  Seminars::navigation_bar_past_years($prefix, $page_topic, $is_all_or_single_page, $all_schemes, $father_scheme_idx);
+  Events::navigation_bar_past_years($prefix, $page_topic, $is_all_or_single_page, $all_schemes, $father_scheme_idx);
   
  echo '<li class="dropdown-divider"></li>';
 
-  Seminars::navigation_bar_link_to_department($department);
+  Events::navigation_bar_link_to_department($department);
   
  echo '</ul>';
 
@@ -1307,7 +1271,7 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
                                       $department) {
 
  
- $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
 
 
  $home_all_sems = 'Home';
@@ -1317,11 +1281,11 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
  
  echo '<nav class="navbar navbar-expand-lg navbar-light">'; /*fixed-top ///@todo padding-top of the body must be modified, if you want the navigation bar to be fixed */
  
- Seminars::navigation_bar_brand($prefix, $home_all_sems);
+ Events::navigation_bar_brand($prefix, $home_all_sems);
  
- Seminars::navigation_bar_menu_button($target_past_years);
+ Events::navigation_bar_menu_button($target_past_years);
 
- Seminars::navigation_bar_content($target_past_years, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx);
+ Events::navigation_bar_content($target_past_years, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx);
 
 
  echo '</nav>';
@@ -1339,8 +1303,8 @@ public static function main_banner($title, $department, $institution) {
 
   echo '<div class="main_banner">';
   echo '<div style="background-color: rgba(0, 0, 0, 0.3);">';                       //filter so that fonts on images are readable
-  echo '<div class="' . Seminars::$bootstrap_container . '"' . ' ' . 'style="' . Seminars::$banners_text_alignment . '"' . '>';  //
-//   echo '<div style="' . Seminars::$banners_text_alignment . ' display: inline; width: 100%; margin-left: auto; margin-right: auto;  "' . '>';  //
+  echo '<div class="' . Events::$bootstrap_container . '"' . ' ' . 'style="' . Events::$banners_text_alignment . '"' . '>';  //
+//   echo '<div style="' . Events::$banners_text_alignment . ' display: inline; width: 100%; margin-left: auto; margin-right: auto;  "' . '>';  //
   echo '      <h2> ' . $title . ' </h2>';
   echo '      <h3> ' . /*'<a href="' . $department[$dept_url_idx] . '"' . ' style="color: white;"' . '>'  .*/ $department[$dept_name_idx]  /*. '</a>'*/ . ' </h3>';
   echo '      <h3> ' . $institution . ' </h3>';
@@ -1353,7 +1317,7 @@ public static function main_banner($title, $department, $institution) {
 ///@todo deprecated 
 private static function default_meeting_coords_banner($semester, $year, $week_day, $time, $room) {
 
- echo '<div class="'. Seminars::$bootstrap_container_fluid . '"' . ' ' . 'style="' . Seminars::$banners_text_alignment . ' ' . Seminars::$sem_header_style . '"' . '>';
+ echo '<div class="'. Events::$bootstrap_container_fluid . '"' . ' ' . 'style="' . Events::$banners_text_alignment . ' ' . Events::$sem_header_style . '"' . '>';
  
  echo '<h3>';
  echo $semester . ' ' . 
@@ -1381,7 +1345,7 @@ private static function capitalize($string) {
 ///@todo not used for now 
 private static function default_meeting_coords_banner_map($file_to_parse, $year, $semester) {
  
- $csv = Seminars::read_csv_file($file_to_parse);
+ $csv = Events::read_csv_file($file_to_parse);
 
  //default meeting related data
    $week_day_default_meeting_idx            = 0;
@@ -1389,9 +1353,9 @@ private static function default_meeting_coords_banner_map($file_to_parse, $year,
    $room_default_meeting_idx                = 2;
    $row_default_meeting_data = 1;
  
-  Seminars::default_meeting_coords_banner(
-      Seminars::capitalize($semester),
-      Seminars::capitalize($year),
+  Events::default_meeting_coords_banner(
+      Events::capitalize($semester),
+      Events::capitalize($year),
       $csv[$row_default_meeting_data][$week_day_default_meeting_idx],
       $csv[$row_default_meeting_data][$time_default_meeting_idx],
       $csv[$row_default_meeting_data][$room_default_meeting_idx]
@@ -1418,19 +1382,19 @@ private static function about($page_topic,
                               $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                               $all_schemes, $father_scheme_idx) {
  
- $prefix_base = Seminars::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+ $prefix_base = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
 
  
     $about_txt_file =
     $prefix_base .
     $page_topic . '/' .  
-    Seminars::$about_file;
+    Events::$about_file;
 
-  echo '<div class="' . Seminars::$bootstrap_container . '">';
+  echo '<div class="' . Events::$bootstrap_container . '">';
   
   echo '<br/>';       
   
-  Seminars::include_file( $remote_path_prefix, $local_path_prefix, $about_txt_file, $are_input_files_local);
+  Events::include_file( $remote_path_prefix, $local_path_prefix, $about_txt_file, $are_input_files_local);
   
   echo '<br/>';       
   echo '<br/>';       
@@ -1444,16 +1408,16 @@ private static function about($page_topic,
 
 private static function set_abstract_id_and_its_toggle($events_map, $row, $base_str) {
 
-  $clock_str = $events_map[$row][Seminars::$time_idx];
+  $clock_str = $events_map[$row][Events::$time_idx];
   $clock_str = str_replace(' ', '_', $clock_str);
   $clock_str = str_replace(':', '_', $clock_str);
   
 
     $abstract_id = $base_str . 'abst_' .
-      $events_map[$row][Seminars::$discipline_idx]  . '_' . 
-      $events_map[$row][Seminars::$year_idx]        . '_' .
-      $events_map[$row][Seminars::$month_idx]       . '_' . 
-      $events_map[$row][Seminars::$day_idx]         . '_' .
+      $events_map[$row][Events::$discipline_idx]  . '_' . 
+      $events_map[$row][Events::$year_idx]        . '_' .
+      $events_map[$row][Events::$month_idx]       . '_' . 
+      $events_map[$row][Events::$day_idx]         . '_' .
       $clock_str;
       
   return  $abstract_id;
@@ -1464,27 +1428,27 @@ private static function set_abstract_id_and_its_toggle($events_map, $row, $base_
 private static function set_event_day($events_map, $row) {
 
 
-    $year = $events_map[$row][Seminars::$year_idx];
-    $month = $events_map[$row][Seminars::$month_idx];
-    $day = $events_map[$row][Seminars::$day_idx];
+    $year = $events_map[$row][Events::$year_idx];
+    $month = $events_map[$row][Events::$month_idx];
+    $day = $events_map[$row][Events::$day_idx];
     
-    $week_day = Seminars::compute_week_day($year, $month, $day);
+    $week_day = Events::compute_week_day($year, $month, $day);
 
     echo '<td width="100px">';
 
     echo "<strong>";
-    echo  $week_day  . " <br/> " . Seminars::$months_conv[ $events_map[$row][Seminars::$month_idx] ] . " " . $events_map[$row][Seminars::$day_idx];
+    echo  $week_day  . " <br/> " . Events::$months_conv[ $events_map[$row][Events::$month_idx] ] . " " . $events_map[$row][Events::$day_idx];
     echo "</strong>";
     
     echo '<br/>';
     
     
     echo "<em>";
-    echo $events_map[$row][Seminars::$time_idx];
+    echo $events_map[$row][Events::$time_idx];
     echo "</em>";
     
     echo '<br/>';
-    echo /*"room "  .*/  $events_map[$row][Seminars::$room_idx] ;
+    echo /*"room "  .*/  $events_map[$row][Events::$room_idx] ;
     echo "<br>";
     
     echo '</td>';
@@ -1502,7 +1466,7 @@ private static function set_event_details($events_map, $row,
    if ( $bool_print_discipline == true ) {                                
       echo "<strong>";
       //name of the current leaf
-        echo $discipline_array[ $events_map[$row][Seminars::$discipline_idx] ];
+        echo $discipline_array[ $events_map[$row][Events::$discipline_idx] ];
       echo "</strong>";
       echo "<br>";
     }
@@ -1513,7 +1477,7 @@ private static function set_event_details($events_map, $row,
     echo '>'; 
     
     echo '<em style="padding-right: 5px">';   ///with this padding we add a space that doesn't get underlined although the text is. An alternative would be to put the 'underline' as a style of <em> instead of <a>
-    echo $events_map[$row][Seminars::$title_idx];
+    echo $events_map[$row][Events::$title_idx];
     echo '</em>';
         
     echo '<i id=' . '"' .  $arrow_abstract_id . '"' . ' class="arrow_down"></i>';
@@ -1529,13 +1493,13 @@ private static function set_event_details($events_map, $row,
       //     - NOT a link otherwise
     echo '<a   style="cursor: pointer; text-decoration: none;"';
 //     echo ' target="_blank" ';
-    echo 'href=' . '"' .  $events_map[$row][Seminars::$speaker_url_idx]  .  '"' . '>';
-    echo $events_map[$row][Seminars::$speaker_idx];
+    echo 'href=' . '"' .  $events_map[$row][Events::$speaker_url_idx]  .  '"' . '>';
+    echo $events_map[$row][Events::$speaker_idx];
     echo '</a>';
     echo "<br>";
-    echo  $events_map[$row][Seminars::$speaker_department_idx];
-    if ($events_map[$row][Seminars::$speaker_department_idx] != '' && $events_map[$row][Seminars::$speaker_institution_idx] != '') echo ', ';
-    echo $events_map[$row][Seminars::$speaker_institution_idx];
+    echo  $events_map[$row][Events::$speaker_department_idx];
+    if ($events_map[$row][Events::$speaker_department_idx] != '' && $events_map[$row][Events::$speaker_institution_idx] != '') echo ', ';
+    echo $events_map[$row][Events::$speaker_institution_idx];
     
     echo "<br>";
     
@@ -1558,20 +1522,20 @@ private static function set_event_image($remote_path_prefix,
                                                    $father_scheme_idx)  {
                                         
                                         
- $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
 
- $after_prefix = Seminars::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+ $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
 
    echo '<td>'; 
    
-   echo '<img class="' . Seminars::$sem_image . '" ' .  'src="' .
+   echo '<img class="' . Events::$sem_image . '" ' .  'src="' .
      $prefix . 
      $after_prefix .
-     $events_map[$row][Seminars::$discipline_idx] . '/' .  
-     $events_map[$row][Seminars::$year_idx] . '/' . 
-     $events_map[$row][Seminars::$semester_idx]  . '/' . 
+     $events_map[$row][Events::$discipline_idx] . '/' .  
+     $events_map[$row][Events::$year_idx] . '/' . 
+     $events_map[$row][Events::$semester_idx]  . '/' . 
      $images_folder . '/' . 
-     $events_map[$row][Seminars::$speaker_image_idx] . '" alt="image">';
+     $events_map[$row][Events::$speaker_image_idx] . '" alt="image">';
      
    echo '</td>';
     
@@ -1589,26 +1553,26 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
                                                    $father_scheme_idx) {
 
 
-    echo '<table class="' . Seminars::$sem_item . '">';
+    echo '<table class="' . Events::$sem_item . '">';
     
     
     echo '<td>';
      
      echo ' <table id="switch_col">';
 
-     Seminars::set_event_image($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+     Events::set_event_image($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                $images_folder, $events_map, $row,
                                                    $all_schemes,
                                                    $father_scheme_idx);
     
-     Seminars::set_event_day($events_map, $row);
+     Events::set_event_day($events_map, $row);
      
      echo ' </table>';
     
     echo ' </td>';
     
 
-    Seminars::set_event_details($events_map, $row, $discipline_array, $bool_print_discipline, 
+    Events::set_event_details($events_map, $row, $discipline_array, $bool_print_discipline, 
                                 $toggle_abstract_id, $arrow_abstract_id);
     
     
@@ -1643,27 +1607,27 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
                                      $all_schemes,
                                      $father_scheme_idx) {
                                      
-//   $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
-   $after_prefix = Seminars::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+//   $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+   $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
 
- $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Seminars::$events_file;
+ $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Events::$events_file;
 
  
- $abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, '');
+ $abstract_id = Events::set_abstract_id_and_its_toggle($events_map, $row, '');
     
 
- $abstract_field = $events_map[$row][Seminars::$abstract_file_idx];
+ $abstract_field = $events_map[$row][Events::$abstract_file_idx];
     
  $arr1 = explode(' ',trim($abstract_field));
- $txt_found = stristr($abstract_field,Seminars::$about_file_extension);  //case-insensitive match
+ $txt_found = stristr($abstract_field,Events::$about_file_extension);  //case-insensitive match
 //     if (!($txt_found)) echo "---";  //it is either empty or it contains information
 
     $abstract_path =
     $after_prefix . 
-    $events_map[$row][Seminars::$discipline_idx] . '/' .  
-    $events_map[$row][Seminars::$year_idx] . '/' . 
-    $events_map[$row][Seminars::$semester_idx] . '/' . 
-    $abstracts_folder . $events_map[$row][Seminars::$abstract_file_idx];
+    $events_map[$row][Events::$discipline_idx] . '/' .  
+    $events_map[$row][Events::$year_idx] . '/' . 
+    $events_map[$row][Events::$semester_idx] . '/' . 
+    $abstracts_folder . $events_map[$row][Events::$abstract_file_idx];
 
 //----------------    
     echo '<span ';   ///@todo make this span CENTERED
@@ -1675,7 +1639,7 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
     echo '>';
     
     if (!($txt_found)) echo $abstract_field;
-    else               Seminars::include_file( $remote_path_prefix, $local_path_prefix, $abstract_path, $are_input_files_local);
+    else               Events::include_file( $remote_path_prefix, $local_path_prefix, $abstract_path, $are_input_files_local);
     
     echo '</span>';
 //----------------    
@@ -1728,22 +1692,22 @@ private static function loop_over_events($events_map, $starting_row,
     $num_rows = count($events_map);  
     
     
-  echo '<div class="' . Seminars::$bootstrap_container . '">';
+  echo '<div class="' . Events::$bootstrap_container . '">';
 
     
     for ($row = $starting_row; $row < $num_rows; $row++) {
 
-    $toggle_abstract_id = Seminars::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
-    $arrow_abstract_id  = Seminars::set_abstract_id_and_its_toggle($events_map, $row, 'arrow_');
+    $toggle_abstract_id = Events::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
+    $arrow_abstract_id  = Events::set_abstract_id_and_its_toggle($events_map, $row, 'arrow_');
 
-    Seminars::set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+    Events::set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                           $images_folder, $events_map, $row, 
                                           $discipline_array, $bool_print_discipline,
                                           $toggle_abstract_id, $arrow_abstract_id,
                                                    $all_schemes,
                                                    $father_scheme_idx);
     
-    Seminars::set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+    Events::set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                            $abstracts_folder, 
                            $events_map, $row,
                            $toggle_abstract_id, $arrow_abstract_id,
@@ -1765,7 +1729,7 @@ public static function generate_initial_week_files($year_in, $month_begin, $day_
 // Actually we do this with a shell script too
 
  $sort_weeks_list = SORT_DESC; //here ascending or descending is equivalent
- $months_and_days = Seminars::generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end, $sort_weeks_list);
+ $months_and_days = Events::generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end, $sort_weeks_list);
 
     for ($index = 0; $index < count($months_and_days); $index++) {
     
@@ -1807,7 +1771,7 @@ private static function compute_week_day($year_in, $month_in, $day_in) {
     $year_count ++;
   }
 
- $sequential_day_in_current_year = Seminars::compute_day_sequential_number($year_in, $month_in, $day_in);
+ $sequential_day_in_current_year = Events::compute_day_sequential_number($year_in, $month_in, $day_in);
  
  $total_day = $abs_day + $sequential_day_in_current_year + 1;
  
@@ -1820,9 +1784,9 @@ private static function compute_week_day($year_in, $month_in, $day_in) {
  }
  
  
-//  echo Seminars::$week_day_conv[$week_day];
+//  echo Events::$week_day_conv[$week_day];
 
- return Seminars::$week_day_conv[$week_day];
+ return Events::$week_day_conv[$week_day];
  
 }
 
@@ -1834,14 +1798,14 @@ private static function generate_initial_week_days($year_in, $month_begin, $day_
 
  $offset_wanted = 7;
  
- $sequential_day_begin = Seminars::compute_day_sequential_number($year_in, $month_begin, $day_begin);
+ $sequential_day_begin = Events::compute_day_sequential_number($year_in, $month_begin, $day_begin);
  
- $sequential_day_end = Seminars::compute_day_sequential_number($year_in, $month_end, $day_end);
+ $sequential_day_end = Events::compute_day_sequential_number($year_in, $month_end, $day_end);
  
  $months_and_days = array();
  
  $new_day = $sequential_day_begin;
- $month_and_day_out = Seminars::compute_month_and_day_from_sequential_number($year_in, $sequential_day_begin);
+ $month_and_day_out = Events::compute_month_and_day_from_sequential_number($year_in, $sequential_day_begin);
  
  array_push($months_and_days, $month_and_day_out);
  
@@ -1850,7 +1814,7 @@ private static function generate_initial_week_days($year_in, $month_begin, $day_
  while ($new_day < $sequential_day_end) {
  
    $new_day += $offset_wanted;
-   $month_and_day_item = Seminars::compute_month_and_day_from_sequential_number($year_in, $new_day);
+   $month_and_day_item = Events::compute_month_and_day_from_sequential_number($year_in, $new_day);
    if      ($sort_weeks_list == SORT_DESC) array_unshift($months_and_days, $month_and_day_item);  //the most recent is at the top: the alternative is array_push
    else if ($sort_weeks_list == SORT_ASC)     array_push($months_and_days, $month_and_day_item);  
  }
@@ -1863,13 +1827,13 @@ private static function generate_initial_week_days($year_in, $month_begin, $day_
  
 private static function compute_subsequent_day_with_offset($year_in, $month_in, $day_in, $offset_wanted) {
   
- $sequential_day_begin = Seminars::compute_day_sequential_number($year_in, $month_in, $day_in);
+ $sequential_day_begin = Events::compute_day_sequential_number($year_in, $month_in, $day_in);
  
  $sequential_day_end = $sequential_day_begin + $offset_wanted;
     
- if ($sequential_day_end > Seminars::compute_year_days_number($year_in) - 1) echo '@todo Handling of year crossing not implemented';
+ if ($sequential_day_end > Events::compute_year_days_number($year_in) - 1) echo '@todo Handling of year crossing not implemented';
    
- $month_and_day_out = Seminars::compute_month_and_day_from_sequential_number($year_in, $sequential_day_end);
+ $month_and_day_out = Events::compute_month_and_day_from_sequential_number($year_in, $sequential_day_end);
 
  return $month_and_day_out;
  
@@ -1880,7 +1844,7 @@ private static function compute_year_days_number($year) {
 //either 365 or 366
 
 
-   $month_days = Seminars::get_month_days($year);
+   $month_days = Events::get_month_days($year);
 
 $days_number = 0;
 
@@ -1896,7 +1860,7 @@ private static function compute_month_and_day_from_sequential_number($year_in, $
  //the input number starts at 0
  //the outputs start at 1
  
-   $month_days = Seminars::get_month_days($year_in);
+   $month_days = Events::get_month_days($year_in);
    
    $month_current = 0;
    while ($number_in > $month_days[$month_current] - 1) {
@@ -1919,7 +1883,7 @@ private static function compute_day_sequential_number($year, $month, $day) {
  //the output goes from 0 to 364 or 365
  
  
-   $month_days = Seminars::get_month_days($year);
+   $month_days = Events::get_month_days($year);
    
    $sequential_day = 0;
     for ($i = 0; $i < $month - 1; $i++) {
@@ -1939,8 +1903,8 @@ public static function get_month_days($year) {
    
    $month_days = array();
    
-   if($is_leap != 0) $month_days = Seminars::$month_days_non_leap;
-   else             $month_days = Seminars::$month_days_leap;
+   if($is_leap != 0) $month_days = Events::$month_days_non_leap;
+   else             $month_days = Events::$month_days_leap;
    
    return $month_days;
    
@@ -1949,7 +1913,7 @@ public static function get_month_days($year) {
 
 public static function get_month_string($number) { 
 
-  return Seminars::$months_conv[$number];
+  return Events::$months_conv[$number];
 
 }
 
@@ -1962,31 +1926,31 @@ private static function set_single_leaf_body($remote_path_prefix, $local_path_pr
                                                    $father_scheme_idx) {
                                                    
   
- $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
 
 
 
- Seminars::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+ Events::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local,
                           $page_topic,
                           $all_schemes,
                           $father_scheme_idx,
-                          Seminars::$is_leaf_page, 
+                          Events::$is_leaf_page, 
                           $department);
                           
  
-   $title =  Seminars::get_leaf_name_from_father_scheme_recursively($all_schemes[$father_scheme_idx], $page_topic, $title);
+   $title =  Events::get_leaf_name_from_father_scheme_recursively($all_schemes[$father_scheme_idx], $page_topic, $title);
 
- Seminars::main_banner($title, $department, $institution);
+ Events::main_banner($title, $department, $institution);
   
-//  Seminars::default_meeting_coords_banner_map('./default.csv', $year, $semester);
+//  Events::default_meeting_coords_banner_map('./default.csv', $year, $semester);
   
- Seminars::about($page_topic,
+ Events::about($page_topic,
                  $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                  $all_schemes, $father_scheme_idx);
                  
  
  
- $events_in_seminar = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $page_topic, $year, $semester, $all_schemes, $father_scheme_idx);
+ $events = Events::read_events_file_and_attach_topic_year_semester($prefix, $page_topic, $year, $semester, $all_schemes, $father_scheme_idx);
  
  $bool_print_discipline = false;
  
@@ -1994,21 +1958,21 @@ private static function set_single_leaf_body($remote_path_prefix, $local_path_pr
  //sort in chronological order, first by month, then by day
   $temp_column = array();
     
-  foreach ($events_in_seminar as $key => $row) {
-     $sequential   = Seminars::compute_day_sequential_number($year, $events_in_seminar[$key][Seminars::$month_idx],  $events_in_seminar[$key][Seminars::$day_idx]);
+  foreach ($events as $key => $row) {
+     $sequential   = Events::compute_day_sequential_number($year, $events[$key][Events::$month_idx],  $events[$key][Events::$day_idx]);
     $temp_column[$key] = $sequential;
   }
   
-  array_multisort($temp_column, SORT_ASC, $events_in_seminar);
+  array_multisort($temp_column, SORT_ASC, $events);
  //==========
 
- $starting_row = Seminars::$row_events_begin;
+ $starting_row = Events::$row_events_begin;
  
  
- $leaf_array = Seminars::get_array_of_leaves( $all_schemes[$father_scheme_idx] );
+ $leaf_array = Events::get_array_of_leaves( $all_schemes[$father_scheme_idx] );
  
  
- Seminars::loop_over_events($events_in_seminar, $starting_row,
+ Events::loop_over_events($events, $starting_row,
                             $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                             $abstracts_folder, $images_folder, 
                             $leaf_array, 
@@ -2059,24 +2023,24 @@ private static function set_tree_events_by_time_range_body($remote_path_prefix, 
                                                   $father_scheme_idx)  {
  
 
-    $events_in_week =  Seminars::parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+    $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                                     $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
                                                                     $discipline_array, $all_schemes, $father_scheme_idx);
     
     
-    Seminars::sort_array_of_arrays_based_on_one_index($events_in_week, Seminars::$month_idx, SORT_ASC);
+    Events::sort_array_of_arrays_based_on_one_index($events_in_week, Events::$month_idx, SORT_ASC);
     
     
     $starting_row = 0;
      
  
  if (count($events_in_week) == 0)   {
-     echo '<div class="' . Seminars::$bootstrap_container . '">';
+     echo '<div class="' . Events::$bootstrap_container . '">';
      echo 'None this week';
      echo '</div>';
  }
  
- else  Seminars::loop_over_events($events_in_week, $starting_row,
+ else  Events::loop_over_events($events_in_week, $starting_row,
                                   $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                   $abstracts_folder, $images_folder, 
                                   $discipline_array, $bool_print_discipline,
@@ -2094,7 +2058,7 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
    $current_day      = date("d");
    $current_week_day = date("l");
 
-   $sequential_current = Seminars::compute_day_sequential_number($current_year, $current_month, $current_day);
+   $sequential_current = Events::compute_day_sequential_number($current_year, $current_month, $current_day);
    
 
    for ($index = 0; $index < count($week_month_day_begin); $index++) {
@@ -2103,14 +2067,14 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
    $begin_day   =  $week_month_day_begin[$index][1];
    
    $offset_wanted = 6;
-   $month_and_day_out = Seminars::compute_subsequent_day_with_offset($year, $begin_month, $begin_day, $offset_wanted);
+   $month_and_day_out = Events::compute_subsequent_day_with_offset($year, $begin_month, $begin_day, $offset_wanted);
 
    $end_month = $month_and_day_out[0];
    $end_day   = $month_and_day_out[1];
 
    //make the current week bold  
    $style ='';
-   $sequential_begin = Seminars::compute_day_sequential_number($year, $begin_month, $begin_day);
+   $sequential_begin = Events::compute_day_sequential_number($year, $begin_month, $begin_day);
    $sequential_end = $sequential_begin + $offset_wanted;
    
    if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end )   $style ='font-weight: bold;';
@@ -2121,8 +2085,8 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
     $week_month_day_begin[$index][0] . '_' . 
     $week_month_day_begin[$index][1] . '.php">' . 
 //     'Week of ' . 
-    'Monday, ' . Seminars::get_month_string($begin_month) . ' ' .  $begin_day . ' - ' . 
-    'Sunday, ' . Seminars::get_month_string($end_month) . ' ' .  $end_day . 
+    'Monday, ' . Events::get_month_string($begin_month) . ' ' .  $begin_day . ' - ' . 
+    'Sunday, ' . Events::get_month_string($end_month) . ' ' .  $end_day . 
     '</a>';    
     
     echo '<br/>';
@@ -2137,14 +2101,14 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
 private static function get_array_of_leaves($scheme) {
 
 $depth = 0;
-       Seminars::get_depth_recursively($scheme, $depth);
+       Events::get_depth_recursively($scheme, $depth);
        
        $output_array = array();
-//        echo Seminars::get_father_scheme_string_from_itself($scheme);
+//        echo Events::get_father_scheme_string_from_itself($scheme);
 //         echo $depth;
 
         if ($depth == 0)       $output_array = $scheme;
-       else if  ($depth == 1)  $output_array = $scheme[Seminars::get_father_scheme_string_from_itself($scheme)][1];
+       else if  ($depth == 1)  $output_array = $scheme[Events::get_father_scheme_string_from_itself($scheme)][1];
  
  
 //  print_r($output_array);
@@ -2161,9 +2125,9 @@ private static function parse_all_event_tables_single_leaf($remote_path_prefix, 
                                                $discipline_array, $all_schemes, $father_scheme_idx)  {
  
  
-  $starting_row = Seminars::$row_events_begin;
+  $starting_row = Events::$row_events_begin;
 
-  $prefix = Seminars::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+  $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
   
   
   
@@ -2178,15 +2142,15 @@ private static function parse_all_event_tables_single_leaf($remote_path_prefix, 
     foreach ($events_array as $discipline => $discipline_string) {
     
 
-   $csv_map = Seminars::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester, $all_schemes, $father_scheme_idx);
+   $csv_map = Events::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester, $all_schemes, $father_scheme_idx);
 
     
     for ($row = $starting_row; $row < count($csv_map); $row++) {
 
     //best thing is probably to convert into an increasing number, to avoid non-monotone behavior
-    $sequential_begin   = Seminars::compute_day_sequential_number($year, $month_begin, $day_begin);
-    $sequential_end     = Seminars::compute_day_sequential_number($year, $month_end, $day_end);
-    $sequential_current = Seminars::compute_day_sequential_number($year, $csv_map[$row][Seminars::$month_idx], $csv_map[$row][Seminars::$day_idx]);
+    $sequential_begin   = Events::compute_day_sequential_number($year, $month_begin, $day_begin);
+    $sequential_end     = Events::compute_day_sequential_number($year, $month_end, $day_end);
+    $sequential_current = Events::compute_day_sequential_number($year, $csv_map[$row][Events::$month_idx], $csv_map[$row][Events::$day_idx]);
     
 
     if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end ) {
@@ -2328,18 +2292,15 @@ private static function parse_all_event_tables_single_leaf($remote_path_prefix, 
 ///@todo take an arbitrary image, find max between width and height, and make that max equal to N, and keep the aspect ratio for the other dimension; then put a background square of N x N; finally apply border-radius
 ///@todo see how I can fix the underlining that is missing under mathematical symbols in the title of a talk
 ///@todo Improve documentation with an example of how to use the week-based functions
-///@todo Implement a search engine to find colloquia and seminars along the whole database
 ///@todo Since the list of seminars changes from one semester to another, find a way to only show the seminars that are ACTIVE in the CURRENT semester;
 //       on the other hand, try to make the other ones visible, to avoid hiding a history of perhaps interesting past seminars
 ///@todo Remove automatically potential whitespaces from fields such as month,day,time in events.csv
 ///@todo Remove potential zeros in numbers of month and day such as 09 instead of 9
 ///@todo If no title is specified, do not the dropdown arrow for the abstract
 ///@todo If no image is specified, put some default (define DoubleT.jpg as a default)
-///@todo Make an arbitrary amount of seminars, or an arbitrary number of groups with an additional "depth level" to be specified, maybe only 1 additional depth level with a "container" folder to be specified
-///@todo Write a program that automatically generates the slideshows that may go both in the department screens and in the main cyclic banner in the department homepage (I will generate a bunch of pdf files, you need a software like PDF Slideshow)
 ///@todo Check that it works also if we add 'summer' folders, for summer events
-///@todo rename Seminars with Events
 ///@todo write a function that checks that the directories of the inputs are there
+///@todo Implement a search engine to find all events along the whole database
 
 
 ?>
