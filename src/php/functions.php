@@ -622,7 +622,7 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
  
  
 
-public static function generate_page_with_all_seminars_by_time_range_wrapper($filename,
+public static function generate_page_with_all_events_by_time_range_wrapper($filename,
                                                                              $library_path,
                                                                              $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                                              $institution,
