@@ -819,7 +819,7 @@ echo '</head>';
   echo '<body>';
   
   
-$discipline = 'all';
+  $discipline = Events::$all_folder;
   
   Events::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                            $discipline, 
@@ -1141,7 +1141,7 @@ private static function navigation_bar_past_years($prefix, $page_topic, $is_all_
    $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
 
 
-  if ($is_all_or_single == true) { $prefix_disc = $prefix . 'all' . '/'; }
+  if ($is_all_or_single == true) { $prefix_disc = $prefix . Events::$all_folder . '/'; }
   
   else                        {    $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
                                    $prefix_disc = $prefix_base  . $page_topic . '/'; }
@@ -2081,7 +2081,7 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
    //make the current week bold  
 
  
- echo '&nbsp <a ' . 'style="' . $style . '" ' . ' href="./week/' . 
+ echo '&nbsp <a ' . 'style="' . $style . '" ' . ' href="./' . Events::$week_folder . '/' . 
     $week_month_day_begin[$index][0] . '_' . 
     $week_month_day_begin[$index][1] . '.php">' . 
 //     'Week of ' . 
@@ -2178,6 +2178,8 @@ private static function parse_all_event_tables_single_leaf($remote_path_prefix, 
  
  //============== private data ===============
 
+   private static $all_folder           = "all";   //without slash
+   private static $week_folder          = "week";   //without slash
    private static $abstracts_folder     = "./abstracts/";
    private static $images_folder        = "./images/";
    private static $events_file          = './events.csv';
