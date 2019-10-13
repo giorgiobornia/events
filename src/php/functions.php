@@ -2302,6 +2302,11 @@ private static function parse_all_event_tables_single_leaf($remote_path_prefix, 
 ///@todo If no image is specified, put some default (define DoubleT.jpg as a default)
 ///@todo Check that it works also if we add 'summer' folders, for summer events
 ///@todo write a function that checks that the directories of the inputs are there
+///@todo Remove potential empty rows added by organizers in the events.csv file
+///@todo Rename main folder to events_lib
+///@todo Do a function that returns the current week initial month/day
+///@todo Add 'Current week' button to the navigation in each week file
+///@todo Perhaps land immediately to the current week page, instead of the weeks' list one
 ///@todo Implement a search engine to find all events along the whole database
 
 
