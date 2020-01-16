@@ -11,7 +11,7 @@
  //application-specific
  $relative_path_to_app = '../../../../';
 
- $base_folder = 'colloquia_and_seminars_lib';  //@todo could we avoid specifying this string?
+ $base_folder = 'events_lib';  //@todo could we avoid specifying this string?
  
  $filename = __FILE__;
   
