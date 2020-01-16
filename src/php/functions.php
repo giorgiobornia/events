@@ -427,21 +427,12 @@ public static function include_file($remote_path_prefix, $local_path_prefix, $fi
 
 }
 
-///@todo deprecated
-public static function redirect_page($year, $semester) {
-///@todo see if you can even avoid generating the index page
-
-// There are other solutions to this based on Apache or PHP
-
- $redir_path = $year .'/' . $semester . '/';
-
-  Events::redirect_page_with_path($redir_path);
-
-
-}
 
 
 public static function redirect_page_with_path($redir_path) {
+///@todo see if you can even avoid generating the index page
+
+// There are other solutions to this based on Apache or PHP
 
  
      echo '<!DOCTYPE html>';
@@ -2298,12 +2289,11 @@ private static function parse_all_event_tables_single_leaf($remote_path_prefix, 
 //       on the other hand, try to make the other ones visible, to avoid hiding a history of perhaps interesting past seminars
 ///@todo Remove automatically potential whitespaces from fields such as month,day,time in events.csv
 ///@todo Remove potential zeros in numbers of month and day such as 09 instead of 9
-///@todo If no title is specified, do not the dropdown arrow for the abstract
+///@todo If no title is specified, do not put the dropdown arrow for the abstract
 ///@todo If no image is specified, put some default (define DoubleT.jpg as a default)
 ///@todo Check that it works also if we add 'summer' folders, for summer events
 ///@todo write a function that checks that the directories of the inputs are there
 ///@todo Remove potential empty rows added by organizers in the events.csv file
-///@todo Rename main folder to events_lib
 ///@todo Do a function that returns the current week initial month/day
 ///@todo Add 'Current week' button to the navigation in each week file
 ///@todo Perhaps land immediately to the current week page, instead of the weeks' list one
