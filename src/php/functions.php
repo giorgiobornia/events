@@ -239,9 +239,9 @@ $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefi
   
 //-------------
   fwrite($fp, '\textbf{' . PHP_EOL);
-  fwrite($fp, '\large' . PHP_EOL);
-//   fwrite($fp, Normalizer::normalize($events_in_week[$event_i][Events::$speaker_idx]) . PHP_EOL); //need to recompile php with --enable-intl
-  fwrite($fp, $events_in_week[$event_i][Events::$speaker_idx] . PHP_EOL);
+  fwrite($fp, '\large ');
+  fwrite($fp, Normalizer::normalize($events_in_week[$event_i][Events::$speaker_idx]) . PHP_EOL); //need to recompile php with --enable-intl
+//   fwrite($fp, $events_in_week[$event_i][Events::$speaker_idx] . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
   fwrite($fp, $events_in_week[$event_i][Events::$speaker_department_idx] . PHP_EOL);
