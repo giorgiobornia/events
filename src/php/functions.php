@@ -181,7 +181,7 @@ $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefi
   shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
   
   $tree_string = Events::get_father_scheme_string_from_itself($scheme);
-  $event_filename = $tree_string . '_slide_' . $event_i;
+  $event_filename = 'week_' . $tree_string . '_slide_' . $event_i;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
   $fp = fopen($slides_folder . '/' . $event_filename . '.tex', 'w');
 //   shell_exec('cd ' . $slides_folder);
     
@@ -211,7 +211,7 @@ $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefi
   fwrite($fp, '}                                                                                                                                                           ' . PHP_EOL);
   fwrite($fp, '\makeatother                                                                                                                                                ' . PHP_EOL);
 
-  fwrite($fp, '\setbeamercolor{background canvas}{bg=lightgray}' . PHP_EOL);
+//   fwrite($fp, '\setbeamercolor{background canvas}{bg=lightgray}' . PHP_EOL);
 
   fwrite($fp, '\date{}' . PHP_EOL);
 
@@ -307,12 +307,13 @@ fwrite($fp, '\end{column}' . PHP_EOL);
   fclose($fp);
 
 // ---------------------------------  
-//enter inside the slides folder each time for a shorter compile command (need all the shell commands to be in the same shell_exec, because separate ones would be independent and restart from the original path)
-  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $event_filename . '.tex ' . ';' . 'cd ..');
+//enter inside the slides folder each time for a shorter compile command (need all the shell commands to be in the SAME shell_exec, because separate ones would be independent and restart from the original path)
+// Here, I am both generating the PDF and converting to PNG !
+  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $event_filename . '.tex ' . ';' . 'pdftoppm ' . $event_filename . '.pdf ' .  $event_filename . ' -singlefile -png -r 300' . ';' . 'cd ..');
   
 //   $output =  shell_exec('pdflatex '  . ' -output-directory ' . $slides_folder . ' ' .  $slides_folder . '/' . $event_filename . '.tex ' . PHP_EOL );
 // ---------------------------------  
-  
+
   printf($output);
  
  }
