@@ -176,7 +176,7 @@ $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefi
  $prefix_base = Events::get_prefix_up_to_current_leaf('', $scheme);
 
 //latex file -----------------
-  $slides_folder = 'slides';
+  $slides_folder = '../../../events_slides';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
 //   mkdir('slides');              //with PHP
   shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
   
