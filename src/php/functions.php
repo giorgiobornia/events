@@ -319,6 +319,134 @@ fwrite($fp, '\end{column}' . PHP_EOL);
  }
  
  
+
+
+ public static function single_latex_pdf_slide_person($name_first, $name_last, $bio, $image_name) {
+  ///@todo The font &  is not accepted in Latex!
+  
+  
+  echo $name_first;
+  
+//latex file creation -----------------
+  $slides_folder = '../../../events_people';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
+//   mkdir('slides');              //with PHP
+  shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
+  
+  $person_filename = 'permanent_people_' . $name_first . '_' . $name_last;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
+  $fp = fopen($slides_folder . '/' . $person_filename . '.tex', 'w');
+
+
+//latex file content -----------------
+
+    
+  fwrite($fp, '\documentclass[compress,aspectratio=169]{beamer}' . PHP_EOL);
+    
+ fwrite($fp, '\usepackage[utf8]{inputenc}'. PHP_EOL);
+ fwrite($fp, '\usepackage{verbatim}'. PHP_EOL);
+ fwrite($fp, '\usepackage{graphicx}'. PHP_EOL);
+ fwrite($fp, '\usetheme{CambridgeUS}' . PHP_EOL);
+  fwrite($fp, '\setbeamertemplate{navigation symbols}{}' . PHP_EOL);
+  
+  fwrite($fp, '  \makeatletter                                                                                                                                             ' . PHP_EOL);
+  fwrite($fp, '\setbeamertemplate{footline}{%                                                                                                                              ' . PHP_EOL);
+  fwrite($fp, '  \leavevmode%                                                                                                                                              ' . PHP_EOL);
+  fwrite($fp, '  \hbox{%                                                                                                                                                   ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%                                                               ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{author in head/foot}\insertshortauthor\expandafter\beamer@ifempty\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}       ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%                                                                ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{title in head/foot}\insertshorttitle                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%                                                                  ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}                                                                                        ' . PHP_EOL);
+  fwrite($fp, '    %\insertframenumber{} / \inserttotalframenumber\hspace*{2ex}   %% comment this                                                                          ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}}%                                                                                                                                    ' . PHP_EOL);
+  fwrite($fp, '  \vskip0pt%                                                                                                                                                ' . PHP_EOL);
+  fwrite($fp, '}                                                                                                                                                           ' . PHP_EOL);
+  fwrite($fp, '\makeatother                                                                                                                                                ' . PHP_EOL);
+
+//   fwrite($fp, '\setbeamercolor{background canvas}{bg=lightgray}' . PHP_EOL);
+
+  fwrite($fp, '\date{}' . PHP_EOL);
+// 
+  fwrite($fp, '\begin{document}' . PHP_EOL);
+  fwrite($fp, '\begin{frame}[fragile]' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  
+  
+  fwrite($fp, '\textbf{'/* . PHP_EOL*/);
+  fwrite($fp, '\huge ' . $name_first . PHP_EOL);
+  fwrite($fp, '}' . PHP_EOL);
+//   fwrite($fp, '\vspace{1em}' . PHP_EOL);
+//   
+//   
+//   fwrite($fp, '\begin{columns}' . PHP_EOL);
+// 
+//   fwrite($fp, '\begin{column}{0.55\textwidth}' . PHP_EOL);
+//   fwrite($fp, '\centering' . PHP_EOL);
+//   
+//   fwrite($fp, '\textbf{' . PHP_EOL);
+//   fwrite($fp, '}' . PHP_EOL);
+//   fwrite($fp, PHP_EOL);
+//   
+// //-------------
+//   fwrite($fp, '\textbf{' . PHP_EOL);
+//   fwrite($fp, '\large ');
+//   fwrite($fp, '}' . PHP_EOL);
+//   fwrite($fp, PHP_EOL);
+// //-------------
+// 
+//   fwrite($fp, '\vspace{2em}' . PHP_EOL);
+// 
+// //-------------
+//   fwrite($fp, '\textbf{' . PHP_EOL);
+//   fwrite($fp, $week_day);
+//   fwrite($fp, ', ');
+//   fwrite($fp, ' ');
+//   fwrite($fp, '}' . PHP_EOL);
+//   fwrite($fp, PHP_EOL);
+// 
+// //-------------
+// 
+// fwrite($fp, '\end{column}' . PHP_EOL);
+// 
+//   fwrite($fp, '\begin{column}{0.45\textwidth}' . PHP_EOL);
+//   fwrite($fp, '\centering' . PHP_EOL);
+//   
+// // ---------------------------------  
+// //copy the file over to ease export to other computers
+  $image_name = $name_last . '_' . $name_first . '.jpg' ;
+  shell_exec('cp '  .  '../img/people/' . $image_name . ' ' . $slides_folder);
+  fwrite($fp, '\includegraphics[width=0.7\textwidth]{' .   $image_name . '}' . PHP_EOL);
+//   
+// // ---------------------------------  
+// 
+//   fwrite($fp, PHP_EOL);
+//   fwrite($fp, '\end{column}' . PHP_EOL);
+//   
+//   fwrite($fp, '\end{columns}' . PHP_EOL);
+// 
+//   fwrite($fp, PHP_EOL);
+// 
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, '\end{frame}' . PHP_EOL);
+//  
+//  
+  fwrite($fp, '\end{document}' . PHP_EOL);
+// 
+  fclose($fp);
+
+// ---------------------------------  
+//enter inside the slides folder each time for a shorter compile command (need all the shell commands to be in the SAME shell_exec, because separate ones would be independent and restart from the original path)
+// Here, I am both generating the PDF and converting to PNG !
+  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $person_filename . '.tex ' . ';' . 'pdftoppm ' . $person_filename . '.pdf ' .  $person_filename . ' -singlefile -png -r 300' . ';' . 'cd ..');
+// ---------------------------------  
+
+  printf($output);
+ 
+ }
+ 
+ 
  
 
  
@@ -2176,133 +2304,133 @@ public static function render($show, $dsn, $username, $password) {
 			$conn = new PDO ($dsn, $username, $password );
 			$conn->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 	} catch ( PDOException $e) {
-			$html.= "<pre>Connection failed: " . $e->getMessage() ."</pre>";
+			$html .=  "<pre>Connection failed: " . $e->getMessage() ."</pre>";
 	}
 	
 	switch ($show) {
 		/* RESEARCH INFO */
 		case 'AllResearch':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Rank <'4' ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		case 'Algebra':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Research LIKE '%Algebra%' ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		case 'Analysis':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Research LIKE '%Anal%' ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		case 'Applied':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Research LIKE '%Appl%' ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		case 'Biology':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Research LIKE '%Bio%' ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		case 'Comput':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Research LIKE '%Comput%' ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		case 'Control':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Research LIKE '%Control%' ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		case 'DiffEq':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Research LIKE '%Diff%Equ%' ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		case 'EdOut':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Research LIKE '%Educat%' OR Research LIKE '%Outreach%' ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		case 'Geometry':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND (Research LIKE '%Geometr%' OR Research LIKE '%Topolo%') ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		case 'Physics':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Research LIKE '%Physic%' ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		case 'Stats':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Research LIKE '%Statis%' OR Research LIKE '%Probab%' ORDER BY Last_Name, First_Name";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 		
 		
 		/* DIRECTORY INFO */
 		case 'assiprof':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Rank='3' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 
 
 		case 'assoprof':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Rank='2' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 
 
 		case 'former_left':
 			$sql = "SELECT * FROM roster WHERE Employed='F' AND Rank<'4' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 
 
 		case 'former':
 			$sql = "SELECT * FROM roster WHERE Employed='R' AND Rank='0' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDetailed($sql, $conn, "h3", "Horn Professor Emeritus");
+			$html .=  Events::renderDetailed($sql, $conn, "h3", "Horn Professor Emeritus");
 			$sql = "SELECT * FROM roster WHERE Employed='R' AND Rank='1' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDetailed($sql, $conn, "h3", "Professor Emeritus");
+			$html .=  Events::renderDetailed($sql, $conn, "h3", "Professor Emeritus");
 			$sql = "SELECT * FROM roster WHERE Employed='R' AND Rank='2' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDetailed($sql, $conn, "h3", "Associate Professor Emeritus");
+			$html .=  Events::renderDetailed($sql, $conn, "h3", "Associate Professor Emeritus");
 			$sql = "SELECT * FROM roster WHERE Employed='F' AND Rank<'4' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			$sql = "SELECT * FROM roster WHERE Employed='D' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 
 
 		case 'grad':
 			$sql = "SELECT FIRST_NAME, LAST_NAME, E_MAIL, Office_Building, Office_Room, Phone, TITLE_1, Website, Office_HR, Office_HR1, Office_HR2, Office_HR3 FROM roster WHERE Employed='T' AND Rank = '5' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDefault($sql, $conn);
+			$html .=  Events::renderDefault($sql, $conn);
 			break;
 
 
 		case 'distprof':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Rank='0' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDistinguished($sql, $conn);
+			$html .=  Events::renderDistinguished($sql, $conn);
 			break;
 
 
 		case 'instruct_lect':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Rank = '4' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDefault($sql, $conn);
+			$html .=  Events::renderDefault($sql, $conn);
 			break;
 
 
 		case 'office':
 			$sql = "SELECT * FROM roster WHERE Employed='T' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderTable($sql, $conn);
+			$html .=  Events::renderTable($sql, $conn);
 			break;
 
 
 		case 'prof':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Rank='1' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;
 
 
 		case 'staff':
 			$sql = "SELECT FIRST_NAME, LAST_NAME, E_MAIL, Office_Room, Phone, TITLE_1 FROM roster WHERE Employed='T' AND Rank='6' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDefault($sql, $conn);
+			$html .=  Events::renderDefault($sql, $conn);
 			break;
 
 
 	        case 'post':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Rank='8' ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDetailed($sql, $conn);
+			$html .=  Events::renderDetailed($sql, $conn);
 			break;	
 
 
@@ -2310,10 +2438,10 @@ public static function render($show, $dsn, $username, $password) {
 			$q = $conn->query( "SELECT COUNT(SerialNumber) AS Count FROM roster WHERE Employed='T' AND TITLE_1 LIKE '%Visit%' OR TITLE_1 LIKE '%Adjunct%'" );
 			$count = $q->fetchColumn(); 
 			if ($count == false || $count < 1) {
-				$html.="<p>There are no Adjunct Professors at this time.</p>";
+				$html .= "<p>There are no Adjunct Professors at this time.</p>";
 			} else {
 				$sql = "SELECT * FROM roster WHERE Employed='T' AND TITLE_1 LIKE 'Visit%' OR TITLE_1 LIKE '%Adjunct%' ORDER BY LAST_NAME, FIRST_NAME";
-				$html.= Events::renderDefault($sql, $conn);
+				$html .=  Events::renderDefault($sql, $conn);
 			}
 		
 			
@@ -2322,19 +2450,21 @@ public static function render($show, $dsn, $username, $password) {
 
 		case 'advising';
 			$sql = "SELECT FIRST_NAME, LAST_NAME, E_MAIL, Office_Building, Office_Room, Phone, TITLE_1, Website, Office_HR, Office_HR1, Office_HR2, Office_HR3 FROM roster WHERE Employed='T' AND (TITLE_1 LIKE '%Advis%' OR TITLE_1 LIKE '%Graduat%Progra%Manage%') ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDefault($sql, $conn);
+			$html .=  Events::renderDefault($sql, $conn);
 			break;
 
 
 		case 'all':
 		default:
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND (Rank <5 OR Rank=8) ORDER BY LAST_NAME, FIRST_NAME";
-			$html.= Events::renderDefault($sql, $conn);
+			$html .=  Events::renderDefault($sql, $conn);
 			break;
 
 
 	}
+	
 	$conn = null;
+	
 	return $html;
 }
 
@@ -2346,60 +2476,60 @@ private static function renderDefault($sql, $conn, $heading = "h3") {
 		
 		foreach ($rows as $row) {
 			$img = str_replace(" ", "_", str_replace(",", "", $row["LAST_NAME"]."_".$row["FIRST_NAME"]));
-			$html.="<div class='people row'>";
-			$html.="<div class='small-3 columns' style='text-align:right;'>";
-			$html.="<img src='/math/images/Faculty_Photos/".$img.".jpg' alt='".$row["FIRST_NAME"]." ".$row["LAST_NAME"]."' />";
-			$html.="</div>"; // end of image column
-			$html.="<div class='small-9 columns'>";
+			$html .= "<div class='people row'>";
+			$html .= "<div class='small-3 columns' style='text-align:right;'>";
+			$html .= "<img src='/math/images/Faculty_Photos/".$img.".jpg' alt='".$row["FIRST_NAME"]." ".$row["LAST_NAME"]."' />";
+			$html .= "</div>"; // end of image column
+			$html .= "<div class='small-9 columns'>";
                         
-                        $html.="<h3>";
-                        $html.= (Events::isDr($row['Degree'])) ? "Dr. " : "";
-                        $html.= $row["FIRST_NAME"]." ".$row["LAST_NAME"]."</h3>";
+                        $html .= "<h3>";
+                        $html .=  (Events::isDr($row['Degree'])) ? "Dr. " : "";
+                        $html .=  $row["FIRST_NAME"]." ".$row["LAST_NAME"]."</h3>";
 
-			$html.="<p class='title'>".$row["TITLE_1"]."</p>";
-			$html.="<div class='row'>";
-			$html.="<div class='large-6 columns'>";
-			$html.="<ul class='default-list'>";
+			$html .= "<p class='title'>".$row["TITLE_1"]."</p>";
+			$html .= "<div class='row'>";
+			$html .= "<div class='large-6 columns'>";
+			$html .= "<ul class='default-list'>";
 			if (!empty($row["E_MAIL"])) {
-				$html.="<li><a href='mailto:".$row["E_MAIL"]."' class='mail'>".$row["E_MAIL"]."</a></li>";
+				$html .= "<li><a href='mailto:".$row["E_MAIL"]."' class='mail'>".$row["E_MAIL"]."</a></li>";
 			}
 			if (!empty($row["Office_Room"])) {
-				$html.="<li>Office: ".$row["Office_Building"]." ".$row["Office_Room"]."</li>";
+				$html .= "<li>Office: ".$row["Office_Building"]." ".$row["Office_Room"]."</li>";
 			}
 			if (!empty($row["Phone"])) {
-				$html.="<li>Phone: ".$row["Phone"]."</li>";
+				$html .= "<li>Phone: ".$row["Phone"]."</li>";
 			}
 			if (!empty($row["Website"])) {
-				$html.="<li><a href='".$row["Website"]."' class='external'>Website</a></li>";
+				$html .= "<li><a href='".$row["Website"]."' class='external'>Website</a></li>";
 			}
-			$html.="</ul>";
-			$html.="</div>"; // end of inside left column
-			$html.="<div class='large-6 columns'>";
+			$html .= "</ul>";
+			$html .= "</div>"; // end of inside left column
+			$html .= "<div class='large-6 columns'>";
 			if (!empty($row["Office_HR"]) || !empty($row["Office_HR1"]) || !empty($row["Office_HR2"]) || !empty($row["Office_HR3"])) {
-				$html.="<p><strong>Office Hours:</strong></p>";
+				$html .= "<p><strong>Office Hours:</strong></p>";
 			}
-			$html.="<ul class='default-list'>";
+			$html .= "<ul class='default-list'>";
 			if (!empty($row["Office_HR"])) {
-				$html.="<li> ".$row["Office_HR"]."</li>";
+				$html .= "<li> ".$row["Office_HR"]."</li>";
 			}
 			if (!empty($row["Office_HR1"])) {
-				$html.="<li> ".$row["Office_HR1"]."</li>";
+				$html .= "<li> ".$row["Office_HR1"]."</li>";
 			}
 			if (!empty($row["Office_HR2"])) {
-				$html.="<li> ".$row["Office_HR2"]."</li>";
+				$html .= "<li> ".$row["Office_HR2"]."</li>";
 			}
 			if (!empty($row["Office_HR3"])) {
-				$html.="<li> ".$row["Office_HR3"]."</li>";
+				$html .= "<li> ".$row["Office_HR3"]."</li>";
 			}
-			$html.="</ul>";
-			$html.="</div>"; // end of inside right column
-			$html.="</div>"; // end of inside row 
-			$html.="</div>"; // end of info column
-			$html.="</div>"; // end of row
+			$html .= "</ul>";
+			$html .= "</div>"; // end of inside right column
+			$html .= "</div>"; // end of inside row 
+			$html .= "</div>"; // end of info column
+			$html .= "</div>"; // end of row
 		}
 		
 	} catch ( PDOException $e ) {
-		$html.= "Query Failed: " . $e->getMessage();
+		$html .=  "Query Failed: " . $e->getMessage();
 	}
 	return $html;
 }
@@ -2411,49 +2541,49 @@ private static function renderDetailed($sql, $conn, $heading = "h3", $subtitle =
 		
 		foreach ($rows as $row) {
 			$img = str_replace(" ", "_", str_replace(",", "", $row["LAST_NAME"]."_".$row["FIRST_NAME"]));
-			$html.="<div class='people row'>";
-			$html.="<h3>";
-			$html.= (Events::isDr($row['Degree'])) ? "Dr. " : "";
-			$html.= $row["FIRST_NAME"]." ".$row["LAST_NAME"]."</h3>";
-			$html.= (!empty($subtitle)) ? "<p>".$subtitle."</p>" : "";
-			$html.="<p class='title'>".$row["Job_Title"] ." " .$row["Degree"] ." ".$row["Year_Received"] ." ".$row["University"]."</p>";
-			$html.="<p>" .nl2br("\n");
-			$html.="<div class='medium-4 columns'>";
-			$html.="<img align='center' src='/math/images/Faculty_Photos/".$img.".jpg' alt='".$row["FIRST_NAME"]." ".$row["LAST_NAME"]."' />";
-			$html.="<p>" .nl2br("\n");
-			$html.="<ul class='default-list'>";
+			$html .= "<div class='people row'>";
+			$html .= "<h3>";
+			$html .=  (Events::isDr($row['Degree'])) ? "Dr. " : "";
+			$html .=  $row["FIRST_NAME"]." ".$row["LAST_NAME"]."</h3>";
+			$html .=  (!empty($subtitle)) ? "<p>".$subtitle."</p>" : "";
+			$html .= "<p class='title'>".$row["Job_Title"] ." " .$row["Degree"] ." ".$row["Year_Received"] ." ".$row["University"]."</p>";
+			$html .= "<p>" .nl2br("\n");
+			$html .= "<div class='medium-4 columns'>";
+			$html .= "<img align='center' src='/math/images/Faculty_Photos/".$img.".jpg' alt='".$row["FIRST_NAME"]." ".$row["LAST_NAME"]."' />";
+			$html .= "<p>" .nl2br("\n");
+			$html .= "<ul class='default-list'>";
 			if (!empty($row["E_MAIL"]) || !empty($row["Phone"]) || !empty($row["Office_Room"]) || !empty($row["Website"])) {
 			}
 			if (!empty($row["E_MAIL"])) {
-				$html.="<li><a href='mailto:".$row["E_MAIL"]."' class='mail'>".$row["E_MAIL"]."</a></li>";
+				$html .= "<li><a href='mailto:".$row["E_MAIL"]."' class='mail'>".$row["E_MAIL"]."</a></li>";
 			}
 			if (!empty($row["Phone"])) {
-				$html.="<li>".$row["Phone"]."</li>";
+				$html .= "<li>".$row["Phone"]."</li>";
 			}
 			if (!empty($row["Office_Room"])) {
-				$html.="<li>Office: ".$row["Office_Building"]." ".$row["Office_Room"]."</li>";
+				$html .= "<li>Office: ".$row["Office_Building"]." ".$row["Office_Room"]."</li>";
 			}
 			if (!empty($row["Website"])) {
-				$html.="<li><a href='".$row["Website"]."' class='external'>Website</a></li>";
+				$html .= "<li><a href='".$row["Website"]."' class='external'>Website</a></li>";
 			}
-			$html.="</ul>";
-			$html.="</div>"; // end of left column
-			$html.="<div class='medium-8 columns'>";
+			$html .= "</ul>";
+			$html .= "</div>"; // end of left column
+			$html .= "<div class='medium-8 columns'>";
 			if (!empty($row["Research"]) || !empty($row["Bio"])) {
 			}
 			if (!empty($row["Research"])) {
-				$html.="<p><strong>Research Interests: " .$row["Research"] . "</strong></p>";
+				$html .= "<p><strong>Research Interests: " .$row["Research"] . "</strong></p>";
 			}
-			$html.="<p>" .nl2br("\n");
+			$html .= "<p>" .nl2br("\n");
 			if (!empty($row["Bio"])) {
-				$html.="<p>" .utf8_encode($row["Bio"]) . "</p>";
+				$html .= "<p>" .utf8_encode($row["Bio"]) . "</p>";
 			}
-			$html.="</div>"; // end of right column
-			$html.="</div>"; // end of row
+			$html .= "</div>"; // end of right column
+			$html .= "</div>"; // end of row
 		}
 		
 	} catch ( PDOException $e ) {
-		$html.= "Query Failed: " . $e->getMessage();
+		$html .=  "Query Failed: " . $e->getMessage();
 	}
 	return $html;
 }
@@ -2462,38 +2592,38 @@ private static function renderTable($sql, $conn, $heading = "h3") {
 	$html = "";
 	try {
 		$rows = $conn->query( $sql );
-		$html.="<div class='people row'>";
-		$html.="<table class='dataTable striped' style='width:100%'>";
-		$html.="<thead><tr>";
-		$html.="<th>Name/Email</th>";
-		$html.="<th>Office</th>";
-		$html.="<th>Hours</th>";
-		$html.="</td></thead>";
-		$html.="<tbody>";
+		$html .= "<div class='people row'>";
+		$html .= "<table class='dataTable striped' style='width:100%'>";
+		$html .= "<thead><tr>";
+		$html .= "<th>Name/Email</th>";
+		$html .= "<th>Office</th>";
+		$html .= "<th>Hours</th>";
+		$html .= "</td></thead>";
+		$html .= "<tbody>";
 		foreach ($rows as $row) {
 		
-		$html.="<tr>";
+		$html .= "<tr>";
 
 		$html .= "<td><strong>";
                 $html .= (Events::isDr($row['Degree'])) ? "Dr. " : "";
                 $html .=  $row["FIRST_NAME"] . " " . $row["LAST_NAME"] . "<br /><a class='mail title' href= mailto:" . $row["E_MAIL"] . ">Email</a></strong><br />" . $row["Phone"] . "</td>";
-		$html.="<td><strong>" .$row["Office_Building"] ." " .$row["Office_Room"] . "</strong></td>";
-		$html.="<td>" 
+		$html .= "<td><strong>" .$row["Office_Building"] ." " .$row["Office_Room"] . "</strong></td>";
+		$html .= "<td>" 
 			.$row["Office_HR"] . "<br />" 
 			.$row["Office_HR1"] . "<br />"
 			.$row["Office_HR2"] . "<br />"
 			.$row["Office_HR3"] . "<br /></td>";
-		$html.="</tr>";
+		$html .= "</tr>";
 		
 					
 		}
-		$html.="</tbody>";
+		$html .= "</tbody>";
 		
 	} catch ( PDOException $e ) {
-		$html.= "Query Failed: " . $e->getMessage();
+		$html .=  "Query Failed: " . $e->getMessage();
 	}
-	$html.="</table>"; // end of table
-	$html.="</div>"; // end of row
+	$html .= "</table>"; // end of table
+	$html .= "</div>"; // end of row
 	return $html;
 	
 }
@@ -2506,50 +2636,50 @@ private static function renderDistinguished($sql, $conn, $heading = "h3", $subti
 		
 		foreach ($rows as $row) {
 			$img = str_replace(" ", "_", str_replace(",", "", $row["LAST_NAME"]."_".$row["FIRST_NAME"]));
-			$html.="<div class='people row'>";
-			$html.="<h3>";
-			$html.= (Events::isDr($row['Degree'])) ? "Dr. " : "";
-			$html.= $row["FIRST_NAME"]." ".$row["LAST_NAME"]."</h3>";
-			$html.= (!empty($subtitle)) ? "<p>".$subtitle."</p>" : "";
-			$html.="<p class='title'>".$row["Job_Title"] ." " .$row["Degree"] ." ".$row["Year_Received"] ." ".$row["University"]."</p>";
-                        $html.="<p class='title'>".$row["TITLE_1"] . "</p>";
-			$html.="<p>" .nl2br("\n");
-			$html.="<div class='medium-4 columns'>";
-			$html.="<img align='center' src='/math/images/Faculty_Photos/".$img.".jpg' alt='".$row["FIRST_NAME"]." ".$row["LAST_NAME"]."' />";
-			$html.="<p>" .nl2br("\n");
-			$html.="<ul class='default-list'>";
+			$html .= "<div class='people row'>";
+			$html .= "<h3>";
+			$html .=  (Events::isDr($row['Degree'])) ? "Dr. " : "";
+			$html .=  $row["FIRST_NAME"]." ".$row["LAST_NAME"]."</h3>";
+			$html .=  (!empty($subtitle)) ? "<p>".$subtitle."</p>" : "";
+			$html .= "<p class='title'>".$row["Job_Title"] ." " .$row["Degree"] ." ".$row["Year_Received"] ." ".$row["University"]."</p>";
+                        $html .= "<p class='title'>".$row["TITLE_1"] . "</p>";
+			$html .= "<p>" .nl2br("\n");
+			$html .= "<div class='medium-4 columns'>";
+			$html .= "<img align='center' src='/math/images/Faculty_Photos/".$img.".jpg' alt='".$row["FIRST_NAME"]." ".$row["LAST_NAME"]."' />";
+			$html .= "<p>" .nl2br("\n");
+			$html .= "<ul class='default-list'>";
 			if (!empty($row["E_MAIL"]) || !empty($row["Phone"]) || !empty($row["Office_Room"]) || !empty($row["Website"])) {
 			}
 			if (!empty($row["E_MAIL"])) {
-				$html.="<li><a href='mailto:".$row["E_MAIL"]."' class='mail'>".$row["E_MAIL"]."</a></li>";
+				$html .= "<li><a href='mailto:".$row["E_MAIL"]."' class='mail'>".$row["E_MAIL"]."</a></li>";
 			}
 			if (!empty($row["Phone"])) {
-				$html.="<li>".$row["Phone"]."</li>";
+				$html .= "<li>".$row["Phone"]."</li>";
 			}
 			if (!empty($row["Office_Room"])) {
-				$html.="<li>Office: ".$row["Office_Building"]." ".$row["Office_Room"]."</li>";
+				$html .= "<li>Office: ".$row["Office_Building"]." ".$row["Office_Room"]."</li>";
 			}
 			if (!empty($row["Website"])) {
-				$html.="<li><a href='".$row["Website"]."' class='external'>Website</a></li>";
+				$html .= "<li><a href='".$row["Website"]."' class='external'>Website</a></li>";
 			}
-			$html.="</ul>";
-			$html.="</div>"; // end of left column
-			$html.="<div class='medium-8 columns'>";
+			$html .= "</ul>";
+			$html .= "</div>"; // end of left column
+			$html .= "<div class='medium-8 columns'>";
 			if (!empty($row["Research"]) || !empty($row["Bio"])) {
 			}
 			if (!empty($row["Research"])) {
-				$html.="<p><strong>Research Interests: " .$row["Research"] . "</strong></p>";
+				$html .= "<p><strong>Research Interests: " .$row["Research"] . "</strong></p>";
 			}
-			$html.="<p>" .nl2br("\n");
+			$html .= "<p>" .nl2br("\n");
 			if (!empty($row["Bio"])) {
-				$html.="<p>" .utf8_encode($row["Bio"]) . "</p>";
+				$html .= "<p>" .utf8_encode($row["Bio"]) . "</p>";
 			}
-			$html.="</div>"; // end of right column
-			$html.="</div>"; // end of row
+			$html .= "</div>"; // end of right column
+			$html .= "</div>"; // end of row
 		}
 		
 	} catch ( PDOException $e ) {
-		$html.= "Query Failed: " . $e->getMessage();
+		$html .=  "Query Failed: " . $e->getMessage();
 	}
 	return $html;
 }
@@ -2557,16 +2687,16 @@ private static function renderDistinguished($sql, $conn, $heading = "h3", $subti
 
 private static function renderBlank($row) {
 	$html = "";
-	$html.="<div class='people row'>";
-	$html.="<div class='medium-4 small-3 columns'>";
+	$html .= "<div class='people row'>";
+	$html .= "<div class='medium-4 small-3 columns'>";
 
 
-	$html.="</div>"; // end of image column
-	$html.="<div class='medium-8 small-9 columns'>";
+	$html .= "</div>"; // end of image column
+	$html .= "<div class='medium-8 small-9 columns'>";
 
 
-	$html.="</div>"; // end of info column
-	$html.="</div>"; // end of row
+	$html .= "</div>"; // end of info column
+	$html .= "</div>"; // end of row
 	return $html;
 }
 
