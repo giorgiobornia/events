@@ -321,11 +321,23 @@ fwrite($fp, '\end{column}' . PHP_EOL);
  
 
 
- public static function single_latex_pdf_slide_person($name_first, $name_last, $bio, $image_name) {
+ public static function single_latex_pdf_slide_person($dsn, $username, $password, $name_first, $name_last, $bio, $image_name) {
   ///@todo The font &  is not accepted in Latex!
+
   
+// connect to database -----------
+	try {
+			$conn = new PDO ($dsn, $username, $password );
+			$conn->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+	} catch ( PDOException $e) {
+			echo  "Connection failed: " . $e->getMessage();
+	}
   
-  echo $name_first;
+// query -----------
+   $sql = "SELECT * FROM roster WHERE Last_Name='Bornia' AND First_Name='Giorgio'";
+   $rows = $conn->query( $sql );
+
+  		foreach ($rows as $row) {
   
 //latex file creation -----------------
   $slides_folder = '../../../events_people';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
@@ -365,7 +377,7 @@ fwrite($fp, '\end{column}' . PHP_EOL);
   fwrite($fp, '}                                                                                                                                                           ' . PHP_EOL);
   fwrite($fp, '\makeatother                                                                                                                                                ' . PHP_EOL);
 
-//   fwrite($fp, '\setbeamercolor{background canvas}{bg=lightgray}' . PHP_EOL);
+  fwrite($fp, '\setbeamercolor{background canvas}{bg=lightgray}' . PHP_EOL);
 
   fwrite($fp, '\date{}' . PHP_EOL);
 // 
@@ -375,59 +387,51 @@ fwrite($fp, '\end{column}' . PHP_EOL);
   
   
   fwrite($fp, '\textbf{'/* . PHP_EOL*/);
-  fwrite($fp, '\huge ' . $name_first . PHP_EOL);
+  fwrite($fp, '\Large ' . 'Faculty Highlight' . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
 //   fwrite($fp, '\vspace{1em}' . PHP_EOL);
 //   
 //   
-//   fwrite($fp, '\begin{columns}' . PHP_EOL);
-// 
-//   fwrite($fp, '\begin{column}{0.55\textwidth}' . PHP_EOL);
-//   fwrite($fp, '\centering' . PHP_EOL);
-//   
-//   fwrite($fp, '\textbf{' . PHP_EOL);
-//   fwrite($fp, '}' . PHP_EOL);
-//   fwrite($fp, PHP_EOL);
-//   
-// //-------------
-//   fwrite($fp, '\textbf{' . PHP_EOL);
-//   fwrite($fp, '\large ');
-//   fwrite($fp, '}' . PHP_EOL);
-//   fwrite($fp, PHP_EOL);
-// //-------------
-// 
-//   fwrite($fp, '\vspace{2em}' . PHP_EOL);
-// 
-// //-------------
-//   fwrite($fp, '\textbf{' . PHP_EOL);
-//   fwrite($fp, $week_day);
-//   fwrite($fp, ', ');
-//   fwrite($fp, ' ');
-//   fwrite($fp, '}' . PHP_EOL);
-//   fwrite($fp, PHP_EOL);
-// 
-// //-------------
-// 
-// fwrite($fp, '\end{column}' . PHP_EOL);
-// 
-//   fwrite($fp, '\begin{column}{0.45\textwidth}' . PHP_EOL);
-//   fwrite($fp, '\centering' . PHP_EOL);
-//   
-// // ---------------------------------  
-// //copy the file over to ease export to other computers
-  $image_name = $name_last . '_' . $name_first . '.jpg' ;
+  fwrite($fp, '\begin{columns}' . PHP_EOL);
+
+  fwrite($fp, '\begin{column}{0.55\textwidth}' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  
+
+// ---------------------------------  
+//copy the file over to ease export to other computers
+  $image_name = str_replace(" ", "_", str_replace(",", "", $row["LAST_NAME"] . "_" . $row["FIRST_NAME"] . '.jpg'));
+//   $image_name = $name_last . '_' . $name_first . '.jpg' ;
+
   shell_exec('cp '  .  '../img/people/' . $image_name . ' ' . $slides_folder);
-  fwrite($fp, '\includegraphics[width=0.7\textwidth]{' .   $image_name . '}' . PHP_EOL);
+  fwrite($fp, '\includegraphics[width=0.4\textwidth]{' .   $image_name . '}' . PHP_EOL);
+// ---------------------------------  
+
+
+fwrite($fp, '\end{column}' . PHP_EOL);
+
+  fwrite($fp, '\begin{column}{0.45\textwidth}' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  
+  fwrite($fp, '\vspace{2em}' . PHP_EOL);
+    fwrite($fp, '\textbf{' . PHP_EOL);
+  fwrite($fp, $row["FIRST_NAME"] . ' ' . $row["LAST_NAME"] . PHP_EOL);
+  fwrite($fp, '\large ');
+  fwrite($fp, '}' . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+//-------------
+
+  fwrite($fp, '\vspace{2em}' . PHP_EOL);
+  fwrite($fp, $row["Bio"] . PHP_EOL);
+
+
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, '\end{column}' . PHP_EOL);
 //   
-// // ---------------------------------  
-// 
-//   fwrite($fp, PHP_EOL);
-//   fwrite($fp, '\end{column}' . PHP_EOL);
-//   
-//   fwrite($fp, '\end{columns}' . PHP_EOL);
-// 
-//   fwrite($fp, PHP_EOL);
-// 
+  fwrite($fp, '\end{columns}' . PHP_EOL);
+
+  fwrite($fp, PHP_EOL);
+
   fwrite($fp, PHP_EOL);
   fwrite($fp, '\end{frame}' . PHP_EOL);
 //  
@@ -443,6 +447,10 @@ fwrite($fp, '\end{column}' . PHP_EOL);
 // ---------------------------------  
 
   printf($output);
+  
+  
+  } //foreach
+  
  
  }
  
@@ -2299,7 +2307,9 @@ private static function parse_all_event_tables_single_leaf($remote_path_prefix, 
 public static function render($show, $dsn, $username, $password) {
 
 	
-	$html = "";	
+	$html = "";
+	
+// connect to database -----------
 	try {
 			$conn = new PDO ($dsn, $username, $password );
 			$conn->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
@@ -2307,8 +2317,13 @@ public static function render($show, $dsn, $username, $password) {
 			$html .=  "<pre>Connection failed: " . $e->getMessage() ."</pre>";
 	}
 	
+// switch faculty subset -----------
 	switch ($show) {
 		/* RESEARCH INFO */
+		case 'bornia':
+			$sql = "SELECT * FROM roster WHERE Employed='T' AND Rank <'4'  AND Last_Name='Bornia' AND First_Name='Giorgio'";
+			$html .=  Events::renderDetailed($sql, $conn);
+			break;
 		case 'AllResearch':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Rank <'4' ORDER BY Last_Name, First_Name";
 			$html .=  Events::renderDetailed($sql, $conn);
@@ -2470,7 +2485,9 @@ public static function render($show, $dsn, $username, $password) {
 
 
 private static function renderDefault($sql, $conn, $heading = "h3") {
+
 	$html = "";
+	
 	try {
 		$rows = $conn->query( $sql );
 		
@@ -2531,11 +2548,15 @@ private static function renderDefault($sql, $conn, $heading = "h3") {
 	} catch ( PDOException $e ) {
 		$html .=  "Query Failed: " . $e->getMessage();
 	}
+	
 	return $html;
+	
 }
 
 private static function renderDetailed($sql, $conn, $heading = "h3", $subtitle = "") {
+
 	$html = "";
+	
 	try {
 		$rows = $conn->query( $sql );
 		
@@ -2546,7 +2567,7 @@ private static function renderDetailed($sql, $conn, $heading = "h3", $subtitle =
 			$html .=  (Events::isDr($row['Degree'])) ? "Dr. " : "";
 			$html .=  $row["FIRST_NAME"]." ".$row["LAST_NAME"]."</h3>";
 			$html .=  (!empty($subtitle)) ? "<p>".$subtitle."</p>" : "";
-			$html .= "<p class='title'>".$row["Job_Title"] ." " .$row["Degree"] ." ".$row["Year_Received"] ." ".$row["University"]."</p>";
+			$html .= "<p class='title'>" . /*$row["Job_Title"] .*/ " " .$row["Degree"] ." ".$row["Year_Received"] ." ".$row["University"]."</p>";
 			$html .= "<p>" .nl2br("\n");
 			$html .= "<div class='medium-4 columns'>";
 			$html .= "<img align='center' src='/math/images/Faculty_Photos/".$img.".jpg' alt='".$row["FIRST_NAME"]." ".$row["LAST_NAME"]."' />";
