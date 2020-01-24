@@ -321,30 +321,22 @@ fwrite($fp, '\end{column}' . PHP_EOL);
  
 
 
- public static function single_latex_pdf_slide_person($dsn, $username, $password, $name_first, $name_last, $bio, $image_name) {
+ public static function single_latex_pdf_slide_person($rows) {
   ///@todo The font &  is not accepted in Latex!
 
   
-// connect to database -----------
-	try {
-			$conn = new PDO ($dsn, $username, $password );
-			$conn->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-	} catch ( PDOException $e) {
-			echo  "Connection failed: " . $e->getMessage();
-	}
-  
-// query -----------
-   $sql = "SELECT * FROM roster WHERE Last_Name='Bornia' AND First_Name='Giorgio'";
-   $rows = $conn->query( $sql );
-
-  		foreach ($rows as $row) {
+	foreach ($rows as $row) {
   
 //latex file creation -----------------
   $slides_folder = '../../../events_people';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
 //   mkdir('slides');              //with PHP
   shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
   
-  $person_filename = 'permanent_people_' . $name_first . '_' . $name_last;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
+$name_last = $row["LAST_NAME"];
+$name_first = $row["FIRST_NAME"];
+  $image_name = str_replace(" ", "_", str_replace(",", "", $name_last . "_" . $name_first));
+  
+$person_filename = 'permanent_people_' .   $image_name;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
   $fp = fopen($slides_folder . '/' . $person_filename . '.tex', 'w');
 
 
@@ -387,42 +379,42 @@ fwrite($fp, '\end{column}' . PHP_EOL);
   
   
   fwrite($fp, '\textbf{'/* . PHP_EOL*/);
-  fwrite($fp, '\Large ' . 'Faculty Highlight' . PHP_EOL);
+  fwrite($fp, '\huge ' . 'Faculty Highlight' . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
-//   fwrite($fp, '\vspace{1em}' . PHP_EOL);
+  fwrite($fp, '\vspace{1em}' . PHP_EOL);
 //   
 //   
   fwrite($fp, '\begin{columns}' . PHP_EOL);
 
-  fwrite($fp, '\begin{column}{0.55\textwidth}' . PHP_EOL);
+  fwrite($fp, '\begin{column}{0.45\textwidth}' . PHP_EOL);
   fwrite($fp, '\centering' . PHP_EOL);
   
 
 // ---------------------------------  
 //copy the file over to ease export to other computers
-  $image_name = str_replace(" ", "_", str_replace(",", "", $row["LAST_NAME"] . "_" . $row["FIRST_NAME"] . '.jpg'));
-//   $image_name = $name_last . '_' . $name_first . '.jpg' ;
-
-  shell_exec('cp '  .  '../img/people/' . $image_name . ' ' . $slides_folder);
-  fwrite($fp, '\includegraphics[width=0.4\textwidth]{' .   $image_name . '}' . PHP_EOL);
+$image_name_ext =  $image_name . '.jpg';
+  shell_exec('cp '  .  '../img/people/' . $image_name_ext . ' ' . $slides_folder);
+  fwrite($fp, '\includegraphics[width=0.6\textwidth]{' .   $image_name_ext  . '}' . PHP_EOL);
 // ---------------------------------  
 
 
 fwrite($fp, '\end{column}' . PHP_EOL);
 
-  fwrite($fp, '\begin{column}{0.45\textwidth}' . PHP_EOL);
+  fwrite($fp, '\begin{column}{0.55\textwidth}' . PHP_EOL);
   fwrite($fp, '\centering' . PHP_EOL);
   
   fwrite($fp, '\vspace{2em}' . PHP_EOL);
     fwrite($fp, '\textbf{' . PHP_EOL);
-  fwrite($fp, $row["FIRST_NAME"] . ' ' . $row["LAST_NAME"] . PHP_EOL);
   fwrite($fp, '\large ');
+  fwrite($fp, $name_first . ' ' . $name_last . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
 //-------------
 
-  fwrite($fp, '\vspace{2em}' . PHP_EOL);
-  fwrite($fp, $row["Bio"] . PHP_EOL);
+     fwrite($fp, '{' . PHP_EOL);
+  fwrite($fp, '\small ');
+ fwrite($fp, $row["Bio"] . PHP_EOL);
+  fwrite($fp, '}' . PHP_EOL);
 
 
   fwrite($fp, PHP_EOL);
@@ -2320,10 +2312,6 @@ public static function render($show, $dsn, $username, $password) {
 // switch faculty subset -----------
 	switch ($show) {
 		/* RESEARCH INFO */
-		case 'bornia':
-			$sql = "SELECT * FROM roster WHERE Employed='T' AND Rank <'4'  AND Last_Name='Bornia' AND First_Name='Giorgio'";
-			$html .=  Events::renderDetailed($sql, $conn);
-			break;
 		case 'AllResearch':
 			$sql = "SELECT * FROM roster WHERE Employed='T' AND Rank <'4' ORDER BY Last_Name, First_Name";
 			$html .=  Events::renderDetailed($sql, $conn);
