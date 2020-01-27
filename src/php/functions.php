@@ -379,14 +379,14 @@ $person_filename = 'permanent_people_' .   $image_name;    //the prefix 'week_' 
   
   
   fwrite($fp, '\textbf{'/* . PHP_EOL*/);
-  fwrite($fp, '\huge ' . 'Faculty Highlight' . PHP_EOL);
+  fwrite($fp, '\Large ' . 'Faculty Spotlight - ' . $name_first . ' ' . $name_last);
   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, '\vspace{1em}' . PHP_EOL);
 //   
 //   
   fwrite($fp, '\begin{columns}' . PHP_EOL);
 
-  fwrite($fp, '\begin{column}{0.45\textwidth}' . PHP_EOL);
+  fwrite($fp, '\begin{column}{0.30\textwidth}' . PHP_EOL);
   fwrite($fp, '\centering' . PHP_EOL);
   
 
@@ -400,19 +400,21 @@ $image_name_ext =  $image_name . '.jpg';
 
 fwrite($fp, '\end{column}' . PHP_EOL);
 
-  fwrite($fp, '\begin{column}{0.55\textwidth}' . PHP_EOL);
+  fwrite($fp, '\begin{column}{0.70\textwidth}' . PHP_EOL);
   fwrite($fp, '\centering' . PHP_EOL);
   
-  fwrite($fp, '\vspace{2em}' . PHP_EOL);
-    fwrite($fp, '\textbf{' . PHP_EOL);
-  fwrite($fp, '\large ');
-  fwrite($fp, $name_first . ' ' . $name_last . PHP_EOL);
-  fwrite($fp, '}' . PHP_EOL);
+//   fwrite($fp, '\vspace{2em}' . PHP_EOL);
+//     fwrite($fp, '\textbf{' . PHP_EOL);
+//   fwrite($fp, '\large ');
+//   fwrite($fp, $name_first . ' ' . $name_last . PHP_EOL);
+//   fwrite($fp, '}' . PHP_EOL);
   fwrite($fp, PHP_EOL);
 //-------------
 
      fwrite($fp, '{' . PHP_EOL);
-  fwrite($fp, '\small ');
+ if (strlen($row["Bio"]) < 900)   fwrite($fp, '\small ');
+ else                             fwrite($fp, '\footnotesize ');
+ 
  fwrite($fp, Normalizer::normalize($row["Bio"]) . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
 
