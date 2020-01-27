@@ -413,7 +413,7 @@ fwrite($fp, '\end{column}' . PHP_EOL);
 
      fwrite($fp, '{' . PHP_EOL);
   fwrite($fp, '\small ');
- fwrite($fp, $row["Bio"] . PHP_EOL);
+ fwrite($fp, Normalizer::normalize($row["Bio"]) . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
 
 
