@@ -415,7 +415,7 @@ fwrite($fp, '\end{column}' . PHP_EOL);
  if (strlen($row["Bio"]) < 900)   fwrite($fp, '\small ');
  else                             fwrite($fp, '\footnotesize ');
  
- fwrite($fp, Normalizer::normalize($row["Bio"]) . PHP_EOL);
+ fwrite($fp, $row["Bio"] . PHP_EOL);
   fwrite($fp, '}' . PHP_EOL);
 
 
