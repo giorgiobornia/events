@@ -152,7 +152,7 @@ $first_pair = array_slice($assoc_array, 0, 1, true);
   $events_file_prefix =  'week_';
   $image_format = '.png';
 
-  //first remove old week files in the slideshow folder
+  //first remove old week files in the final slideshow folder
   shell_exec('rm ' . $script_depth . $slides_folder_slideshow . $events_file_prefix . '*' . $image_format);
 
   
@@ -165,7 +165,14 @@ $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefi
     
 
 
-      for ($event_i = 0; $event_i < count($events_in_week); $event_i++)   Events::single_latex_pdf_slide($events_in_week, $event_i, $leaf_array, $all_schemes[$i]);
+      for ($event_i = 0; $event_i < count($events_in_week); $event_i++)   Events::single_latex_pdf_slide($script_depth, 
+                                                                                                         $slides_folder_slideshow, 
+                                                                                                         $events_file_prefix,
+                                                                                                         $image_format,
+                                                                                                         $events_in_week, 
+                                                                                                         $event_i,
+                                                                                                         $leaf_array,
+                                                                                                         $all_schemes[$i]);
 
 }
 
@@ -174,7 +181,14 @@ $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefi
 }
 
 
- private static function single_latex_pdf_slide($events_in_week, $event_i, $discipline_array, $scheme) {
+ private static function single_latex_pdf_slide($script_depth,
+                                                $slides_folder_slideshow,
+                                                $events_file_prefix,
+                                                $image_format,
+                                                $events_in_week,
+                                                $event_i,
+                                                $discipline_array,
+                                                $scheme) {
   ///@todo The font &  is not accepted in Latex!
   
   
@@ -182,14 +196,14 @@ $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefi
  $prefix_base = Events::get_prefix_up_to_current_leaf('', $scheme);
 
 //latex file -----------------
-  $slides_folder           = '../../../events_slides';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
-  $slides_folder_slideshow = '../slides';  //folder where all slides are for slideshow (relative path wrt. where they are generated)
+  $slides_folder               = $script_depth . 'events_slides';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
+  $slides_folder_slideshow_pos = '../' . $slides_folder_slideshow;  //folder where all slides are for slideshow (relative path wrt. where they are generated)
   
   //   mkdir('slides');              //with PHP
   shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
   
   $tree_string = Events::get_father_scheme_string_from_itself($scheme);
-  $event_filename = 'week_' . $tree_string . '_slide_' . $event_i;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
+  $event_filename = $events_file_prefix . $tree_string . '_slide_' . $event_i;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
   $fp = fopen($slides_folder . '/' . $event_filename . '.tex', 'w');
 //   shell_exec('cd ' . $slides_folder);
     
@@ -318,7 +332,7 @@ fwrite($fp, '\end{column}' . PHP_EOL);
 //enter inside the slides folder each time for a shorter compile command (need all the shell commands to be in the SAME shell_exec, because separate ones would be independent and restart from the original path)
 // Here, I am both generating the PDF and converting to PNG !
 // Also, I am copying them to the slides/ folder
-  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $event_filename . '.tex ' . ';' . 'pdftoppm ' . $event_filename . '.pdf ' .  $event_filename . ' -singlefile -png -r 300' . ';' . 'cp ' . $event_filename . '.png' . ' ' . $slides_folder_slideshow . ';' . 'cd ..');
+  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $event_filename . '.tex ' . ';' . 'pdftoppm ' . $event_filename . '.pdf ' .  $event_filename . ' -singlefile -png -r 300' . ';' . 'cp ' . $event_filename . $image_format . ' ' . $slides_folder_slideshow_pos . ';' . 'cd ..');
   
 //   $output =  shell_exec('pdflatex '  . ' -output-directory ' . $slides_folder . ' ' .  $slides_folder . '/' . $event_filename . '.tex ' . PHP_EOL );
 // ---------------------------------  
