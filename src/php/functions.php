@@ -145,10 +145,17 @@ $first_pair = array_slice($assoc_array, 0, 1, true);
                                                           $department, 
                                                           $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
                                                           $all_schemes) {
+                                                          
  
-//  php -r " " for an in-line script on command line
+  $script_depth = '../../../';
+  $slides_folder_slideshow = 'slides/';
+  $events_file_prefix =  'week_';
+  $image_format = '.png';
 
+  //first remove old week files in the slideshow folder
+  shell_exec('rm ' . $script_depth . $slides_folder_slideshow . $events_file_prefix . '*' . $image_format);
 
+  
      for ($i = 0; $i < count($all_schemes); $i++) {
      
     $leaf_array = Events::get_array_of_leaves( $all_schemes[$i] ); 
@@ -163,7 +170,6 @@ $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefi
 }
 
 
-  ///@todo copy all pdf files over to the TV server
   
 }
 
@@ -176,8 +182,10 @@ $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefi
  $prefix_base = Events::get_prefix_up_to_current_leaf('', $scheme);
 
 //latex file -----------------
-  $slides_folder = '../../../events_slides';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
-//   mkdir('slides');              //with PHP
+  $slides_folder           = '../../../events_slides';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
+  $slides_folder_slideshow = '../slides';  //folder where all slides are for slideshow (relative path wrt. where they are generated)
+  
+  //   mkdir('slides');              //with PHP
   shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
   
   $tree_string = Events::get_father_scheme_string_from_itself($scheme);
@@ -309,7 +317,8 @@ fwrite($fp, '\end{column}' . PHP_EOL);
 // ---------------------------------  
 //enter inside the slides folder each time for a shorter compile command (need all the shell commands to be in the SAME shell_exec, because separate ones would be independent and restart from the original path)
 // Here, I am both generating the PDF and converting to PNG !
-  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $event_filename . '.tex ' . ';' . 'pdftoppm ' . $event_filename . '.pdf ' .  $event_filename . ' -singlefile -png -r 300' . ';' . 'cd ..');
+// Also, I am copying them to the slides/ folder
+  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $event_filename . '.tex ' . ';' . 'pdftoppm ' . $event_filename . '.pdf ' .  $event_filename . ' -singlefile -png -r 300' . ';' . 'cp ' . $event_filename . '.png' . ' ' . $slides_folder_slideshow . ';' . 'cd ..');
   
 //   $output =  shell_exec('pdflatex '  . ' -output-directory ' . $slides_folder . ' ' .  $slides_folder . '/' . $event_filename . '.tex ' . PHP_EOL );
 // ---------------------------------  
@@ -324,6 +333,7 @@ fwrite($fp, '\end{column}' . PHP_EOL);
  public static function single_latex_pdf_slide_person($rows) {
   ///@todo The font &  is not accepted in Latex!
 
+  $people_count = 0;
   
 	foreach ($rows as $row) {
   
@@ -336,7 +346,7 @@ $name_last = $row["LAST_NAME"];
 $name_first = $row["FIRST_NAME"];
   $image_name = str_replace(" ", "_", str_replace(",", "", $name_last . "_" . $name_first));
   
-$person_filename = 'permanent_people_' .   $image_name;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
+$person_filename = 'permanent_people_' .  $image_name . '_' . $people_count;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
   $fp = fopen($slides_folder . '/' . $person_filename . '.tex', 'w');
 
 
@@ -442,6 +452,7 @@ fwrite($fp, '\end{column}' . PHP_EOL);
 
   printf($output);
   
+  $people_count++;
   
   } //foreach
   
