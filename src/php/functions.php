@@ -2224,7 +2224,7 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
    $sequential_begin = Events::compute_day_sequential_number($year, $begin_month, $begin_day);
    $sequential_end = $sequential_begin + $offset_wanted;
    
-   if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end )   $style ='font-weight: bold;';
+   if ($year == $current_year && $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end )   $style ='font-weight: bold;';
    //make the current week bold  
 
  
