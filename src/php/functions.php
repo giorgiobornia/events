@@ -881,13 +881,16 @@ private static function previous_next_all_week_buttons($year, $month_begin, $day
  if ($row_matching != $last_week_index && $row_matching != $first_week_index) {//this control encompasses both cases, although it is "looser"
      echo '<table>';
      echo '<td style="padding: 10px;">';
-  $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous week </a>'; 
+     echo 'Weeks:';
      echo '</td>';
      echo '<td style="padding: 10px;">';
-  $next_ind = $row_matching + $next_week_index;         echo '<a href="' . $all_mondays[$next_ind][0]     . '_' . $all_mondays[$next_ind][1]     . '.php' . '"> Next week </a>';     
+  $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous </a>'; 
      echo '</td>';
      echo '<td style="padding: 10px;">';
-       echo '<a href="' . '..' . '"> All weeks </a>';
+  $next_ind = $row_matching + $next_week_index;         echo '<a href="' . $all_mondays[$next_ind][0]     . '_' . $all_mondays[$next_ind][1]     . '.php' . '"> Next </a>';     
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+       echo '<a href="' . '..' . '"> All </a>';
      echo '</td>';
      echo '</table>';
   }
@@ -895,13 +898,16 @@ private static function previous_next_all_week_buttons($year, $month_begin, $day
   else if ($row_matching == $last_week_index) {
     echo '<table>';
      echo '<td style="padding: 10px;">';
-   $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous week </a>'; 
+     echo 'Weeks:';
      echo '</td>';
      echo '<td style="padding: 10px;">';
-     echo str_repeat("&nbsp;", 19);  //how to add white spaces
+   $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous </a>'; 
      echo '</td>';
      echo '<td style="padding: 10px;">';
-       echo '<a href="' . '..' . '"> All weeks </a>';
+     echo str_repeat("&nbsp;", 8);  //how to add white spaces
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+       echo '<a href="' . '..' . '"> All </a>';
      echo '</td>';
      echo '</table>';
    }
@@ -909,13 +915,16 @@ private static function previous_next_all_week_buttons($year, $month_begin, $day
   else if ($row_matching == $first_week_index) {
     echo '<table>';
      echo '<td style="padding: 10px;">';
-     echo str_repeat("&nbsp;", 26);  //how to add white spaces
+     echo 'Weeks:';
      echo '</td>';
      echo '<td style="padding: 10px;">';
-    $next_ind = $row_matching + $next_week_index;        echo '<a href="' . $all_mondays[$next_ind][0] . '_' . $all_mondays[$next_ind][1] . '.php' . '"> Next week </a>';
+     echo str_repeat("&nbsp;", 16);  //how to add white spaces
      echo '</td>';
      echo '<td style="padding: 10px;">';
-       echo '<a href="' . '..' . '"> All weeks </a>';
+    $next_ind = $row_matching + $next_week_index;        echo '<a href="' . $all_mondays[$next_ind][0] . '_' . $all_mondays[$next_ind][1] . '.php' . '"> Next </a>';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+       echo '<a href="' . '..' . '"> All </a>';
      echo '</td>';
      echo '</table>';
   }
@@ -1895,7 +1904,8 @@ public static function generate_initial_week_files($year_in, $month_begin, $day_
 }
 
 
-private static function compute_week_day($year_in, $month_in, $day_in) {
+
+private static function compute_week_day_number($year_in, $month_in, $day_in) {
 
 //let us start from a January 1 that is a Monday. Let us pick January 1, 1990
 //also, I found out that in the Gregorian calendar leap years are NOT every 4 years, but centennial years NOT divisible by 400 are not leap years... 
@@ -1929,10 +1939,20 @@ private static function compute_week_day($year_in, $month_in, $day_in) {
     for ($i = 0; $i < 7; $i++) {
  if ($week_day_modulo == $i)   $week_day = $i;
  }
- 
- 
-//  echo Events::$week_day_conv[$week_day];
 
+return  $week_day;
+
+
+}
+
+
+
+private static function compute_week_day($year_in, $month_in, $day_in) {
+
+
+   $week_day = Events::compute_week_day_number($year_in, $month_in, $day_in);
+
+   
  return Events::$week_day_conv[$week_day];
  
 }
@@ -2196,15 +2216,78 @@ private static function set_tree_events_by_time_range_body($remote_path_prefix, 
                                   
 
  }
+
  
  
-private static function loop_over_semester_weeks($year, $week_month_day_begin) {
+ 
+private static function compute_current_day_info() {
 
    $current_year     = date("Y");
    $current_month    = date("m");
    $current_day      = date("d");
    $current_week_day = date("l");
+   
+   $current_day_info = array($current_year, $current_month, $current_day, $current_week_day);
+ 
+   return $current_day_info;
+ 
+} 
 
+
+public static function compute_containing_week_from_monday_to_sunday_starting_from_current_day($current_or_following) {
+
+   $current_day_info = Events::compute_current_day_info();
+   
+   $year  = $current_day_info[0];
+   $month = $current_day_info[1];
+   $day   = $current_day_info[2];
+
+   Events::compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following);
+
+}
+
+
+public static function compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following) {
+//    We can either compute the current week or the following week
+
+   $week_day = Events::compute_week_day_number($year, $month, $day);
+ 
+   $sequential_current = Events::compute_day_sequential_number($year, $month, $day);
+
+  $month_and_day_begin_end = array();
+  
+  $sequential_week_begin = 0;
+
+        if ($current_or_following == "current")   {    $sequential_week_begin =  $sequential_current - $week_day ;      }
+   else if ($current_or_following == "following") {    $sequential_week_begin =  $sequential_current - $week_day + 7;  }
+
+   
+   $month_and_day_begin_end[0] = Events::compute_month_and_day_from_sequential_number($year, $sequential_week_begin);   // go from sequential back to year month day
+   
+   $offset_wanted = 6; //I want from Monday to Sunday
+   
+   $month_and_day_begin_end[1]   = Events::compute_subsequent_day_with_offset($year, $month_and_day_begin_end[0][0], $month_and_day_begin_end[0][1], $offset_wanted);
+
+//    echo $month_and_day_begin_end[0][0];
+//    echo $month_and_day_begin_end[0][1];
+//    echo $month_and_day_begin_end[1][0];
+//    echo $month_and_day_begin_end[1][1];
+
+   return $month_and_day_begin;
+} 
+
+ 
+ 
+private static function loop_over_semester_weeks($year, $week_month_day_begin) {
+
+   $current_day_info = Events::compute_current_day_info();
+
+   $current_year     = $current_day_info[0];
+   $current_month    = $current_day_info[1];
+   $current_day      = $current_day_info[2];
+   $current_week_day = $current_day_info[3];
+   
+  
    $sequential_current = Events::compute_day_sequential_number($current_year, $current_month, $current_day);
    
 
