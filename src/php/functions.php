@@ -878,10 +878,22 @@ private static function previous_next_all_week_buttons($year, $month_begin, $day
 
  if (count($all_mondays) > 1) {
  
+ 
+ $month_and_day_begin_end = Events::compute_containing_week_from_monday_to_sunday_starting_from_current_day("current");
+ 
+$present_month_begin = $month_and_day_begin_end[0][0];
+$present_day_begin   = $month_and_day_begin_end[0][1];
+// $present_month_end   = $month_and_day_begin_end[1][0];
+// $present_day_end     = $month_and_day_begin_end[1][1];
+ 
+ 
  if ($row_matching != $last_week_index && $row_matching != $first_week_index) {//this control encompasses both cases, although it is "looser"
      echo '<table>';
      echo '<td style="padding: 10px;">';
      echo 'Weeks:';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+     echo '<a href="' . $present_month_begin . '_' . $present_day_begin . '.php' . '">'  . ' Current </a>';
      echo '</td>';
      echo '<td style="padding: 10px;">';
   $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous </a>'; 
@@ -901,6 +913,9 @@ private static function previous_next_all_week_buttons($year, $month_begin, $day
      echo 'Weeks:';
      echo '</td>';
      echo '<td style="padding: 10px;">';
+     echo '<a href="' . $present_month_begin . '_' . $present_day_begin . '.php' . '">'  . ' Current </a>';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
    $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous </a>'; 
      echo '</td>';
      echo '<td style="padding: 10px;">';
@@ -916,6 +931,9 @@ private static function previous_next_all_week_buttons($year, $month_begin, $day
     echo '<table>';
      echo '<td style="padding: 10px;">';
      echo 'Weeks:';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+     echo '<a href="' . $present_month_begin . '_' . $present_day_begin . '.php' . '">'  . ' Current </a>';
      echo '</td>';
      echo '<td style="padding: 10px;">';
      echo str_repeat("&nbsp;", 16);  //how to add white spaces
@@ -2242,8 +2260,11 @@ public static function compute_containing_week_from_monday_to_sunday_starting_fr
    $month = $current_day_info[1];
    $day   = $current_day_info[2];
 
-   Events::compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following);
+   $month_and_day_begin_end = array();
+   
+   $month_and_day_begin_end = Events::compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following);
 
+   return $month_and_day_begin_end;
 }
 
 
@@ -2262,18 +2283,19 @@ public static function compute_containing_week_from_monday_to_sunday_starting_fr
    else if ($current_or_following == "following") {    $sequential_week_begin =  $sequential_current - $week_day + 7;  }
 
    
-   $month_and_day_begin_end[0] = Events::compute_month_and_day_from_sequential_number($year, $sequential_week_begin);   // go from sequential back to year month day
+   $month_and_day_begin = Events::compute_month_and_day_from_sequential_number($year, $sequential_week_begin);   // go from sequential back to year month day
+   
+   array_push($month_and_day_begin_end, $month_and_day_begin);
+   
    
    $offset_wanted = 6; //I want from Monday to Sunday
    
-   $month_and_day_begin_end[1]   = Events::compute_subsequent_day_with_offset($year, $month_and_day_begin_end[0][0], $month_and_day_begin_end[0][1], $offset_wanted);
+   $month_and_day_end   = Events::compute_subsequent_day_with_offset($year, $month_and_day_begin[0], $month_and_day_begin[1], $offset_wanted);
 
-//    echo $month_and_day_begin_end[0][0];
-//    echo $month_and_day_begin_end[0][1];
-//    echo $month_and_day_begin_end[1][0];
-//    echo $month_and_day_begin_end[1][1];
+   array_push($month_and_day_begin_end, $month_and_day_end);
 
-   return $month_and_day_begin;
+
+   return $month_and_day_begin_end;
 } 
 
  
@@ -2307,6 +2329,13 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
    $sequential_begin = Events::compute_day_sequential_number($year, $begin_month, $begin_day);
    $sequential_end = $sequential_begin + $offset_wanted;
    
+//    echo $sequential_current;
+//    echo $sequential_begin;
+// echo $current_year;
+// echo $current_month;
+// echo $current_day;
+// echo $current_week_day;
+
    if ($year == $current_year && $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end )   $style ='font-weight: bold;';
    //make the current week bold  
 
@@ -2887,8 +2916,8 @@ private static function isDr($degree) {
  6  =>    'Sunday'
  ); 
 
-   private static   $month_days_non_leap = array(31,28,31,30,31,30,31,31,30,31,30,31);  //non-bissextile
-   private static   $month_days_leap     = array(31,29,31,30,31,30,31,31,30,31,30,31);  //bissextile
+   private static   $month_days_non_leap = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);  //non-bissextile
+   private static   $month_days_leap     = array(31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);  //bissextile
  
    private static   $month_days_max = 31;
 
@@ -2952,9 +2981,7 @@ private static function isDr($degree) {
 ///@todo Check that it works also if we add 'summer' folders, for summer events
 ///@todo write a function that checks that the directories of the inputs are there
 ///@todo Remove potential empty rows added by organizers in the events.csv file
-///@todo Do a function that returns the current week initial month/day
-///@todo Add 'Current week' button to the navigation in each week file
-///@todo Perhaps land immediately to the current week page, instead of the weeks' list one
+///@todo Perhaps land immediately to the "Current" week page, instead of the weeks' list one
 ///@todo Implement a search engine to find all events along the whole database
 
 
