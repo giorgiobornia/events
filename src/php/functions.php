@@ -3,6 +3,9 @@
 
 class Events {
 
+// ***********************************************
+// ****** Tree structure - BEGIN ****************  
+// ***********************************************
 
   
  public static function get_father_scheme_index_from_string($father_scheme_string, $all_schemes) {
@@ -138,7 +141,636 @@ $first_pair = array_slice($assoc_array, 0, 1, true);
  }
 
 
+
+private static function get_array_of_leaves($scheme) {
+
+$depth = 0;
+       Events::get_depth_recursively($scheme, $depth);
+       
+       $output_array = array();
+//        echo Events::get_father_scheme_string_from_itself($scheme);
+//         echo $depth;
+
+        if ($depth == 0)       $output_array = $scheme;
+       else if  ($depth == 1)  $output_array = $scheme[Events::get_father_scheme_string_from_itself($scheme)][1];
+ 
+ 
+//  print_r($output_array);
+//  echo "\n";
+ 
+ return $output_array;
+ 
+}
+
+ 
+// ***********************************************
+// ****** Tree structure - END ****************  
+// ***********************************************
+ 
+
+// ***********************************************
+// ****** Tree Search - BEGIN ****************  
+// ***********************************************
+
+private static function set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                      $institution, 
+                                                  $department, 
+                                                  $year,
+                                                  $semester, 
+                                                  $month_begin,
+                                                  $day_begin, 
+                                                  $month_end, 
+                                                  $day_end, 
+                                                  $abstracts_folder,
+                                                  $images_folder,
+                                                  $discipline_array,  
+                                                  $bool_print_discipline,
+                                                  $all_schemes,
+                                                  $father_scheme_idx)  {
+ 
+
+    $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                                    $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
+                                                                    $discipline_array, $all_schemes, $father_scheme_idx);
+    
+    
+    Events::sort_array_of_arrays_based_on_one_index($events_in_week, Events::$month_idx, SORT_ASC);
+    
+    
+    $starting_row = 0;
+     
+ 
+ if (count($events_in_week) == 0)   {
+     echo '<div class="' . Events::$bootstrap_container . '">';
+     echo 'None this week';
+     echo '</div>';
+ }
+ 
+ else  Events::loop_over_events($events_in_week, $starting_row,
+                                  $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                                  $abstracts_folder, $images_folder, 
+                                  $discipline_array, $bool_print_discipline,
+                                  $all_schemes,
+                                  $father_scheme_idx);
+                                  
+
+ }
+
+ 
+// ***********************************************
+// ****** Tree Search - END ****************  
+// ***********************************************
+
+
+// ***********************************************
+// ****** Tree Search: Event Lists - BEGIN ****************  
+// ***********************************************
+
+
+ 
+private static function generate_page_with_all_events_of_each_leaf_of_the_tree_by_time_range($library_path,  
+                                                                     $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                                     $institution, 
+                                                                     $department,
+                                                                     $icon_in_toolbar,
+                                                                     $year,
+                                                                     $semester,
+                                                                     $month_begin, $day_begin, $month_end, $day_end,
+                                                                     $all_schemes) {
+
+// Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
+// if so, I will store that array and make a map that will be parsed by a function
+
+
+
+echo '<!DOCTYPE html>';
+
+echo '<html>';
+
+
+echo '<head>';
+
+  $title_in_toolbar = Events::$general_title;
+
   
+  Events::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
+   
+echo '</head>';
+
+
+
+  echo '<body>';
+  
+  
+  $discipline = Events::$all_folder;
+  
+  Events::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                           $discipline, 
+                           $all_schemes,
+                           $father_scheme_idx,  ///@todo this variable is not defined here
+                           Events::$is_all_page, 
+                           $department);
+ 
+
+ $title = $title_in_toolbar;
+ 
+ Events::main_banner($title, $department, $institution);
+ 
+ 
+  echo '<h3> &nbsp <strong> ' . Events::capitalize($semester) . ' ' . $year . ': ' . Events::$months_conv[$month_begin] . ' ' . $day_begin  . ' - ' . Events::$months_conv[$month_end] . ' ' . $day_end  . ' </strong> </h3>';
+  
+ 
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+ 
+ $sort_weeks_list = Events::$sort_weeks;
+ Events::previous_next_all_week_buttons($year, $month_begin, $day_begin, $sort_weeks_list);
+
+  
+  $bool_print_discipline = true;
+    
+  //====================================================================
+     for ($i = 0; $i < count($all_schemes); $i++) {
+  
+$branch_name = Events::get_father_scheme_name($all_schemes[$i]);
+  echo '<h3> &nbsp <strong> ' . $branch_name . ' </strong> </h3>';
+  
+    $leaf_array = Events::get_array_of_leaves( $all_schemes[$i] );  ///@todo this is all leaves, I think this only works with depth 0 and 1; one should get all leaves at all depths
+
+       
+    Events::set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                                              $institution, $department, 
+                                              $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
+                                              Events::$abstracts_folder, Events::$images_folder, 
+                                              $leaf_array,  
+                                              $bool_print_discipline,
+                                              $all_schemes, 
+                                              $i);
+     
+     
+}
+ //====================================================================
+
+    
+  echo '<br>';
+  echo '<br>';
+  echo '<br>';
+  
+    
+  echo '</body>';
+  
+
+echo '</html>';
+  
+ }
+ 
+
+
+
+public static function generate_page_with_all_events_by_time_range_wrapper($filename,
+                                                                             $library_path,
+                                                                             $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                                             $institution,
+                                                                             $department,
+                                                                             $icon_in_toolbar,
+                                                                             $all_schemes
+                                                                             ) { 
+
+  $starting_pos = 2;
+  $how_many_backwards = 2;
+  $path_out =  Events::get_path_components_from_the_end($filename, $starting_pos, $how_many_backwards);
+  
+  $year = $path_out[1];
+  $semester = $path_out[0];
+ 
+  $month_day_file_array =  Events::get_path_components_from_the_end($filename, 0, 1);
+  
+  $month_day_file = $month_day_file_array[0];
+  
+  $basestr = basename($month_day_file, '.php');
+  $basestr_array = Events::get_string_components_from_the_end('_', $basestr, 0, 2);
+  
+ $month_begin = $basestr_array[1];
+ $day_begin   = $basestr_array[0];
+ 
+
+ $offset_wanted = 6;
+ $month_and_day_out = Events::compute_subsequent_day_with_offset($year, $month_begin, $day_begin, $offset_wanted);
+
+ $month_end   = $month_and_day_out[0];
+ $day_end     = $month_and_day_out[1];
+ 
+ 
+ 
+ $is_all_or_single = Events::$is_all_page;
+ 
+ 
+ 
+ Events::generate_page_with_all_events_of_each_leaf_of_the_tree_by_time_range($library_path,
+                                                         $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                         $institution,$department,
+                                                         $icon_in_toolbar,
+                                                         $year,
+                                                         $semester,
+                                                         $month_begin,
+                                                         $day_begin,
+                                                         $month_end,
+                                                         $day_end,
+                                                   $all_schemes); 
+ 
+ 
+}
+
+
+
+
+private static function loop_over_events($events_map, $starting_row, 
+                                         $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                                         $abstracts_folder, $images_folder, 
+                                         $discipline_array, $bool_print_discipline,
+                                         $all_schemes,
+                                         $father_scheme_idx) {
+
+ 
+    ///@todo: abstract have to be .txt (I think it's enough to be any text file), with a name specified in the csv file
+    ///@todo: strip away any empty spaces before or after the csv fields
+    ///@todo: make sure there are no empty lines at the end of a csv file
+ 
+  
+    $num_rows = count($events_map);  
+    
+    
+  echo '<div class="' . Events::$bootstrap_container . '">';
+
+    
+    for ($row = $starting_row; $row < $num_rows; $row++) {
+
+    $toggle_abstract_id = Events::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
+    $arrow_abstract_id  = Events::set_abstract_id_and_its_toggle($events_map, $row, 'arrow_');
+
+    Events::set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                                          $images_folder, $events_map, $row, 
+                                          $discipline_array, $bool_print_discipline,
+                                          $toggle_abstract_id, $arrow_abstract_id,
+                                                   $all_schemes,
+                                                   $father_scheme_idx);
+    
+    Events::set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                           $abstracts_folder, 
+                           $events_map, $row,
+                           $toggle_abstract_id, $arrow_abstract_id,
+                           $all_schemes,
+                           $father_scheme_idx);
+    
+    }
+    
+
+  echo '</div>';   
+    
+    
+  } 
+
+  
+ 
+private static function parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                                               $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
+                                               $discipline_array, $all_schemes, $father_scheme_idx)  {
+ 
+ 
+  $starting_row = Events::$row_events_begin;
+
+  $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+  
+  
+  
+  $events_array = $discipline_array;
+  
+
+  $events_in_week = array();
+    
+    
+//---------------    
+    
+    foreach ($events_array as $discipline => $discipline_string) {
+    
+
+   $csv_map = Events::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester, $all_schemes, $father_scheme_idx);
+
+    
+    for ($row = $starting_row; $row < count($csv_map); $row++) {
+
+    //best thing is probably to convert into an increasing number, to avoid non-monotone behavior
+    $sequential_begin   = Events::compute_day_sequential_number($year, $month_begin, $day_begin);
+    $sequential_end     = Events::compute_day_sequential_number($year, $month_end, $day_end);
+    $sequential_current = Events::compute_day_sequential_number($year, $csv_map[$row][Events::$month_idx], $csv_map[$row][Events::$day_idx]);
+    
+
+    if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end ) {
+
+    array_push($events_in_week, $csv_map[$row]);
+    
+       }
+    
+    
+    }     
+    
+    
+  }
+
+//---------------    
+  
+
+ return $events_in_week;
+ 
+ 
+ }
+ 
+  
+// ***********************************************
+// ****** Tree Search: Event Lists - END ****************  
+// ***********************************************
+
+// ***********************************************
+// ****** Single Leaf - BEGIN ****************  
+// ***********************************************
+
+ 
+  
+ public static function get_discipline_year_semester($file_in) {
+ ///@todo actually this is semester/year/discipline now
+ 
+ $first_pos_from_the_end_to_read = Events::$first_position_from_the_end_to_read;
+ 
+  $array = Events::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, Events::$num_positions_from_the_end_to_read);
+ 
+  return $array;
+
+ }
+ 
+
+
+public static function generate_topic_page_by_topic_year_semester($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                                    $institution, $department, 
+                                                                    $t_y_s,
+                                                                    $icon_in_toolbar, 
+                                                                    $all_schemes,
+                                                                    $father_scheme_idx
+                                                                    ) {
+
+ 
+   $discipline = $t_y_s[Events::$discipline_idx_in_path_from_end];
+   $year       = $t_y_s[Events::$year_idx_in_path_from_end];
+   $semester   = $t_y_s[Events::$semester_idx_in_path_from_end];
+
+   Events::generate_topic_page($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                            $institution, $department, 
+                                            $discipline, $year, $semester, 
+                                            $icon_in_toolbar,
+                                            $all_schemes,
+                                            $father_scheme_idx);
+
+}
+
+
+
+
+
+private static function generate_topic_page($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                       $institution, $department, 
+                                                       $page_topic, $year, $semester,
+                                                       $icon_in_toolbar, 
+                                                       $all_schemes,
+                                                       $father_scheme_idx) {
+
+ 
+echo '<!DOCTYPE html>';
+
+echo '<html>';
+
+echo '<head>';
+
+
+
+  $title_in_toolbar =  Events::get_leaf_name_from_father_scheme_recursively($all_schemes[$father_scheme_idx], $page_topic, $title_in_toolbar);
+  
+
+  Events::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
+  
+echo '</head>';
+
+  
+  echo '<body>';
+
+
+    Events::set_single_leaf_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                         $institution, $department,
+                                         $page_topic, $year, $semester,
+                                         Events::$abstracts_folder, Events::$images_folder,
+                                                       $all_schemes,
+                                                       $father_scheme_idx);
+
+    
+  echo '</body>';
+  
+  
+
+echo '</html>';
+
+ }
+
+
+
+// ***********************************************
+// ****** Single Leaf - END ****************  
+// ***********************************************
+
+
+// ***********************************************
+// ****** Single Leaf: Past editions - BEGIN ****************  
+// ***********************************************
+
+public static function generate_list_past_editions($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline) {
+
+
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+
+ $prefix_disc = $prefix . $discipline . '/';
+ 
+ $past_years = Events::get_active_years($prefix_disc);
+
+ echo 'All terms';
+
+ echo '<br/>';
+ 
+ echo '<ul>';
+
+  foreach ($past_years as $year => $value) {
+   echo '<li>' .  $year . ' </a>';
+   echo '<ul>';
+  foreach ($past_years[$year] as $term) {
+     echo '    <li><a href="' . $prefix_disc . $year . '/' . $term . '/">' . $term . '</a></li>';
+     }
+   echo '  </ul>';
+   echo '</li>';
+ }
+  
+ echo '</ul>';
+ 
+ 
+}
+
+
+// ***********************************************
+// ****** Single Leaf: Past editions - END ****************  
+// ***********************************************
+
+// ***********************************************
+// ****** Single Leaf: Active Editions - BEGIN ****************  
+// ***********************************************
+
+
+private static function get_active_years($prefix_disc) {
+
+ 
+ $past_editions = Events::read_csv_file($prefix_disc . Events::$active_editions_file);
+
+
+ $past_years = Events::convert_to_associative_array($past_editions);
+ 
+ return $past_years;
+
+
+}
+
+
+// ***********************************************
+// ****** Single Leaf: Active Editions - END ****************  
+// ***********************************************
+
+
+// ***********************************************
+// ****** Single Leaf: "About" section - BEGIN ****************  
+// ***********************************************
+
+
+private static function about($page_topic, 
+                              $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                              $all_schemes, $father_scheme_idx) {
+ 
+ $prefix_base = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+
+ 
+    $about_txt_file =
+    $prefix_base .
+    $page_topic . '/' .  
+    Events::$about_file;
+
+  echo '<div class="' . Events::$bootstrap_container . '">';
+  
+  echo '<br/>';       
+  
+  Events::include_file( $remote_path_prefix, $local_path_prefix, $about_txt_file, $are_input_files_local);
+  
+  echo '<br/>';       
+  echo '<br/>';       
+
+  echo '</div>';
+  
+   ///@todo mention organizers
+   
+ 
+}
+
+
+// ***********************************************
+// ****** Single Leaf: "About" section - END ****************  
+// ***********************************************
+
+
+// ***********************************************
+// ****** Single Leaf: Body - BEGIN ****************  
+// ***********************************************
+
+
+private static function set_single_leaf_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                  $institution, $department,
+                                                   $page_topic, $year, $semester, 
+                                                   $abstracts_folder, $images_folder,
+                                                   $all_schemes,
+                                                   $father_scheme_idx) {
+                                                   
+  
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+
+
+
+ Events::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                          $page_topic,
+                          $all_schemes,
+                          $father_scheme_idx,
+                          Events::$is_leaf_page, 
+                          $department);
+                          
+ 
+   $title =  Events::get_leaf_name_from_father_scheme_recursively($all_schemes[$father_scheme_idx], $page_topic, $title);
+
+ Events::main_banner($title, $department, $institution);
+  
+//  Events::default_meeting_coords_banner_map('./default.csv', $year, $semester);
+  
+ Events::about($page_topic,
+                 $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                 $all_schemes, $father_scheme_idx);
+                 
+ 
+ 
+ $events = Events::read_events_file_and_attach_topic_year_semester($prefix, $page_topic, $year, $semester, $all_schemes, $father_scheme_idx);
+ 
+ $bool_print_discipline = false;
+ 
+ //==========
+ //sort in chronological order, first by month, then by day
+  $temp_column = array();
+    
+  foreach ($events as $key => $row) {
+     $sequential   = Events::compute_day_sequential_number($year, $events[$key][Events::$month_idx],  $events[$key][Events::$day_idx]);
+    $temp_column[$key] = $sequential;
+  }
+  
+  array_multisort($temp_column, SORT_ASC, $events);
+ //==========
+
+ $starting_row = Events::$row_events_begin;
+ 
+ 
+ $leaf_array = Events::get_array_of_leaves( $all_schemes[$father_scheme_idx] );
+ 
+ 
+ Events::loop_over_events($events, $starting_row,
+                            $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                            $abstracts_folder, $images_folder, 
+                            $leaf_array, 
+                            $bool_print_discipline,
+                            $all_schemes,
+                            $father_scheme_idx);
+ 
+
+  echo '<br>';
+  echo '<br>';
+  echo '<br>';
+
+ 
+ }
+ 
+
+// ***********************************************
+// ****** Single Leaf: Body - END ****************  
+// ***********************************************
+
+
+ 
+// ***********************************************
+// ****** Latex & PDF & PNG - BEGIN **************  
+// ***********************************************
   
  public static function generate_pdf_slides_by_time_range($remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                           $institution,
@@ -475,623 +1107,15 @@ fwrite($fp, '\end{column}' . PHP_EOL);
  
  
  
+// ***********************************************
+// ****** Latex & PDF & PNG - END ****************  
+// ***********************************************
 
  
- 
-  
- public static function get_discipline_year_semester($file_in) {
- ///@todo actually this is semester/year/discipline now
- 
- $first_pos_from_the_end_to_read = Events::$first_position_from_the_end_to_read;
- 
-  $array = Events::get_path_components_from_the_end($file_in, $first_pos_from_the_end_to_read, Events::$num_positions_from_the_end_to_read);
- 
-  return $array;
-
- }
- 
- 
- 
-  public static function get_path_components_from_the_end($file_in, $starting_pos_from_end, $how_many_backwards) {
- //retrieve the information from the path 
- 
- $delimiter = '/';
- 
- $current_file = $file_in;
- $current_file = str_replace('\\', '/', $current_file);  //Windows file paths have backslash
-
- $array = Events::get_string_components_from_the_end($delimiter, $current_file, $starting_pos_from_end, $how_many_backwards);
-
- return $array;
-
- }
-
- 
-
- public static function get_string_components_from_the_end($delimiter, $string_in, $starting_pos_from_end, $how_many_backwards) {
- 
- $explosion = explode($delimiter, $string_in);
- 
- $array = Events::get_array_components_from_the_end($explosion, $starting_pos_from_end, $how_many_backwards);
-
- return $array;
-
- }
- 
- 
- 
-  public static function get_array_components_from_the_end($array_in, $starting_pos_from_end, $how_many_backwards) {
-  
-  $array = array();
-  
-  for ($i = 0; $i < $how_many_backwards; $i++) {
-      $array[$i] = $array_in[count($array_in) - 1 - $starting_pos_from_end - $i];
-  }
-
-  return $array;
-
- }
- 
- 
- 
-private static function get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local) {
-//this is the prefix wrt. the main folder
-
-  $prefix = '';
-
- if ($are_input_files_local == true) { $prefix = $local_path_prefix  /*. '/'*/; }  ///@todo these paths MUST already have a slash in them; I should do a function that checks this
- else {                                $prefix = $remote_path_prefix /*. '/'*/; }  ///@todo putting an additional '/' is actually not always a good idea
-
- return $prefix;
-
-}
-
-
-public static function include_file($remote_path_prefix, $local_path_prefix, $file, $are_input_files_local) {
-//either use include for local files, or use curl request for external ones
-//include of external files may be disabled by a server for security reasons
-
-
- if ($are_input_files_local == true) {
-       
- include($local_path_prefix . '/' . $file);
- 
- }
- 
- else {
- 
-  $absolute_url = $remote_path_prefix . '/' . $file;
-  
-       // create curl resource 
-        $ch = curl_init(); 
-
-        // set url 
-        curl_setopt($ch, CURLOPT_URL, $absolute_url); 
-
-        //return the transfer as a string 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
-
-        // $output contains the output string 
-        $output = curl_exec($ch); 
-      
-         echo $output;
-
-        // close curl resource to free up system resources 
-        curl_close($ch); 
-        
-  }
-
-}
-
-
-
-public static function redirect_page_with_path($redir_path) {
-///@todo see if you can even avoid generating the index page
-
-// There are other solutions to this based on Apache or PHP
-
- 
-     echo '<!DOCTYPE html>';
-
-     echo '<html>';
-     echo '<head>';
-     echo '<title> Redirecting </title>';
-     echo '<meta http-equiv="refresh" content="0; url=' .  $redir_path . '">';
-     echo '</head>';
-     echo '<body>';
-     echo '</body>';
-     echo '</html>';
-     
-
-}
-
-
-
-public static function generate_topic_page_by_topic_year_semester($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                                    $institution, $department, 
-                                                                    $t_y_s,
-                                                                    $icon_in_toolbar, 
-                                                                    $all_schemes,
-                                                                    $father_scheme_idx
-                                                                    ) {
-
- 
-   $discipline = $t_y_s[Events::$discipline_idx_in_path_from_end];
-   $year       = $t_y_s[Events::$year_idx_in_path_from_end];
-   $semester   = $t_y_s[Events::$semester_idx_in_path_from_end];
-
-   Events::generate_topic_page($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                            $institution, $department, 
-                                            $discipline, $year, $semester, 
-                                            $icon_in_toolbar,
-                                            $all_schemes,
-                                            $father_scheme_idx);
-
-}
-
-
-private static function generate_topic_page($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                       $institution, $department, 
-                                                       $page_topic, $year, $semester,
-                                                       $icon_in_toolbar, 
-                                                       $all_schemes,
-                                                       $father_scheme_idx) {
-
- 
-echo '<!DOCTYPE html>';
-
-echo '<html>';
-
-echo '<head>';
-
-
-
-  $title_in_toolbar =  Events::get_leaf_name_from_father_scheme_recursively($all_schemes[$father_scheme_idx], $page_topic, $title_in_toolbar);
-  
-
-  Events::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
-  
-echo '</head>';
-
-  
-  echo '<body>';
-
-
-    Events::set_single_leaf_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                         $institution, $department,
-                                         $page_topic, $year, $semester,
-                                         Events::$abstracts_folder, Events::$images_folder,
-                                                       $all_schemes,
-                                                       $father_scheme_idx);
-
-    
-  echo '</body>';
-  
-  
-
-echo '</html>';
-
- }
-
-
-public static function generate_page_with_all_weeks_list_wrapper($filename,
-                                                                $relative_path_to_library,
-                                                               $icon_in_toolbar,
-                                                               $remote_url_base, $local_url_base, $are_input_files_local,
-                                                               $department,
-                                                               $institution,
-                                                               $all_schemes) {   
-
- $title = Events::$general_title;
- 
-  
-  $active_mondays = Events::read_csv_file(Events::$active_mondays_file);
-
-  $first_monday_month = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_month_index];
-  $first_monday_day   = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_day_index];
-  $last_monday_month  = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_month_index];
-  $last_monday_day    = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_day_index];
-  
-  
- $array_coords = Events::get_discipline_year_semester($filename);
-    
- $semester   = $array_coords[0];
- $year       = $array_coords[1];
- $discipline = $array_coords[2];  //this will be 'all'
-    
-    
- $sort_weeks_list = Events::$sort_weeks;
- $week_month_day_auto = Events::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day, $sort_weeks_list);
-
-//to generate all semester files (actually I do it with a shell script instead)
-//    Events::generate_initial_week_files($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day,'../../../src/sh/week_file.php','./week/');
-
-    
- Events::generate_page_with_all_weeks_list($relative_path_to_library,
-                                             $title,
-                                             $icon_in_toolbar,
-                                             $remote_url_base, $local_url_base, $are_input_files_local,
-                                                   $all_schemes,
-                                             $department,
-                                             $institution,
-                                             $year,
-                                             $semester,
-                                             $week_month_day_auto);
- 
- 
- }
- 
- 
- 
-
-private static function generate_page_with_all_weeks_list($relative_path_to_library,
-                                                               $title,
-                                                               $icon_in_toolbar,
-                                                               $remote_url_base, $local_url_base, $are_input_files_local,
-                                                   $all_schemes,
-                                                               $department,
-                                                               $institution,
-                                                               $year,
-                                                               $semester,
-                                                               $week_month_day_begin) {  
-
-  Events::set_html_head($relative_path_to_library, $title, $icon_in_toolbar);
-
-  echo '<body>';
-  
-  Events::navigation_bar($remote_url_base, $local_url_base, $are_input_files_local, 
-                           $discipline,  ///@todo not needed here
-                           $all_schemes,
-                           $father_scheme_idx,   ///@todo change args: $father_scheme_idx is not needed here
-                           Events::$is_all_page, 
-                           $department);
-  
-  Events::main_banner($title, $department, $institution);  
-  
-    echo '<h2> &nbsp <strong> ' . Events::capitalize($semester) . ' ' . $year . ' </strong> </h2>';
-    
-    echo '<div class="' . Events::$bootstrap_container . '">';
-     
-    echo '<br/>';
- 
-   Events::loop_over_semester_weeks($year, $week_month_day_begin);
-   
-    echo '<br/>';
-    
-    echo '</div>';
-
-  
-    //sandbox
-
-  echo '</body>';
- 
- }
- 
- 
-
-public static function generate_page_with_all_events_by_time_range_wrapper($filename,
-                                                                             $library_path,
-                                                                             $remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                                             $institution,
-                                                                             $department,
-                                                                             $icon_in_toolbar,
-                                                                             $all_schemes
-                                                                             ) { 
-
-  $starting_pos = 2;
-  $how_many_backwards = 2;
-  $path_out =  Events::get_path_components_from_the_end($filename, $starting_pos, $how_many_backwards);
-  
-  $year = $path_out[1];
-  $semester = $path_out[0];
- 
-  $month_day_file_array =  Events::get_path_components_from_the_end($filename, 0, 1);
-  
-  $month_day_file = $month_day_file_array[0];
-  
-  $basestr = basename($month_day_file, '.php');
-  $basestr_array = Events::get_string_components_from_the_end('_', $basestr, 0, 2);
-  
- $month_begin = $basestr_array[1];
- $day_begin   = $basestr_array[0];
- 
-
- $offset_wanted = 6;
- $month_and_day_out = Events::compute_subsequent_day_with_offset($year, $month_begin, $day_begin, $offset_wanted);
-
- $month_end   = $month_and_day_out[0];
- $day_end     = $month_and_day_out[1];
- 
- 
- 
- $is_all_or_single = Events::$is_all_page;
- 
- 
- 
- Events::generate_page_with_all_trees_by_time_range($library_path,
-                                                         $remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                         $institution,$department,
-                                                         $icon_in_toolbar,
-                                                         $year,
-                                                         $semester,
-                                                         $month_begin,
-                                                         $day_begin,
-                                                         $month_end,
-                                                         $day_end,
-                                                   $all_schemes); 
- 
- 
-}
-
-
-
-
-private static function previous_next_all_week_buttons($year, $month_begin, $day_begin, $sort_weeks_list) {
-
-
- $active_mondays_path = '../' . Events::$active_mondays_file;
- 
- $active_mondays = Events::read_csv_file($active_mondays_path);
-
- //generate the list of all mondays
- $first_monday_month = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_month_index];
- $first_monday_day   = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_day_index];
- $last_monday_month  = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_month_index];
- $last_monday_day    = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_day_index];
- 
- 
- $all_mondays = Events::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day, $sort_weeks_list);
- 
- $current_monday_month = $month_begin;
- $current_monday_day = $day_begin;
- 
- $row_matching = 0;
- 
- 
- for ($row = 0; $row < count($all_mondays); $row++) {
-
- if( $all_mondays[$row][0] == $current_monday_month && 
-     $all_mondays[$row][1] == $current_monday_day) { $row_matching = $row; }
- 
- }
-
- 
- //CHRONOLOGICAL order
- $next_week_index     = '';
- $previous_week_index = '';
- $last_week_index     = '';
- $first_week_index    = '';
- 
- if ($sort_weeks_list == SORT_DESC) {
-   $next_week_index = -1;
-   $previous_week_index = +1;
-   $last_week_index = 0;
-   $first_week_index = count($all_mondays) - 1;
- }
- else if ($sort_weeks_list == SORT_ASC) {
-   $next_week_index = +1;
-   $previous_week_index = -1;
-   $last_week_index = count($all_mondays) - 1;
-   $first_week_index = 0;
- }
- 
-
- if (count($all_mondays) > 1) {
- 
- 
- $month_and_day_begin_end = Events::compute_containing_week_from_monday_to_sunday_starting_from_current_day("current");
- 
-$present_month_begin = $month_and_day_begin_end[0][0];
-$present_day_begin   = $month_and_day_begin_end[0][1];
-// $present_month_end   = $month_and_day_begin_end[1][0];
-// $present_day_end     = $month_and_day_begin_end[1][1];
- 
- 
- if ($row_matching != $last_week_index && $row_matching != $first_week_index) {//this control encompasses both cases, although it is "looser"
-     echo '<table>';
-     echo '<td style="padding: 10px;">';
-     echo 'Weeks:';
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-     echo '<a href="' . $present_month_begin . '_' . $present_day_begin . '.php' . '">'  . ' Current </a>';
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-  $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous </a>'; 
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-  $next_ind = $row_matching + $next_week_index;         echo '<a href="' . $all_mondays[$next_ind][0]     . '_' . $all_mondays[$next_ind][1]     . '.php' . '"> Next </a>';     
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-       echo '<a href="' . '..' . '"> All </a>';
-     echo '</td>';
-     echo '</table>';
-  }
-
-  else if ($row_matching == $last_week_index) {
-    echo '<table>';
-     echo '<td style="padding: 10px;">';
-     echo 'Weeks:';
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-     echo '<a href="' . $present_month_begin . '_' . $present_day_begin . '.php' . '">'  . ' Current </a>';
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-   $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous </a>'; 
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-     echo str_repeat("&nbsp;", 8);  //how to add white spaces
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-       echo '<a href="' . '..' . '"> All </a>';
-     echo '</td>';
-     echo '</table>';
-   }
-
-  else if ($row_matching == $first_week_index) {
-    echo '<table>';
-     echo '<td style="padding: 10px;">';
-     echo 'Weeks:';
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-     echo '<a href="' . $present_month_begin . '_' . $present_day_begin . '.php' . '">'  . ' Current </a>';
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-     echo str_repeat("&nbsp;", 16);  //how to add white spaces
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-    $next_ind = $row_matching + $next_week_index;        echo '<a href="' . $all_mondays[$next_ind][0] . '_' . $all_mondays[$next_ind][1] . '.php' . '"> Next </a>';
-     echo '</td>';
-     echo '<td style="padding: 10px;">';
-       echo '<a href="' . '..' . '"> All </a>';
-     echo '</td>';
-     echo '</table>';
-  }
-  
- }
- 
- else {
-   ///@todo do the case of only one week, maybe 
- }
-
-
-}
-
-
-
- 
-private static function generate_page_with_all_trees_by_time_range($library_path,  
-                                                                     $remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                                     $institution, 
-                                                                     $department,
-                                                                     $icon_in_toolbar,
-                                                                     $year,
-                                                                     $semester,
-                                                                     $month_begin, $day_begin, $month_end, $day_end,
-                                                                     $all_schemes) {
-
-// Reading the Month and Day columns, I have to see whether or not the day is in the range that I provide
-// if so, I will store that array and make a map that will be parsed by a function
-
-
-
-echo '<!DOCTYPE html>';
-
-echo '<html>';
-
-
-echo '<head>';
-
-  $title_in_toolbar = Events::$general_title;
-
-  
-  Events::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
-   
-echo '</head>';
-
-
-
-  echo '<body>';
-  
-  
-  $discipline = Events::$all_folder;
-  
-  Events::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                           $discipline, 
-                           $all_schemes,
-                           $father_scheme_idx,  ///@todo this variable is not defined here
-                           Events::$is_all_page, 
-                           $department);
- 
-
- $title = $title_in_toolbar;
- 
- Events::main_banner($title, $department, $institution);
- 
- 
-  echo '<h2> &nbsp <strong> ' . Events::$months_conv[$month_begin] . ' ' . $day_begin  . ' - ' . Events::$months_conv[$month_end] . ' ' . $day_end  . ' </strong> </h2>';
-  
- 
- $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
- 
- $sort_weeks_list = Events::$sort_weeks;
- Events::previous_next_all_week_buttons($year, $month_begin, $day_begin, $sort_weeks_list);
-
-  
-  $bool_print_discipline = true;
-    
-  //====================================================================
-     for ($i = 0; $i < count($all_schemes); $i++) {
-  
-$branch_name = Events::get_father_scheme_name($all_schemes[$i]);
-  echo '<h3> &nbsp <strong> ' . $branch_name . ' </strong> </h3>';
-  
-    $leaf_array = Events::get_array_of_leaves( $all_schemes[$i] );  ///@todo this is all leaves, I think this only works with depth 0 and 1; one should get all leaves at all depths
-
-       
-    Events::set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                                              $institution, $department, 
-                                              $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                              Events::$abstracts_folder, Events::$images_folder, 
-                                              $leaf_array,  
-                                              $bool_print_discipline,
-                                              $all_schemes, 
-                                              $i);
-     
-     
-}
- //====================================================================
-
-    
-  echo '<br>';
-  echo '<br>';
-  echo '<br>';
-  
-    
-  echo '</body>';
-  
-
-echo '</html>';
-  
- }
- 
-
-private static function read_csv_file($file) {
-  
- $array_from_file = file($file); ///@todo this command seems to work only with CSV files coming from Linux/Mac, but not from Windows... the diff command says files are equal...!
- 
-
-  $csv_map = array_map('str_getcsv', $array_from_file); 
-  
-
-  return $csv_map;
-  
-}
-
-
-private static function read_events_file_and_attach_topic_year_semester($prefix, $leaf_topic, $year, $semester, $all_schemes, $father_scheme_idx) {
-
-   $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
-
- $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Events::$events_file;
- 
-  
- $csv_map = Events::read_csv_file($file_to_parse);
- 
- array_splice($csv_map,0,1); //remove the 1st row
-
-  
-  for ($row = 0; $row < count($csv_map); $row++) {
-  
-  array_push($csv_map[$row], $leaf_topic);
-  array_push($csv_map[$row], $year);
-  array_push($csv_map[$row], $semester);
-  
-  }
-
-
-  return $csv_map;
 
- }
+// ***********************************************
+// ****** HTML head - BEGIN ****************  
+// ***********************************************
 
 
 public static function set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar) {
@@ -1208,80 +1232,16 @@ private static function set_bootstrap_css_and_javascript_libs() {
 
 }
 
-private static function go_up($directory_levels) {
-
-  $go_back = '';
-  
-    for ($i = 0; $i < $directory_levels; $i++) $go_back .= '../'; //string concatenation is with .
-  
-  return $go_back;
- 
-}
 
 
-
-private static function convert_to_associative_array($array_in) {
-
-//convert a normal array of arrays into an associative array having the first column as key and the remaining ones as value
-
- $assoc_array = array();
-  
-  for ($i = 0; $i < count($array_in); $i++) {
-   
-   $array_shifted = array_slice($array_in[$i], 1);
-   
-   $assoc_array[ $array_in[$i][0] ] = $array_shifted;
-   
-  }
-
-  return $assoc_array;
-  
-}
+// ***********************************************
+// ****** HTML head - END  ****************  
+// ***********************************************
 
 
-public static function generate_list_past_editions($remote_path_prefix, $local_path_prefix, $are_input_files_local, $discipline) {
-
-
- $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
-
- $prefix_disc = $prefix . $discipline . '/';
- 
- $past_years = Events::get_active_years($prefix_disc);
-
- echo 'All terms';
-
- echo '<br/>';
- 
- echo '<ul>';
-
-  foreach ($past_years as $year => $value) {
-   echo '<li>' .  $year . ' </a>';
-   echo '<ul>';
-  foreach ($past_years[$year] as $term) {
-     echo '    <li><a href="' . $prefix_disc . $year . '/' . $term . '/">' . $term . '</a></li>';
-     }
-   echo '  </ul>';
-   echo '</li>';
- }
-  
- echo '</ul>';
- 
- 
-}
-
-
-private static function get_active_years($prefix_disc) {
-
- 
- $past_editions = Events::read_csv_file($prefix_disc . Events::$active_editions_file);
-
-
- $past_years = Events::convert_to_associative_array($past_editions);
- 
- return $past_years;
-
-
-}
+// ***********************************************
+// ****** Navigation bar - BEGIN ****************  
+// ***********************************************
 
 
 private static function navigation_bar_menu_button($id_target) {
@@ -1467,6 +1427,15 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
 }
 
 
+// ***********************************************
+// ****** Navigation bar - END ****************  
+// ***********************************************
+
+
+// ***********************************************
+// ****** Main banner - BEGIN ****************  
+// ***********************************************
+
 
 
 public static function main_banner($title, $department, $institution) {
@@ -1507,13 +1476,6 @@ private static function default_meeting_coords_banner($semester, $year, $week_da
  
  }
  
-private static function capitalize($string) {
-
-  $string_cap = ucfirst($string);
-  
-  return $string_cap;
-
- }
  
  
 ///@todo not used for now 
@@ -1537,8 +1499,14 @@ private static function default_meeting_coords_banner_map($file_to_parse, $year,
  
  } 
 
+// ***********************************************
+// ****** Main banner - END ****************  
+// ***********************************************
 
 
+// ***********************************************
+// ****** Browser toolbar - BEGIN ****************  
+// ***********************************************
 
 private static function set_browser_toolbar($title, $icon_in_toolbar) {
  
@@ -1550,35 +1518,15 @@ private static function set_browser_toolbar($title, $icon_in_toolbar) {
 
  }
 
+// ***********************************************
+// ****** Browser toolbar - END ****************  
+// ***********************************************
 
 
-private static function about($page_topic, 
-                              $remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                              $all_schemes, $father_scheme_idx) {
- 
- $prefix_base = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+// ***********************************************
+// ****** Single Event - BEGIN ****************  
+// ***********************************************
 
- 
-    $about_txt_file =
-    $prefix_base .
-    $page_topic . '/' .  
-    Events::$about_file;
-
-  echo '<div class="' . Events::$bootstrap_container . '">';
-  
-  echo '<br/>';       
-  
-  Events::include_file( $remote_path_prefix, $local_path_prefix, $about_txt_file, $are_input_files_local);
-  
-  echo '<br/>';       
-  echo '<br/>';       
-
-  echo '</div>';
-  
-   ///@todo mention organizers
-   
- 
-}
 
 private static function set_abstract_id_and_its_toggle($events_map, $row, $base_str) {
 
@@ -1849,53 +1797,242 @@ private static function set_abstract($remote_path_prefix, $local_path_prefix, $a
  
  }
  
- 
-private static function loop_over_events($events_map, $starting_row, 
-                                         $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                                         $abstracts_folder, $images_folder, 
-                                         $discipline_array, $bool_print_discipline,
-                                         $all_schemes,
-                                         $father_scheme_idx) {
+// ***********************************************
+// ****** Single Event - END ****************  
+// ***********************************************
 
- 
-    ///@todo: abstract have to be .txt (I think it's enough to be any text file), with a name specified in the csv file
-    ///@todo: strip away any empty spaces before or after the csv fields
-    ///@todo: make sure there are no empty lines at the end of a csv file
+
+
+// ***********************************************
+// ****** Week Lists - BEGIN ****************  
+// ***********************************************
+
+
+public static function generate_page_with_all_weeks_list_wrapper($filename,
+                                                                $relative_path_to_library,
+                                                               $icon_in_toolbar,
+                                                               $remote_url_base, $local_url_base, $are_input_files_local,
+                                                               $department,
+                                                               $institution,
+                                                               $all_schemes) {   
+
+ $title = Events::$general_title;
  
   
-    $num_rows = count($events_map);  
+  $active_mondays = Events::read_csv_file(Events::$active_mondays_file);
+
+  $first_monday_month = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_month_index];
+  $first_monday_day   = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_day_index];
+  $last_monday_month  = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_month_index];
+  $last_monday_day    = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_day_index];
+  
+  
+ $array_coords = Events::get_discipline_year_semester($filename);
+    
+ $semester   = $array_coords[0];
+ $year       = $array_coords[1];
+ $discipline = $array_coords[2];  //this will be 'all'
     
     
-  echo '<div class="' . Events::$bootstrap_container . '">';
+ $sort_weeks_list = Events::$sort_weeks;
+ $week_month_day_auto = Events::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day, $sort_weeks_list);
+
+//to generate all semester files (actually I do it with a shell script instead)
+//    Events::generate_initial_week_files($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day,'../../../src/sh/week_file.php','./week/');
 
     
-    for ($row = $starting_row; $row < $num_rows; $row++) {
-
-    $toggle_abstract_id = Events::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
-    $arrow_abstract_id  = Events::set_abstract_id_and_its_toggle($events_map, $row, 'arrow_');
-
-    Events::set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                                          $images_folder, $events_map, $row, 
-                                          $discipline_array, $bool_print_discipline,
-                                          $toggle_abstract_id, $arrow_abstract_id,
+ Events::generate_page_with_all_weeks_list($relative_path_to_library,
+                                             $title,
+                                             $icon_in_toolbar,
+                                             $remote_url_base, $local_url_base, $are_input_files_local,
                                                    $all_schemes,
-                                                   $father_scheme_idx);
-    
-    Events::set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                           $abstracts_folder, 
-                           $events_map, $row,
-                           $toggle_abstract_id, $arrow_abstract_id,
-                           $all_schemes,
-                           $father_scheme_idx);
-    
-    }
-    
-
-  echo '</div>';   
-    
-    
-  } 
+                                             $department,
+                                             $institution,
+                                             $year,
+                                             $semester,
+                                             $week_month_day_auto);
  
+ 
+ }
+ 
+ 
+ 
+
+private static function generate_page_with_all_weeks_list($relative_path_to_library,
+                                                               $title,
+                                                               $icon_in_toolbar,
+                                                               $remote_url_base, $local_url_base, $are_input_files_local,
+                                                   $all_schemes,
+                                                               $department,
+                                                               $institution,
+                                                               $year,
+                                                               $semester,
+                                                               $week_month_day_begin) {  
+
+  Events::set_html_head($relative_path_to_library, $title, $icon_in_toolbar);
+
+  echo '<body>';
+  
+  Events::navigation_bar($remote_url_base, $local_url_base, $are_input_files_local, 
+                           $discipline,  ///@todo not needed here
+                           $all_schemes,
+                           $father_scheme_idx,   ///@todo change args: $father_scheme_idx is not needed here
+                           Events::$is_all_page, 
+                           $department);
+  
+  Events::main_banner($title, $department, $institution);  
+  
+    echo '<h3> &nbsp <strong> ' . Events::capitalize($semester) . ' ' . $year . ' </strong> </h3>';
+    
+    echo '<div class="' . Events::$bootstrap_container . '">';
+     
+    echo '<br/>';
+ 
+   Events::loop_over_semester_weeks($year, $week_month_day_begin);
+   
+    echo '<br/>';
+    
+    echo '</div>';
+
+  
+    //sandbox
+
+  echo '</body>';
+ 
+ }
+
+private static function previous_next_all_week_buttons($year, $month_begin, $day_begin, $sort_weeks_list) {
+
+
+ $active_mondays_path = '../' . Events::$active_mondays_file;
+ 
+ $active_mondays = Events::read_csv_file($active_mondays_path);
+
+ //generate the list of all mondays
+ $first_monday_month = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_month_index];
+ $first_monday_day   = $active_mondays[Events::$active_mondays_first_index][Events::$active_mondays_day_index];
+ $last_monday_month  = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_month_index];
+ $last_monday_day    = $active_mondays[Events::$active_mondays_last_index][Events::$active_mondays_day_index];
+ 
+ 
+ $all_mondays = Events::generate_initial_week_days($year, $first_monday_month, $first_monday_day, $last_monday_month, $last_monday_day, $sort_weeks_list);
+ 
+ $current_monday_month = $month_begin;
+ $current_monday_day = $day_begin;
+ 
+ $row_matching = 0;
+ 
+ 
+ for ($row = 0; $row < count($all_mondays); $row++) {
+
+ if( $all_mondays[$row][0] == $current_monday_month && 
+     $all_mondays[$row][1] == $current_monday_day) { $row_matching = $row; }
+ 
+ }
+
+ 
+ //CHRONOLOGICAL order
+ $next_week_index     = '';
+ $previous_week_index = '';
+ $last_week_index     = '';
+ $first_week_index    = '';
+ 
+ if ($sort_weeks_list == SORT_DESC) {
+   $next_week_index = -1;
+   $previous_week_index = +1;
+   $last_week_index = 0;
+   $first_week_index = count($all_mondays) - 1;
+ }
+ else if ($sort_weeks_list == SORT_ASC) {
+   $next_week_index = +1;
+   $previous_week_index = -1;
+   $last_week_index = count($all_mondays) - 1;
+   $first_week_index = 0;
+ }
+ 
+
+ if (count($all_mondays) > 1) {
+ 
+ 
+ $month_and_day_begin_end = Events::compute_containing_week_from_monday_to_sunday_starting_from_current_day("current");
+ 
+$present_month_begin = $month_and_day_begin_end[0][0];
+$present_day_begin   = $month_and_day_begin_end[0][1];
+// $present_month_end   = $month_and_day_begin_end[1][0];
+// $present_day_end     = $month_and_day_begin_end[1][1];
+ 
+ 
+ if ($row_matching != $last_week_index && $row_matching != $first_week_index) {//this control encompasses both cases, although it is "looser"
+     echo '<table>';
+     echo '<td style="padding: 10px;">';
+     echo 'Weeks:';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+     echo '<a href="' . $present_month_begin . '_' . $present_day_begin . '.php' . '">'  . ' Current </a>';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+  $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous </a>'; 
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+  $next_ind = $row_matching + $next_week_index;         echo '<a href="' . $all_mondays[$next_ind][0]     . '_' . $all_mondays[$next_ind][1]     . '.php' . '"> Next </a>';     
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+       echo '<a href="' . '..' . '"> All </a>';
+     echo '</td>';
+     echo '</table>';
+  }
+
+  else if ($row_matching == $last_week_index) {
+    echo '<table>';
+     echo '<td style="padding: 10px;">';
+     echo 'Weeks:';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+     echo '<a href="' . $present_month_begin . '_' . $present_day_begin . '.php' . '">'  . ' Current </a>';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+   $previous_ind = $row_matching + $previous_week_index; echo '<a href="' . $all_mondays[$previous_ind][0] . '_' . $all_mondays[$previous_ind][1] . '.php' . '"> Previous </a>'; 
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+     echo str_repeat("&nbsp;", 8);  //how to add white spaces
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+       echo '<a href="' . '..' . '"> All </a>';
+     echo '</td>';
+     echo '</table>';
+   }
+
+  else if ($row_matching == $first_week_index) {
+    echo '<table>';
+     echo '<td style="padding: 10px;">';
+     echo 'Weeks:';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+     echo '<a href="' . $present_month_begin . '_' . $present_day_begin . '.php' . '">'  . ' Current </a>';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+     echo str_repeat("&nbsp;", 16);  //how to add white spaces
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+    $next_ind = $row_matching + $next_week_index;        echo '<a href="' . $all_mondays[$next_ind][0] . '_' . $all_mondays[$next_ind][1] . '.php' . '"> Next </a>';
+     echo '</td>';
+     echo '<td style="padding: 10px;">';
+       echo '<a href="' . '..' . '"> All </a>';
+     echo '</td>';
+     echo '</table>';
+  }
+  
+ }
+ 
+ else {
+   ///@todo do the case of only one week, maybe 
+ }
+
+
+}
+
+
+
 
 public static function generate_initial_week_files($year_in, $month_begin, $day_begin, $month_end, $day_end, $src_file, $folder_out) {
 //@todo To use this function, temporarily give Write access to all in the containing folder, and clean the output folder week/
@@ -1921,382 +2058,6 @@ public static function generate_initial_week_files($year_in, $month_begin, $day_
 
 }
 
-
-
-private static function compute_week_day_number($year_in, $month_in, $day_in) {
-
-//let us start from a January 1 that is a Monday. Let us pick January 1, 1990
-//also, I found out that in the Gregorian calendar leap years are NOT every 4 years, but centennial years NOT divisible by 400 are not leap years... 
-// since we will not see this until we die, let us stick with a Julian approach and make leap years every 4 years
-
-  $starting_day = 1;
-  $starting_month = 1;
-  $starting_year = 1990;
-
-// compute the sequential number from this starting point
-  $abs_day = -1;
-  
-  $year_count = $starting_year;
-
-  while($year_count < $year_in) {
-  
-  if ($year_count % 4 != 0) $abs_day += 365;
-  else                      $abs_day += 366;
-  
-    $year_count ++;
-  }
-
- $sequential_day_in_current_year = Events::compute_day_sequential_number($year_in, $month_in, $day_in);
- 
- $total_day = $abs_day + $sequential_day_in_current_year + 1;
- 
- $week_day_modulo = $total_day % 7;
- 
- $week_day;
- 
-    for ($i = 0; $i < 7; $i++) {
- if ($week_day_modulo == $i)   $week_day = $i;
- }
-
-return  $week_day;
-
-
-}
-
-
-
-private static function compute_week_day($year_in, $month_in, $day_in) {
-
-
-   $week_day = Events::compute_week_day_number($year_in, $month_in, $day_in);
-
-   
- return Events::$week_day_conv[$week_day];
- 
-}
-
-
-
-private static function generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end, $sort_weeks_list) {
-
-///@todo check that the input and the output are a Monday
-
- $offset_wanted = 7;
- 
- $sequential_day_begin = Events::compute_day_sequential_number($year_in, $month_begin, $day_begin);
- 
- $sequential_day_end = Events::compute_day_sequential_number($year_in, $month_end, $day_end);
- 
- $months_and_days = array();
- 
- $new_day = $sequential_day_begin;
- $month_and_day_out = Events::compute_month_and_day_from_sequential_number($year_in, $sequential_day_begin);
- 
- array_push($months_and_days, $month_and_day_out);
- 
- 
- 
- while ($new_day < $sequential_day_end) {
- 
-   $new_day += $offset_wanted;
-   $month_and_day_item = Events::compute_month_and_day_from_sequential_number($year_in, $new_day);
-   if      ($sort_weeks_list == SORT_DESC) array_unshift($months_and_days, $month_and_day_item);  //the most recent is at the top: the alternative is array_push
-   else if ($sort_weeks_list == SORT_ASC)     array_push($months_and_days, $month_and_day_item);  
- }
-  
- return $months_and_days;
-
-}
-
- 
- 
-private static function compute_subsequent_day_with_offset($year_in, $month_in, $day_in, $offset_wanted) {
-  
- $sequential_day_begin = Events::compute_day_sequential_number($year_in, $month_in, $day_in);
- 
- $sequential_day_end = $sequential_day_begin + $offset_wanted;
-    
- if ($sequential_day_end > Events::compute_year_days_number($year_in) - 1) echo '@todo Handling of year crossing not implemented';
-   
- $month_and_day_out = Events::compute_month_and_day_from_sequential_number($year_in, $sequential_day_end);
-
- return $month_and_day_out;
- 
-}
-
-
-private static function compute_year_days_number($year) { 
-//either 365 or 366
-
-
-   $month_days = Events::get_month_days($year);
-
-$days_number = 0;
-
- for ($i = 0; $i < count($month_days); $i++) $days_number += $month_days[$i];
-
- return $days_number; 
- 
-}
-
-
-
-private static function compute_month_and_day_from_sequential_number($year_in, $number_in) { 
- //the input number starts at 0
- //the outputs start at 1
- 
-   $month_days = Events::get_month_days($year_in);
-   
-   $month_current = 0;
-   while ($number_in > $month_days[$month_current] - 1) {
-      $number_in -= $month_days[$month_current];
-      $month_current++;
-   }
-   
-   $month_out = $month_current + 1;
-   $day_out   = $number_in + 1;
-   
-   $month_and_day_out = array($month_out, $day_out);
-   
-   return $month_and_day_out;
-   
-}
-
-
-private static function compute_day_sequential_number($year, $month, $day) { 
- //the inputs start at 1 
- //the output goes from 0 to 364 or 365
- 
- 
-   $month_days = Events::get_month_days($year);
-   
-   $sequential_day = 0;
-    for ($i = 0; $i < $month - 1; $i++) {
-   $sequential_day += $month_days[$i];
-   }
-   
-   $sequential_day += $day - 1;
-   
-   return    $sequential_day;
-   
- }
- 
- 
-public static function get_month_days($year) { 
-
-   $is_leap = $year % 4;
-   
-   $month_days = array();
-   
-   if($is_leap != 0) $month_days = Events::$month_days_non_leap;
-   else             $month_days = Events::$month_days_leap;
-   
-   return $month_days;
-   
- }
- 
-
-public static function get_month_string($number) { 
-
-  return Events::$months_conv[$number];
-
-}
-
-
-private static function set_single_leaf_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                  $institution, $department,
-                                                   $page_topic, $year, $semester, 
-                                                   $abstracts_folder, $images_folder,
-                                                   $all_schemes,
-                                                   $father_scheme_idx) {
-                                                   
-  
- $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
-
-
-
- Events::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                          $page_topic,
-                          $all_schemes,
-                          $father_scheme_idx,
-                          Events::$is_leaf_page, 
-                          $department);
-                          
- 
-   $title =  Events::get_leaf_name_from_father_scheme_recursively($all_schemes[$father_scheme_idx], $page_topic, $title);
-
- Events::main_banner($title, $department, $institution);
-  
-//  Events::default_meeting_coords_banner_map('./default.csv', $year, $semester);
-  
- Events::about($page_topic,
-                 $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                 $all_schemes, $father_scheme_idx);
-                 
- 
- 
- $events = Events::read_events_file_and_attach_topic_year_semester($prefix, $page_topic, $year, $semester, $all_schemes, $father_scheme_idx);
- 
- $bool_print_discipline = false;
- 
- //==========
- //sort in chronological order, first by month, then by day
-  $temp_column = array();
-    
-  foreach ($events as $key => $row) {
-     $sequential   = Events::compute_day_sequential_number($year, $events[$key][Events::$month_idx],  $events[$key][Events::$day_idx]);
-    $temp_column[$key] = $sequential;
-  }
-  
-  array_multisort($temp_column, SORT_ASC, $events);
- //==========
-
- $starting_row = Events::$row_events_begin;
- 
- 
- $leaf_array = Events::get_array_of_leaves( $all_schemes[$father_scheme_idx] );
- 
- 
- Events::loop_over_events($events, $starting_row,
-                            $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                            $abstracts_folder, $images_folder, 
-                            $leaf_array, 
-                            $bool_print_discipline,
-                            $all_schemes,
-                            $father_scheme_idx);
- 
-
-  echo '<br>';
-  echo '<br>';
-  echo '<br>';
-
- 
- }
- 
-
- private static function sort_array_of_arrays_based_on_one_index(& $array_of_arrays, $index, $sort_order) {
- 
-//  $index: column index with respect to which you intend to sort
-//  $sort_order: SORT_ASC, SORT_DESC, ...
- 
-  $temp_column = array();
-    
-  foreach ($array_of_arrays as $key => $row) {
-    $temp_column[$key] = $row[$index];
-  }
-
-  array_multisort($temp_column, $sort_order, $array_of_arrays);
-  //in practice the first array is sorted, and the second one is sorted the same way as the first
-
- }
-
- 
-private static function set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                      $institution, 
-                                                  $department, 
-                                                  $year,
-                                                  $semester, 
-                                                  $month_begin,
-                                                  $day_begin, 
-                                                  $month_end, 
-                                                  $day_end, 
-                                                  $abstracts_folder,
-                                                  $images_folder,
-                                                  $discipline_array,  
-                                                  $bool_print_discipline,
-                                                  $all_schemes,
-                                                  $father_scheme_idx)  {
- 
-
-    $events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                                    $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                                                    $discipline_array, $all_schemes, $father_scheme_idx);
-    
-    
-    Events::sort_array_of_arrays_based_on_one_index($events_in_week, Events::$month_idx, SORT_ASC);
-    
-    
-    $starting_row = 0;
-     
- 
- if (count($events_in_week) == 0)   {
-     echo '<div class="' . Events::$bootstrap_container . '">';
-     echo 'None this week';
-     echo '</div>';
- }
- 
- else  Events::loop_over_events($events_in_week, $starting_row,
-                                  $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                                  $abstracts_folder, $images_folder, 
-                                  $discipline_array, $bool_print_discipline,
-                                  $all_schemes,
-                                  $father_scheme_idx);
-                                  
-
- }
-
- 
- 
- 
-private static function compute_current_day_info() {
-
-   $current_year     = date("Y");
-   $current_month    = date("m");
-   $current_day      = date("d");
-   $current_week_day = date("l");
-   
-   $current_day_info = array($current_year, $current_month, $current_day, $current_week_day);
- 
-   return $current_day_info;
- 
-} 
-
-
-public static function compute_containing_week_from_monday_to_sunday_starting_from_current_day($current_or_following) {
-
-   $current_day_info = Events::compute_current_day_info();
-   
-   $year  = $current_day_info[0];
-   $month = $current_day_info[1];
-   $day   = $current_day_info[2];
-
-   $month_and_day_begin_end = array();
-   
-   $month_and_day_begin_end = Events::compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following);
-
-   return $month_and_day_begin_end;
-}
-
-
-public static function compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following) {
-//    We can either compute the current week or the following week
-
-   $week_day = Events::compute_week_day_number($year, $month, $day);
- 
-   $sequential_current = Events::compute_day_sequential_number($year, $month, $day);
-
-  $month_and_day_begin_end = array();
-  
-  $sequential_week_begin = 0;
-
-        if ($current_or_following == "current")   {    $sequential_week_begin =  $sequential_current - $week_day ;      }
-   else if ($current_or_following == "following") {    $sequential_week_begin =  $sequential_current - $week_day + 7;  }
-
-   
-   $month_and_day_begin = Events::compute_month_and_day_from_sequential_number($year, $sequential_week_begin);   // go from sequential back to year month day
-   
-   array_push($month_and_day_begin_end, $month_and_day_begin);
-   
-   
-   $offset_wanted = 6; //I want from Monday to Sunday
-   
-   $month_and_day_end   = Events::compute_subsequent_day_with_offset($year, $month_and_day_begin[0], $month_and_day_begin[1], $offset_wanted);
-
-   array_push($month_and_day_begin_end, $month_and_day_end);
-
-
-   return $month_and_day_begin_end;
-} 
 
  
  
@@ -2357,82 +2118,14 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
 
 
 
-private static function get_array_of_leaves($scheme) {
-
-$depth = 0;
-       Events::get_depth_recursively($scheme, $depth);
-       
-       $output_array = array();
-//        echo Events::get_father_scheme_string_from_itself($scheme);
-//         echo $depth;
-
-        if ($depth == 0)       $output_array = $scheme;
-       else if  ($depth == 1)  $output_array = $scheme[Events::get_father_scheme_string_from_itself($scheme)][1];
- 
- 
-//  print_r($output_array);
-//  echo "\n";
- 
- return $output_array;
- 
-}
+// ***********************************************
+// ****** Week Lists - END ****************  
+// ***********************************************
 
 
- 
-private static function parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                                               $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                               $discipline_array, $all_schemes, $father_scheme_idx)  {
- 
- 
-  $starting_row = Events::$row_events_begin;
-
-  $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
-  
-  
-  
-  $events_array = $discipline_array;
-  
-
-  $events_in_week = array();
-    
-    
-//---------------    
-    
-    foreach ($events_array as $discipline => $discipline_string) {
-    
-
-   $csv_map = Events::read_events_file_and_attach_topic_year_semester($prefix, $discipline, $year, $semester, $all_schemes, $father_scheme_idx);
-
-    
-    for ($row = $starting_row; $row < count($csv_map); $row++) {
-
-    //best thing is probably to convert into an increasing number, to avoid non-monotone behavior
-    $sequential_begin   = Events::compute_day_sequential_number($year, $month_begin, $day_begin);
-    $sequential_end     = Events::compute_day_sequential_number($year, $month_end, $day_end);
-    $sequential_current = Events::compute_day_sequential_number($year, $csv_map[$row][Events::$month_idx], $csv_map[$row][Events::$day_idx]);
-    
-
-    if ( $sequential_begin <= $sequential_current && $sequential_current <= $sequential_end ) {
-
-    array_push($events_in_week, $csv_map[$row]);
-    
-       }
-    
-    
-    }     
-    
-    
-  }
-
-//---------------    
-  
-
- return $events_in_week;
- 
- 
- }
- 
-
+// ***********************************************
+// ****** People SQL Database - BEGIN ****************  
+// ***********************************************
  
  
 public static function render($show, $dsn, $username, $password) {
@@ -2852,7 +2545,509 @@ private static function isDr($degree) {
 	return ($degree === "Ph.D." || $degree === "Ed.D." || $degree === "D.Sc.");
 }
 
+
+// ***********************************************
+// ****** People SQL Database - END  ****************  
+// ***********************************************
+
+
+
+// ***********************************************
+// ****** Tools: Time functions - BEGIN ****************  
+// ***********************************************
+
+
+private static function compute_week_day_number($year_in, $month_in, $day_in) {
+
+//let us start from a January 1 that is a Monday. Let us pick January 1, 1990
+//also, I found out that in the Gregorian calendar leap years are NOT every 4 years, but centennial years NOT divisible by 400 are not leap years... 
+// since we will not see this until we die, let us stick with a Julian approach and make leap years every 4 years
+
+  $starting_day = 1;
+  $starting_month = 1;
+  $starting_year = 1990;
+
+// compute the sequential number from this starting point
+  $abs_day = -1;
   
+  $year_count = $starting_year;
+
+  while($year_count < $year_in) {
+  
+  if ($year_count % 4 != 0) $abs_day += 365;
+  else                      $abs_day += 366;
+  
+    $year_count ++;
+  }
+
+ $sequential_day_in_current_year = Events::compute_day_sequential_number($year_in, $month_in, $day_in);
+ 
+ $total_day = $abs_day + $sequential_day_in_current_year + 1;
+ 
+ $week_day_modulo = $total_day % 7;
+ 
+ $week_day;
+ 
+    for ($i = 0; $i < 7; $i++) {
+ if ($week_day_modulo == $i)   $week_day = $i;
+ }
+
+return  $week_day;
+
+
+}
+
+
+
+private static function compute_week_day($year_in, $month_in, $day_in) {
+
+
+   $week_day = Events::compute_week_day_number($year_in, $month_in, $day_in);
+
+   
+ return Events::$week_day_conv[$week_day];
+ 
+}
+
+
+
+private static function generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end, $sort_weeks_list) {
+
+///@todo check that the input and the output are a Monday
+
+ $offset_wanted = 7;
+ 
+ $sequential_day_begin = Events::compute_day_sequential_number($year_in, $month_begin, $day_begin);
+ 
+ $sequential_day_end = Events::compute_day_sequential_number($year_in, $month_end, $day_end);
+ 
+ $months_and_days = array();
+ 
+ $new_day = $sequential_day_begin;
+ $month_and_day_out = Events::compute_month_and_day_from_sequential_number($year_in, $sequential_day_begin);
+ 
+ array_push($months_and_days, $month_and_day_out);
+ 
+ 
+ 
+ while ($new_day < $sequential_day_end) {
+ 
+   $new_day += $offset_wanted;
+   $month_and_day_item = Events::compute_month_and_day_from_sequential_number($year_in, $new_day);
+   if      ($sort_weeks_list == SORT_DESC) array_unshift($months_and_days, $month_and_day_item);  //the most recent is at the top: the alternative is array_push
+   else if ($sort_weeks_list == SORT_ASC)     array_push($months_and_days, $month_and_day_item);  
+ }
+  
+ return $months_and_days;
+
+}
+
+ 
+ 
+private static function compute_subsequent_day_with_offset($year_in, $month_in, $day_in, $offset_wanted) {
+  
+ $sequential_day_begin = Events::compute_day_sequential_number($year_in, $month_in, $day_in);
+ 
+ $sequential_day_end = $sequential_day_begin + $offset_wanted;
+    
+ if ($sequential_day_end > Events::compute_year_days_number($year_in) - 1) echo '@todo Handling of year crossing not implemented';
+   
+ $month_and_day_out = Events::compute_month_and_day_from_sequential_number($year_in, $sequential_day_end);
+
+ return $month_and_day_out;
+ 
+}
+
+
+private static function compute_year_days_number($year) { 
+//either 365 or 366
+
+
+   $month_days = Events::get_month_days($year);
+
+$days_number = 0;
+
+ for ($i = 0; $i < count($month_days); $i++) $days_number += $month_days[$i];
+
+ return $days_number; 
+ 
+}
+
+
+
+private static function compute_month_and_day_from_sequential_number($year_in, $number_in) { 
+ //the input number starts at 0
+ //the outputs start at 1
+ 
+   $month_days = Events::get_month_days($year_in);
+   
+   $month_current = 0;
+   while ($number_in > $month_days[$month_current] - 1) {
+      $number_in -= $month_days[$month_current];
+      $month_current++;
+   }
+   
+   $month_out = $month_current + 1;
+   $day_out   = $number_in + 1;
+   
+   $month_and_day_out = array($month_out, $day_out);
+   
+   return $month_and_day_out;
+   
+}
+
+
+private static function compute_day_sequential_number($year, $month, $day) { 
+ //the inputs start at 1 
+ //the output goes from 0 to 364 or 365
+ 
+ 
+   $month_days = Events::get_month_days($year);
+   
+   $sequential_day = 0;
+    for ($i = 0; $i < $month - 1; $i++) {
+   $sequential_day += $month_days[$i];
+   }
+   
+   $sequential_day += $day - 1;
+   
+   return    $sequential_day;
+   
+ }
+ 
+ 
+public static function get_month_days($year) { 
+
+   $is_leap = $year % 4;
+   
+   $month_days = array();
+   
+   if($is_leap != 0) $month_days = Events::$month_days_non_leap;
+   else             $month_days = Events::$month_days_leap;
+   
+   return $month_days;
+   
+ }
+ 
+
+public static function get_month_string($number) { 
+
+  return Events::$months_conv[$number];
+
+}
+
+
+
+ 
+private static function compute_current_day_info() {
+
+   $current_year     = date("Y");
+   $current_month    = date("m");
+   $current_day      = date("d");
+   $current_week_day = date("l");
+   
+   $current_day_info = array($current_year, $current_month, $current_day, $current_week_day);
+ 
+   return $current_day_info;
+ 
+} 
+
+
+public static function compute_containing_week_from_monday_to_sunday_starting_from_current_day($current_or_following) {
+
+   $current_day_info = Events::compute_current_day_info();
+   
+   $year  = $current_day_info[0];
+   $month = $current_day_info[1];
+   $day   = $current_day_info[2];
+
+   $month_and_day_begin_end = array();
+   
+   $month_and_day_begin_end = Events::compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following);
+
+   return $month_and_day_begin_end;
+}
+
+
+
+public static function compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following) {
+//    We can either compute the current week or the following week
+
+   $week_day = Events::compute_week_day_number($year, $month, $day);
+ 
+   $sequential_current = Events::compute_day_sequential_number($year, $month, $day);
+
+  $month_and_day_begin_end = array();
+  
+  $sequential_week_begin = 0;
+
+        if ($current_or_following == "current")   {    $sequential_week_begin =  $sequential_current - $week_day ;      }
+   else if ($current_or_following == "following") {    $sequential_week_begin =  $sequential_current - $week_day + 7;  }
+
+   
+   $month_and_day_begin = Events::compute_month_and_day_from_sequential_number($year, $sequential_week_begin);   // go from sequential back to year month day
+   
+   array_push($month_and_day_begin_end, $month_and_day_begin);
+   
+   
+   $offset_wanted = 6; //I want from Monday to Sunday
+   
+   $month_and_day_end   = Events::compute_subsequent_day_with_offset($year, $month_and_day_begin[0], $month_and_day_begin[1], $offset_wanted);
+
+   array_push($month_and_day_begin_end, $month_and_day_end);
+
+
+   return $month_and_day_begin_end;
+} 
+
+
+
+// ***********************************************
+// ****** Tools: Time functions - END ****************  
+// ***********************************************
+
+
+
+// ***********************************************
+// ****** Tools - BEGIN ****************  
+// ***********************************************
+
+
+ 
+ 
+private static function get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local) {
+//this is the prefix wrt. the main folder
+
+  $prefix = '';
+
+ if ($are_input_files_local == true) { $prefix = $local_path_prefix  /*. '/'*/; }  ///@todo these paths MUST already have a slash in them; I should do a function that checks this
+ else {                                $prefix = $remote_path_prefix /*. '/'*/; }  ///@todo putting an additional '/' is actually not always a good idea
+
+ return $prefix;
+
+}
+
+
+ 
+ 
+ 
+  public static function get_path_components_from_the_end($file_in, $starting_pos_from_end, $how_many_backwards) {
+ //retrieve the information from the path 
+ 
+ $delimiter = '/';
+ 
+ $current_file = $file_in;
+ $current_file = str_replace('\\', '/', $current_file);  //Windows file paths have backslash
+
+ $array = Events::get_string_components_from_the_end($delimiter, $current_file, $starting_pos_from_end, $how_many_backwards);
+
+ return $array;
+
+ }
+
+ 
+
+ public static function get_string_components_from_the_end($delimiter, $string_in, $starting_pos_from_end, $how_many_backwards) {
+ 
+ $explosion = explode($delimiter, $string_in);
+ 
+ $array = Events::get_array_components_from_the_end($explosion, $starting_pos_from_end, $how_many_backwards);
+
+ return $array;
+
+ }
+ 
+ 
+ 
+  public static function get_array_components_from_the_end($array_in, $starting_pos_from_end, $how_many_backwards) {
+  
+  $array = array();
+  
+  for ($i = 0; $i < $how_many_backwards; $i++) {
+      $array[$i] = $array_in[count($array_in) - 1 - $starting_pos_from_end - $i];
+  }
+
+  return $array;
+
+ }
+ 
+
+public static function redirect_page_with_path($redir_path) {
+///@todo see if you can even avoid generating the index page
+
+// There are other solutions to this based on Apache or PHP
+
+ 
+     echo '<!DOCTYPE html>';
+
+     echo '<html>';
+     echo '<head>';
+     echo '<title> Redirecting </title>';
+     echo '<meta http-equiv="refresh" content="0; url=' .  $redir_path . '">';
+     echo '</head>';
+     echo '<body>';
+     echo '</body>';
+     echo '</html>';
+     
+
+}
+
+
+
+public static function include_file($remote_path_prefix, $local_path_prefix, $file, $are_input_files_local) {
+//either use include for local files, or use curl request for external ones
+//include of external files may be disabled by a server for security reasons
+
+
+ if ($are_input_files_local == true) {
+       
+ include($local_path_prefix . '/' . $file);
+ 
+ }
+ 
+ else {
+ 
+  $absolute_url = $remote_path_prefix . '/' . $file;
+  
+       // create curl resource 
+        $ch = curl_init(); 
+
+        // set url 
+        curl_setopt($ch, CURLOPT_URL, $absolute_url); 
+
+        //return the transfer as a string 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+
+        // $output contains the output string 
+        $output = curl_exec($ch); 
+      
+         echo $output;
+
+        // close curl resource to free up system resources 
+        curl_close($ch); 
+        
+  }
+
+}
+
+
+
+
+private static function capitalize($string) {
+
+  $string_cap = ucfirst($string);
+  
+  return $string_cap;
+
+ }
+
+ 
+ 
+private static function go_up($directory_levels) {
+
+  $go_back = '';
+  
+    for ($i = 0; $i < $directory_levels; $i++) $go_back .= '../'; //string concatenation is with .
+  
+  return $go_back;
+ 
+}
+
+
+
+private static function convert_to_associative_array($array_in) {
+
+//convert a normal array of arrays into an associative array having the first column as key and the remaining ones as value
+
+ $assoc_array = array();
+  
+  for ($i = 0; $i < count($array_in); $i++) {
+   
+   $array_shifted = array_slice($array_in[$i], 1);
+   
+   $assoc_array[ $array_in[$i][0] ] = $array_shifted;
+   
+  }
+
+  return $assoc_array;
+  
+}
+
+
+ private static function sort_array_of_arrays_based_on_one_index(& $array_of_arrays, $index, $sort_order) {
+ 
+//  $index: column index with respect to which you intend to sort
+//  $sort_order: SORT_ASC, SORT_DESC, ...
+ 
+  $temp_column = array();
+    
+  foreach ($array_of_arrays as $key => $row) {
+    $temp_column[$key] = $row[$index];
+  }
+
+  array_multisort($temp_column, $sort_order, $array_of_arrays);
+  //in practice the first array is sorted, and the second one is sorted the same way as the first
+
+ }
+
+
+
+// ***********************************************
+// ****** Tools - END ****************  
+// ***********************************************
+ 
+
+// ***********************************************
+// ****** Tools: CSV reading - BEGIN ****************  
+// ***********************************************
+ 
+ 
+private static function read_csv_file($file) {
+  
+ $array_from_file = file($file); ///@todo this command seems to work only with CSV files coming from Linux/Mac, but not from Windows... the diff command says files are equal...!
+ 
+
+  $csv_map = array_map('str_getcsv', $array_from_file); 
+  
+
+  return $csv_map;
+  
+}
+
+
+private static function read_events_file_and_attach_topic_year_semester($prefix, $leaf_topic, $year, $semester, $all_schemes, $father_scheme_idx) {
+
+   $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
+
+ $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Events::$events_file;
+ 
+  
+ $csv_map = Events::read_csv_file($file_to_parse);
+ 
+ array_splice($csv_map,0,1); //remove the 1st row
+
+  
+  for ($row = 0; $row < count($csv_map); $row++) {
+  
+  array_push($csv_map[$row], $leaf_topic);
+  array_push($csv_map[$row], $year);
+  array_push($csv_map[$row], $semester);
+  
+  }
+
+
+  return $csv_map;
+
+ }
+
+// ***********************************************
+// ****** Tools: CSV reading - END ****************  
+// ***********************************************
+
+ 
+// ***********************************************
+// ****** Data - BEGIN ****************  
+// ***********************************************
  
  //============== private data ===============
 
@@ -2962,6 +3157,12 @@ private static function isDr($degree) {
   private static $sem_header_style = 'background-color: lightgray;';
 
 
+// ***********************************************
+// ****** Data - END ****************  
+// ***********************************************
+  
+  
+  
 } //end class
 
 
@@ -2984,5 +3185,6 @@ private static function isDr($degree) {
 ///@todo Perhaps land immediately to the "Current" week page, instead of the weeks' list one
 ///@todo Implement a search engine to find all events along the whole database
 
+///@todo: If you want a blank page for the pause in between semesters, you may just setup the current semester to "summer", and loop over the whole tree to find "summer" folders, and if you don't find events you just say "no events this week"
 
 ?>
