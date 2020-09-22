@@ -766,10 +766,688 @@ private static function set_single_leaf_body($remote_path_prefix, $local_path_pr
 // ****** Single Leaf: Body - END ****************  
 // ***********************************************
 
+ 
+
+// ***********************************************
+// ****** All webpages: HTML head - BEGIN ****************  
+// ***********************************************
+
+
+public static function set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar) {
+
+// the disadvantage of doing echo instead of including the file with a php include is just when you have to handle single quotes vs double quotes; also, a little lack of readability
+// However, the great advantage is that it is very clear what is passed! Previously, the variable coming from the file had to be set, and with the EXACT SAME NAME!
+//So it is muuuuch better in the end to use the function!
+
+
+$description = "Events";
+$author = "Giorgio Bornia";
+
+ Events::set_meta($description, $author);
+
+ Events::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
+
+
+
+ Events::set_jquery_lib();
+ 
+ Events::set_bootstrap_css_and_javascript_libs();
+
+
+
+ Events::set_mandatory_libs($library_path);
+
+
+
+}
+
+
+
+
+public static function set_mandatory_libs($library_path) {
+
+ Events::set_sem_css($library_path);
+ 
+ Events::set_latex_rendering_lib();
+ 
+} 
+ 
+ 
+  private static function set_meta($description, $author) {
+  
+//  These metas must be first in the head 
+ echo ' <meta charset="utf-8"> ';
+ echo ' <meta name="viewport" content="width=device-width, initial-scale=1"> ';
+
+// Meta tags for indexing in search engines
+ echo ' <meta name="description" content="' . $description . '"> ';
+ echo ' <meta name="author"      content="' . $author . '"> ';
+  
+
+  }
+  
+ 
+ private static function set_sem_css($library_path) {
+
+// This must in the last position to override
+ echo '<link rel="stylesheet" href="'  .  $library_path . './src/css/sem_style.css"> ';
+ 
+}
+
+
+private static function set_latex_rendering_lib() {
+
+//  MathJax
+ echo ' <script type="text/x-mathjax-config">';
+ echo ' MathJax.Hub.Config({';
+ echo ' tex2jax: {';
+//how it should be printed
+//  inlineMath:  [ ['$','$'],   ['\\(','\\)'] ],
+//  displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+//how it should be printed - end
+//how to get it
+ echo ' inlineMath:  [ [\'$\',\'$\'],   [\'\\\(\',\'\\\)\'] ],    ';  //some escaping is needed for the ' and \ fonts
+ echo ' displayMath: [ [\'$$\',\'$$\'], ["\\\[","\\\]"]     ],    ';  //some escaping is needed for the ' and \ fonts
+//how to get it - end
+ echo ' processEscapes: true ';
+ echo ' }});';
+ echo ' </script>';
+ 
+ echo '<script type="text/javascript" async ';
+ echo '  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> ';
+ echo '</script> ';
+// //  <!--<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>--> <!--THIS WAS DISCONTINUED-->          
+
+
+}
+
+
+private static function set_jquery_lib() {
+
+//  jQuery library (must be before JavaScript!)
+ echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>  ';
+
+
+}
+
+
+
+private static function set_bootstrap_css_and_javascript_libs() {
+
+// //  Latest compiled and minified CSS
+//  echo '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">';
+// //  Latest compiled JavaScript 
+//  echo '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>';
+
+ echo '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">';
+
+ echo ' <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>';
+ echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>';
+ echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>';
+
+}
+
+
+
+// ***********************************************
+// ****** All webpages: HTML head - END  ****************  
+// ***********************************************
+
+
+// ***********************************************
+// ****** All webpages: Navigation bar - BEGIN ****************  
+// ***********************************************
+
+
+private static function navigation_bar_menu_button($id_target) {
+
+
+ echo '<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#' . $id_target . '"' . ' aria-controls="' . $id_target . '"' . ' aria-expanded="false" aria-label="Toggle navigation">';
+
+ echo '<span class="navbar-toggler-icon"></span>';
+
+ echo '</button>';
+ 
+}
+
+
+private static function navigation_bar_brand($depth_all_sems, $home_all_sems) {
+
+ echo '<a class="navbar-brand" href="'. $depth_all_sems . '">' . $home_all_sems . '</a>';
+
+}
+
+
+private static function navigation_bar_past_years($prefix, $page_topic, $is_all_or_single, $all_schemes, $father_scheme_idx) {
+
+//if it's an all-page, take the links from all
+//otherwise, take the links from the current discipline
+
+  $label_name  = 'History:';
+  
+  $prefix_disc = '';
+  
+   $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
+
+
+  if ($is_all_or_single == true) { $prefix_disc = $prefix . Events::$all_folder . '/'; }
+  
+  else                        {    $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
+                                   $prefix_disc = $prefix_base  . $page_topic . '/'; }
+
+  
+  
+   echo '<li class="nav-item">';
+   echo '<a class="nav-link" href="'/* . $prefix_disc*/ . '">' . $label_name  . '</a>';
+   echo '</li>';
+   
+ $past_years = Events::get_active_years($prefix_disc);
+ 
+ foreach ($past_years as $year => $value) {
+   
+   echo '<li class="nav-item dropdown">';
+   echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $year . ' </a>';
+   
+   echo '  <ul class="dropdown-menu">';
+  foreach ($past_years[$year] as $term) {
+     echo '    <li><a href="' . $prefix_disc . $year . '/' . $term . '/">' . $term . '</a></li>';
+     }
+   echo '  </ul>';
+   
+  echo '</li>';
+}
+
+
+}
+
+
+
+private static function navigation_bar_depth_1_scheme($prefix, $discipline_array) {
+
+
+  $link_name = $discipline_array[0];
+
+  echo '<li class="nav-item dropdown">';
+    echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $link_name . ' </a>';
+
+   echo '  <ul class="dropdown-menu" style="min-width: 15rem;">';
+    foreach ($discipline_array[1] as $discipline => $discipline_string) {
+     echo '    <li><a href="' . $prefix .  $discipline . '">' . $discipline_string . '</a></li>';
+
+}
+   echo '  </ul>';
+
+   echo '</li>';
+
+
+}
+
+private static function navigation_bar_depth_0_scheme($prefix, $leaf_array) {
+
+
+  foreach ($leaf_array as $key => $value) {
+
+   echo '<li class="nav-item">';
+   echo '<a class="nav-link" href="' . $prefix . $key . '/' . '">' . $value . '</a>';
+   echo '</li>';
+
+  }
+  
+}
+
+
+private static function navigation_bar_link_to_department($department) {
+
+   echo '<li class="nav-item">';
+   echo '<a class="nav-link" href="' . $department[1] . '">' . $department[0] . '</a>';
+   echo '</li>';
+
+}
+
+
+
+
+private static function navigation_bar_content($id_target, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx) {
+
+
+ 
+ echo '<div class="collapse navbar-collapse" id="' . $id_target . '"' . '>';
+
+ echo '<ul class="navbar-nav mr-auto">';
+ 
+ //===================
+ 
+  for ($i = 0; $i < count($all_schemes); $i++) {
+
+ $depth = 0;
+ Events::get_depth_recursively($all_schemes[$i], $depth);
+
+
+ $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$i]);
+
+ 
+ if ($depth == 0)        Events::navigation_bar_depth_0_scheme($prefix_base, $all_schemes[$i]);
+ else if ($depth == 1)   Events::navigation_bar_depth_1_scheme($prefix_base, $all_schemes[$i][Events::get_father_scheme_string_from_itself($all_schemes[$i])]);
+ ///@todo implement the other depths
+ 
+ }
+ 
+ 
+ 
+ //===================
+
+ echo '<li class="dropdown-divider"></li>';
+  
+  Events::navigation_bar_past_years($prefix, $page_topic, $is_all_or_single_page, $all_schemes, $father_scheme_idx);
+  
+ echo '<li class="dropdown-divider"></li>';
+
+  Events::navigation_bar_link_to_department($department);
+  
+ echo '</ul>';
+
+ echo '</div>';
+
+ 
+}
+
+
+public static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                                      $page_topic,
+                                      $all_schemes,
+                                      $father_scheme_idx,
+                                      $is_all_or_single_page,
+                                      $department) {
+
+ 
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+
+
+ $home_all_sems = 'Home';
+ 
+ $target_past_years = 'my_navbar';
+
+ 
+ echo '<nav class="navbar navbar-expand-lg navbar-light">'; /*fixed-top ///@todo padding-top of the body must be modified, if you want the navigation bar to be fixed */
+ 
+ Events::navigation_bar_brand($prefix, $home_all_sems);
+ 
+ Events::navigation_bar_menu_button($target_past_years);
+
+ Events::navigation_bar_content($target_past_years, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx);
+
+
+ echo '</nav>';
+
+}
+
+
+// ***********************************************
+// ****** All webpages: Navigation bar - END ****************  
+// ***********************************************
+
+
+// ***********************************************
+// ****** All webpages: Main banner - BEGIN ****************  
+// ***********************************************
+
+
+
+public static function main_banner($title, $department, $institution) {
+
+  $dept_name_idx = 0;
+  $dept_url_idx = 1;
+  
+
+  echo '<div class="main_banner">';
+  echo '<div style="background-color: rgba(0, 0, 0, 0.3);">';                       //filter so that fonts on images are readable
+  echo '<div class="' . Events::$bootstrap_container . '"' . ' ' . 'style="' . Events::$banners_text_alignment . '"' . '>';  //
+//   echo '<div style="' . Events::$banners_text_alignment . ' display: inline; width: 100%; margin-left: auto; margin-right: auto;  "' . '>';  //
+  echo '      <h2> ' . $title . ' </h2>';
+  echo '      <h3> ' . /*'<a href="' . $department[$dept_url_idx] . '"' . ' style="color: white;"' . '>'  .*/ $department[$dept_name_idx]  /*. '</a>'*/ . ' </h3>';
+  echo '      <h3> ' . $institution . ' </h3>';
+  echo '  </div>';
+  echo '</div>';
+  echo '</div>';
+
+ }
+ 
+///@todo deprecated 
+private static function default_meeting_coords_banner($semester, $year, $week_day, $time, $room) {
+
+ echo '<div class="'. Events::$bootstrap_container_fluid . '"' . ' ' . 'style="' . Events::$banners_text_alignment . ' ' . Events::$sem_header_style . '"' . '>';
+ 
+ echo '<h3>';
+ echo $semester . ' ' . 
+      $year     . ' - ' . 
+      $week_day . ', ' . 
+      $time . ' - ' . 'room ' . 
+      $room;
+ echo '</h3>';
+ 
+ echo '</div>';
+ 
+ echo '<br>'; 
+ 
+ }
+ 
+ 
+ 
+///@todo not used for now 
+private static function default_meeting_coords_banner_map($file_to_parse, $year, $semester) {
+ 
+ $csv = Events::read_csv_file($file_to_parse);
+
+ //default meeting related data
+   $week_day_default_meeting_idx            = 0;
+   $time_default_meeting_idx                = 1;
+   $room_default_meeting_idx                = 2;
+   $row_default_meeting_data = 1;
+ 
+  Events::default_meeting_coords_banner(
+      Events::capitalize($semester),
+      Events::capitalize($year),
+      $csv[$row_default_meeting_data][$week_day_default_meeting_idx],
+      $csv[$row_default_meeting_data][$time_default_meeting_idx],
+      $csv[$row_default_meeting_data][$room_default_meeting_idx]
+      );
+ 
+ } 
+
+// ***********************************************
+// ****** All webpages: Main banner - END ****************  
+// ***********************************************
+
+
+// ***********************************************
+// ****** All webpages: Browser toolbar - BEGIN ****************  
+// ***********************************************
+
+private static function set_browser_toolbar($title, $icon_in_toolbar) {
+ 
+//  Title
+ echo '<title> ' . $title . ' </title>';
+ 
+//  Favicon
+ echo ' <link rel="icon" href="' .  $icon_in_toolbar . '"> ';
+
+ }
+
+// ***********************************************
+// ****** All webpages: Browser toolbar - END ****************  
+// ***********************************************
+
+
+// ***********************************************
+// ****** Single Event: HTML - BEGIN ****************  
+// ***********************************************
+
+
+private static function set_event_day($events_map, $row) {
+
+
+    $year = $events_map[$row][Events::$year_idx];
+    $month = $events_map[$row][Events::$month_idx];
+    $day = $events_map[$row][Events::$day_idx];
+    
+    $week_day = Events::compute_week_day($year, $month, $day);
+
+    echo '<td width="100px">';
+
+    echo "<strong>";
+    echo  $week_day  . " <br/> " . Events::$months_conv[ $events_map[$row][Events::$month_idx] ] . " " . $events_map[$row][Events::$day_idx];
+    echo "</strong>";
+    
+    echo '<br/>';
+    
+    
+    echo "<em>";
+    echo $events_map[$row][Events::$time_idx];
+    echo "</em>";
+    
+    echo '<br/>';
+    echo /*"room "  .*/  $events_map[$row][Events::$room_idx] ;
+    echo "<br>";
+    
+    echo '</td>';
+
+}
+
+
+private static function set_event_details($events_map, $row, 
+                                          $discipline_array, $bool_print_discipline, 
+                                          $toggle_abstract_id, $arrow_abstract_id) {
+
+    
+    echo '<td>';
+
+   if ( $bool_print_discipline == true ) {                                
+      echo "<strong>";
+      //name of the current leaf
+        echo $discipline_array[ $events_map[$row][Events::$discipline_idx] ];
+      echo "</strong>";
+      echo "<br>";
+    }
+    
+
+    echo '<a  id=' . '"' .  $toggle_abstract_id . '"';
+    echo '  style="cursor: pointer; text-decoration: underline; " ';    ///@todo I want to give this the same color as an <a> tag with href= instead of id=
+    echo '>'; 
+    
+    echo '<em style="padding-right: 5px">';   ///with this padding we add a space that doesn't get underlined although the text is. An alternative would be to put the 'underline' as a style of <em> instead of <a>
+    echo $events_map[$row][Events::$title_idx];
+    echo '</em>';
+        
+    echo '<i id=' . '"' .  $arrow_abstract_id . '"' . ' class="arrow_down"></i>';
+    
+    echo '</a>';
+    
+    
+    echo "<br>";
+
+    
+    ///@todo: see if I can make this be
+      //     - a link if href is non-empty in the csv file 
+      //     - NOT a link otherwise
+    echo '<a   style="cursor: pointer; text-decoration: none;"';
+//     echo ' target="_blank" ';
+    echo 'href=' . '"' .  $events_map[$row][Events::$speaker_url_idx]  .  '"' . '>';
+    echo $events_map[$row][Events::$speaker_idx];
+    echo '</a>';
+    echo "<br>";
+    echo  $events_map[$row][Events::$speaker_department_idx];
+    if ($events_map[$row][Events::$speaker_department_idx] != '' && $events_map[$row][Events::$speaker_institution_idx] != '') echo ', ';
+    echo $events_map[$row][Events::$speaker_institution_idx];
+    
+    echo "<br>";
+    
+    
+    echo '</td>';
+      
+
+}
+
+
+
+
+private static function set_event_image($remote_path_prefix,
+                                        $local_path_prefix,
+                                        $are_input_files_local,
+                                        $images_folder,
+                                        $events_map,
+                                        $row,
+                                                   $all_schemes,
+                                                   $father_scheme_idx)  {
+                                        
+                                        
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+
+ $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+
+   echo '<td>'; 
+   
+   echo '<img class="' . Events::$sem_image . '" ' .  'src="' .
+     $prefix . 
+     $after_prefix .
+     $events_map[$row][Events::$discipline_idx] . '/' .  
+     $events_map[$row][Events::$year_idx] . '/' . 
+     $events_map[$row][Events::$semester_idx]  . '/' . 
+     $images_folder . '/' . 
+     $events_map[$row][Events::$speaker_image_idx] . '" alt="image">';
+     
+   echo '</td>';
+    
+    }
+
+
+private static function set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                    $images_folder,
+                                                    $events_map,
+                                                    $row,
+                                                    $discipline_array, $bool_print_discipline,
+                                                    $toggle_abstract_id,
+                                                    $arrow_abstract_id,
+                                                   $all_schemes,
+                                                   $father_scheme_idx) {
+
+
+    echo '<table class="' . Events::$sem_item . '">';
+    
+    
+    echo '<td>';
+     
+     echo ' <table id="switch_col">';
+
+     Events::set_event_image($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                               $images_folder, $events_map, $row,
+                                                   $all_schemes,
+                                                   $father_scheme_idx);
+    
+     Events::set_event_day($events_map, $row);
+     
+     echo ' </table>';
+    
+    echo ' </td>';
+    
+
+    Events::set_event_details($events_map, $row, $discipline_array, $bool_print_discipline, 
+                                $toggle_abstract_id, $arrow_abstract_id);
+    
+    
+    echo '</table>';
+
+
+
+}
+
+
+
+private static function set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                     $abstracts_folder,
+                                     $events_map,
+                                     $row,
+                                     $toggle_abstract_id,
+                                     $arrow_abstract_id,
+                                     $all_schemes,
+                                     $father_scheme_idx) {
+                                     
+//   $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+   $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+
+ $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Events::$events_file;
+
+ 
+ $abstract_id = Events::set_abstract_id_and_its_toggle($events_map, $row, '');
+    
+
+ $abstract_field = $events_map[$row][Events::$abstract_file_idx];
+    
+ $arr1 = explode(' ',trim($abstract_field));
+ $txt_found = stristr($abstract_field,Events::$about_file_extension);  //case-insensitive match
+//     if (!($txt_found)) echo "---";  //it is either empty or it contains information
+
+    $abstract_path =
+    $after_prefix . 
+    $events_map[$row][Events::$discipline_idx] . '/' .  
+    $events_map[$row][Events::$year_idx] . '/' . 
+    $events_map[$row][Events::$semester_idx] . '/' . 
+    $abstracts_folder . $events_map[$row][Events::$abstract_file_idx];
+
+//----------------    
+    echo '<span ';   ///@todo make this span CENTERED
+    
+    echo ' id=' . '"' . $abstract_id . '"'; 
+    
+    echo ' style="display: none;"';
+    
+    echo '>';
+    
+    if (!($txt_found)) echo $abstract_field;
+    else               Events::include_file( $remote_path_prefix, $local_path_prefix, $abstract_path, $are_input_files_local);
+    
+    echo '</span>';
+//----------------    
+
+
+
+// ********************
+// on click over the title identified by $toggle_abstract_id, toggle the abstract span (I think a simple toggle means turn on or off the whole object)
+    echo '<script>';
+
+    echo '
+      $(document).ready(
+        function() {';
+      
+     echo '
+       $("a#' . $toggle_abstract_id . '").click(';
+       
+     echo '
+       function() {
+          $("span#' . $abstract_id . '").toggle();
+          $("i#' . $arrow_abstract_id . '").toggleClass("arrow_up");
+        }
+      );';    //end click
+      
+      
+    echo '
+       }
+     );';  //end ready
+
+  
+   echo '</script>';
+// ********************
+ 
+ }
+
+ 
+
+private static function set_abstract_id_and_its_toggle($events_map, $row, $base_str) {
+
+  $clock_str = $events_map[$row][Events::$time_idx];
+  $clock_str = str_replace(' ', '_', $clock_str);
+  $clock_str = str_replace(':', '_', $clock_str);
+  
+
+    $abstract_id = $base_str . 'abst_' .
+      $events_map[$row][Events::$discipline_idx]  . '_' . 
+      $events_map[$row][Events::$year_idx]        . '_' .
+      $events_map[$row][Events::$month_idx]       . '_' . 
+      $events_map[$row][Events::$day_idx]         . '_' .
+      $clock_str;
+      
+  return  $abstract_id;
+  
+}
 
  
 // ***********************************************
-// ****** Latex & PDF & PNG - BEGIN **************  
+// ****** Single Event: HTML - END ****************  
+// ***********************************************
+
+
+ 
+// ***********************************************
+// ****** Single Event: Latex & PDF & PNG - BEGIN **************  
 // ***********************************************
   
  public static function generate_pdf_slides_by_time_range($remote_path_prefix, $local_path_prefix, $are_input_files_local,
@@ -974,831 +1652,9 @@ fwrite($fp, '\end{column}' . PHP_EOL);
  }
  
  
-
-
- public static function single_latex_pdf_slide_person($rows) {
-  ///@todo The font &  is not accepted in Latex!
-
-  $people_count = 0;
-  
-	foreach ($rows as $row) {
-  
-//latex file creation -----------------
-  $slides_folder = '../../../events_people';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
-//   mkdir('slides');              //with PHP
-  shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
-  
-$name_last = $row["LAST_NAME"];
-$name_first = $row["FIRST_NAME"];
-  $image_name = str_replace(" ", "_", str_replace(",", "", $name_last . "_" . $name_first));
-  
-$person_filename = 'permanent_people_' .  $image_name . '_' . $people_count;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
-  $fp = fopen($slides_folder . '/' . $person_filename . '.tex', 'w');
-
-
-//latex file content -----------------
-
-    
-  fwrite($fp, '\documentclass[compress,aspectratio=169]{beamer}' . PHP_EOL);
-    
- fwrite($fp, '\usepackage[utf8]{inputenc}'. PHP_EOL);
- fwrite($fp, '\usepackage{verbatim}'. PHP_EOL);
- fwrite($fp, '\usepackage{graphicx}'. PHP_EOL);
- fwrite($fp, '\usetheme{CambridgeUS}' . PHP_EOL);
-  fwrite($fp, '\setbeamertemplate{navigation symbols}{}' . PHP_EOL);
-  
-  fwrite($fp, '  \makeatletter                                                                                                                                             ' . PHP_EOL);
-  fwrite($fp, '\setbeamertemplate{footline}{%                                                                                                                              ' . PHP_EOL);
-  fwrite($fp, '  \leavevmode%                                                                                                                                              ' . PHP_EOL);
-  fwrite($fp, '  \hbox{%                                                                                                                                                   ' . PHP_EOL);
-  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%                                                               ' . PHP_EOL);
-  fwrite($fp, '    \usebeamerfont{author in head/foot}\insertshortauthor\expandafter\beamer@ifempty\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}       ' . PHP_EOL);
-  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
-  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%                                                                ' . PHP_EOL);
-  fwrite($fp, '    \usebeamerfont{title in head/foot}\insertshorttitle                                                                                                     ' . PHP_EOL);
-  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
-  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%                                                                  ' . PHP_EOL);
-  fwrite($fp, '    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}                                                                                        ' . PHP_EOL);
-  fwrite($fp, '    %\insertframenumber{} / \inserttotalframenumber\hspace*{2ex}   %% comment this                                                                          ' . PHP_EOL);
-  fwrite($fp, '  \end{beamercolorbox}}%                                                                                                                                    ' . PHP_EOL);
-  fwrite($fp, '  \vskip0pt%                                                                                                                                                ' . PHP_EOL);
-  fwrite($fp, '}                                                                                                                                                           ' . PHP_EOL);
-  fwrite($fp, '\makeatother                                                                                                                                                ' . PHP_EOL);
-
-  fwrite($fp, '\setbeamercolor{background canvas}{bg=lightgray}' . PHP_EOL);
-
-  fwrite($fp, '\date{}' . PHP_EOL);
-// 
-  fwrite($fp, '\begin{document}' . PHP_EOL);
-  fwrite($fp, '\begin{frame}[fragile]' . PHP_EOL);
-  fwrite($fp, '\centering' . PHP_EOL);
-  
-  
-  fwrite($fp, '\textbf{'/* . PHP_EOL*/);
-  fwrite($fp, '\Large ' . 'Faculty Spotlight - ' . $name_first . ' ' . $name_last);
-  fwrite($fp, '}' . PHP_EOL);
-  fwrite($fp, '\vspace{1em}' . PHP_EOL);
-//   
-//   
-  fwrite($fp, '\begin{columns}' . PHP_EOL);
-
-  fwrite($fp, '\begin{column}{0.30\textwidth}' . PHP_EOL);
-  fwrite($fp, '\centering' . PHP_EOL);
-  
-
-// ---------------------------------  
-//copy the file over to ease export to other computers
-$image_name_ext =  $image_name . '.jpg';
-  shell_exec('cp '  .  '../img/people/' . $image_name_ext . ' ' . $slides_folder);
-  fwrite($fp, '\includegraphics[width=0.6\textwidth]{' .   $image_name_ext  . '}' . PHP_EOL);
-// ---------------------------------  
-
-
-fwrite($fp, '\end{column}' . PHP_EOL);
-
-  fwrite($fp, '\begin{column}{0.70\textwidth}' . PHP_EOL);
-  fwrite($fp, '\centering' . PHP_EOL);
-  
-//   fwrite($fp, '\vspace{2em}' . PHP_EOL);
-//     fwrite($fp, '\textbf{' . PHP_EOL);
-//   fwrite($fp, '\large ');
-//   fwrite($fp, $name_first . ' ' . $name_last . PHP_EOL);
-//   fwrite($fp, '}' . PHP_EOL);
-  fwrite($fp, PHP_EOL);
-//-------------
-
-     fwrite($fp, '{' . PHP_EOL);
- if (strlen($row["Bio"]) < 900)   fwrite($fp, '\small ');
- else                             fwrite($fp, '\footnotesize ');
- 
- fwrite($fp, $row["Bio"] . PHP_EOL);
-  fwrite($fp, '}' . PHP_EOL);
-
-
-  fwrite($fp, PHP_EOL);
-  fwrite($fp, '\end{column}' . PHP_EOL);
-//   
-  fwrite($fp, '\end{columns}' . PHP_EOL);
-
-  fwrite($fp, PHP_EOL);
-
-  fwrite($fp, PHP_EOL);
-  fwrite($fp, '\end{frame}' . PHP_EOL);
-//  
-//  
-  fwrite($fp, '\end{document}' . PHP_EOL);
-// 
-  fclose($fp);
-
-// ---------------------------------  
-//enter inside the slides folder each time for a shorter compile command (need all the shell commands to be in the SAME shell_exec, because separate ones would be independent and restart from the original path)
-// Here, I am both generating the PDF and converting to PNG !
-  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $person_filename . '.tex ' . ';' . 'pdftoppm ' . $person_filename . '.pdf ' .  $person_filename . ' -singlefile -png -r 300' . ';' . 'cd ..');
-// ---------------------------------  
-
-  printf($output);
-  
-  $people_count++;
-  
-  } //foreach
-  
- 
- }
- 
- 
  
 // ***********************************************
-// ****** Latex & PDF & PNG - END ****************  
-// ***********************************************
-
- 
-
-// ***********************************************
-// ****** HTML head - BEGIN ****************  
-// ***********************************************
-
-
-public static function set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar) {
-
-// the disadvantage of doing echo instead of including the file with a php include is just when you have to handle single quotes vs double quotes; also, a little lack of readability
-// However, the great advantage is that it is very clear what is passed! Previously, the variable coming from the file had to be set, and with the EXACT SAME NAME!
-//So it is muuuuch better in the end to use the function!
-
-
-$description = "Events";
-$author = "Giorgio Bornia";
-
- Events::set_meta($description, $author);
-
- Events::set_browser_toolbar($title_in_toolbar, $icon_in_toolbar);
-
-
-
- Events::set_jquery_lib();
- 
- Events::set_bootstrap_css_and_javascript_libs();
-
-
-
- Events::set_mandatory_libs($library_path);
-
-
-
-}
-
-
-
-
-public static function set_mandatory_libs($library_path) {
-
- Events::set_sem_css($library_path);
- 
- Events::set_latex_rendering_lib();
- 
-} 
- 
- 
-  private static function set_meta($description, $author) {
-  
-//  These metas must be first in the head 
- echo ' <meta charset="utf-8"> ';
- echo ' <meta name="viewport" content="width=device-width, initial-scale=1"> ';
-
-// Meta tags for indexing in search engines
- echo ' <meta name="description" content="' . $description . '"> ';
- echo ' <meta name="author"      content="' . $author . '"> ';
-  
-
-  }
-  
- 
- private static function set_sem_css($library_path) {
-
-// This must in the last position to override
- echo '<link rel="stylesheet" href="'  .  $library_path . './src/css/sem_style.css"> ';
- 
-}
-
-
-private static function set_latex_rendering_lib() {
-
-//  MathJax
- echo ' <script type="text/x-mathjax-config">';
- echo ' MathJax.Hub.Config({';
- echo ' tex2jax: {';
-//how it should be printed
-//  inlineMath:  [ ['$','$'],   ['\\(','\\)'] ],
-//  displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-//how it should be printed - end
-//how to get it
- echo ' inlineMath:  [ [\'$\',\'$\'],   [\'\\\(\',\'\\\)\'] ],    ';  //some escaping is needed for the ' and \ fonts
- echo ' displayMath: [ [\'$$\',\'$$\'], ["\\\[","\\\]"]     ],    ';  //some escaping is needed for the ' and \ fonts
-//how to get it - end
- echo ' processEscapes: true ';
- echo ' }});';
- echo ' </script>';
- 
- echo '<script type="text/javascript" async ';
- echo '  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> ';
- echo '</script> ';
-// //  <!--<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>--> <!--THIS WAS DISCONTINUED-->          
-
-
-}
-
-
-private static function set_jquery_lib() {
-
-//  jQuery library (must be before JavaScript!)
- echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>  ';
-
-
-}
-
-
-
-private static function set_bootstrap_css_and_javascript_libs() {
-
-// //  Latest compiled and minified CSS
-//  echo '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">';
-// //  Latest compiled JavaScript 
-//  echo '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>';
-
- echo '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">';
-
- echo ' <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>';
- echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>';
- echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>';
-
-}
-
-
-
-// ***********************************************
-// ****** HTML head - END  ****************  
-// ***********************************************
-
-
-// ***********************************************
-// ****** Navigation bar - BEGIN ****************  
-// ***********************************************
-
-
-private static function navigation_bar_menu_button($id_target) {
-
-
- echo '<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#' . $id_target . '"' . ' aria-controls="' . $id_target . '"' . ' aria-expanded="false" aria-label="Toggle navigation">';
-
- echo '<span class="navbar-toggler-icon"></span>';
-
- echo '</button>';
- 
-}
-
-
-private static function navigation_bar_brand($depth_all_sems, $home_all_sems) {
-
- echo '<a class="navbar-brand" href="'. $depth_all_sems . '">' . $home_all_sems . '</a>';
-
-}
-
-
-private static function navigation_bar_past_years($prefix, $page_topic, $is_all_or_single, $all_schemes, $father_scheme_idx) {
-
-//if it's an all-page, take the links from all
-//otherwise, take the links from the current discipline
-
-  $label_name  = 'History:';
-  
-  $prefix_disc = '';
-  
-   $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
-
-
-  if ($is_all_or_single == true) { $prefix_disc = $prefix . Events::$all_folder . '/'; }
-  
-  else                        {    $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$father_scheme_idx]);
-                                   $prefix_disc = $prefix_base  . $page_topic . '/'; }
-
-  
-  
-   echo '<li class="nav-item">';
-   echo '<a class="nav-link" href="'/* . $prefix_disc*/ . '">' . $label_name  . '</a>';
-   echo '</li>';
-   
- $past_years = Events::get_active_years($prefix_disc);
- 
- foreach ($past_years as $year => $value) {
-   
-   echo '<li class="nav-item dropdown">';
-   echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $year . ' </a>';
-   
-   echo '  <ul class="dropdown-menu">';
-  foreach ($past_years[$year] as $term) {
-     echo '    <li><a href="' . $prefix_disc . $year . '/' . $term . '/">' . $term . '</a></li>';
-     }
-   echo '  </ul>';
-   
-  echo '</li>';
-}
-
-
-}
-
-
-
-private static function navigation_bar_depth_1_scheme($prefix, $discipline_array) {
-
-
-  $link_name = $discipline_array[0];
-
-  echo '<li class="nav-item dropdown">';
-    echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $link_name . ' </a>';
-
-   echo '  <ul class="dropdown-menu" style="min-width: 15rem;">';
-    foreach ($discipline_array[1] as $discipline => $discipline_string) {
-     echo '    <li><a href="' . $prefix .  $discipline . '">' . $discipline_string . '</a></li>';
-
-}
-   echo '  </ul>';
-
-   echo '</li>';
-
-
-}
-
-private static function navigation_bar_depth_0_scheme($prefix, $leaf_array) {
-
-
-  foreach ($leaf_array as $key => $value) {
-
-   echo '<li class="nav-item">';
-   echo '<a class="nav-link" href="' . $prefix . $key . '/' . '">' . $value . '</a>';
-   echo '</li>';
-
-  }
-  
-}
-
-
-private static function navigation_bar_link_to_department($department) {
-
-   echo '<li class="nav-item">';
-   echo '<a class="nav-link" href="' . $department[1] . '">' . $department[0] . '</a>';
-   echo '</li>';
-
-}
-
-
-
-
-private static function navigation_bar_content($id_target, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx) {
-
-
- 
- echo '<div class="collapse navbar-collapse" id="' . $id_target . '"' . '>';
-
- echo '<ul class="navbar-nav mr-auto">';
- 
- //===================
- 
-  for ($i = 0; $i < count($all_schemes); $i++) {
-
- $depth = 0;
- Events::get_depth_recursively($all_schemes[$i], $depth);
-
-
- $prefix_base = Events::get_prefix_up_to_current_leaf($prefix, $all_schemes[$i]);
-
- 
- if ($depth == 0)        Events::navigation_bar_depth_0_scheme($prefix_base, $all_schemes[$i]);
- else if ($depth == 1)   Events::navigation_bar_depth_1_scheme($prefix_base, $all_schemes[$i][Events::get_father_scheme_string_from_itself($all_schemes[$i])]);
- ///@todo implement the other depths
- 
- }
- 
- 
- 
- //===================
-
- echo '<li class="dropdown-divider"></li>';
-  
-  Events::navigation_bar_past_years($prefix, $page_topic, $is_all_or_single_page, $all_schemes, $father_scheme_idx);
-  
- echo '<li class="dropdown-divider"></li>';
-
-  Events::navigation_bar_link_to_department($department);
-  
- echo '</ul>';
-
- echo '</div>';
-
- 
-}
-
-
-public static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                                      $page_topic,
-                                      $all_schemes,
-                                      $father_scheme_idx,
-                                      $is_all_or_single_page,
-                                      $department) {
-
- 
- $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
-
-
- $home_all_sems = 'Home';
- 
- $target_past_years = 'my_navbar';
-
- 
- echo '<nav class="navbar navbar-expand-lg navbar-light">'; /*fixed-top ///@todo padding-top of the body must be modified, if you want the navigation bar to be fixed */
- 
- Events::navigation_bar_brand($prefix, $home_all_sems);
- 
- Events::navigation_bar_menu_button($target_past_years);
-
- Events::navigation_bar_content($target_past_years, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx);
-
-
- echo '</nav>';
-
-}
-
-
-// ***********************************************
-// ****** Navigation bar - END ****************  
-// ***********************************************
-
-
-// ***********************************************
-// ****** Main banner - BEGIN ****************  
-// ***********************************************
-
-
-
-public static function main_banner($title, $department, $institution) {
-
-  $dept_name_idx = 0;
-  $dept_url_idx = 1;
-  
-
-  echo '<div class="main_banner">';
-  echo '<div style="background-color: rgba(0, 0, 0, 0.3);">';                       //filter so that fonts on images are readable
-  echo '<div class="' . Events::$bootstrap_container . '"' . ' ' . 'style="' . Events::$banners_text_alignment . '"' . '>';  //
-//   echo '<div style="' . Events::$banners_text_alignment . ' display: inline; width: 100%; margin-left: auto; margin-right: auto;  "' . '>';  //
-  echo '      <h2> ' . $title . ' </h2>';
-  echo '      <h3> ' . /*'<a href="' . $department[$dept_url_idx] . '"' . ' style="color: white;"' . '>'  .*/ $department[$dept_name_idx]  /*. '</a>'*/ . ' </h3>';
-  echo '      <h3> ' . $institution . ' </h3>';
-  echo '  </div>';
-  echo '</div>';
-  echo '</div>';
-
- }
- 
-///@todo deprecated 
-private static function default_meeting_coords_banner($semester, $year, $week_day, $time, $room) {
-
- echo '<div class="'. Events::$bootstrap_container_fluid . '"' . ' ' . 'style="' . Events::$banners_text_alignment . ' ' . Events::$sem_header_style . '"' . '>';
- 
- echo '<h3>';
- echo $semester . ' ' . 
-      $year     . ' - ' . 
-      $week_day . ', ' . 
-      $time . ' - ' . 'room ' . 
-      $room;
- echo '</h3>';
- 
- echo '</div>';
- 
- echo '<br>'; 
- 
- }
- 
- 
- 
-///@todo not used for now 
-private static function default_meeting_coords_banner_map($file_to_parse, $year, $semester) {
- 
- $csv = Events::read_csv_file($file_to_parse);
-
- //default meeting related data
-   $week_day_default_meeting_idx            = 0;
-   $time_default_meeting_idx                = 1;
-   $room_default_meeting_idx                = 2;
-   $row_default_meeting_data = 1;
- 
-  Events::default_meeting_coords_banner(
-      Events::capitalize($semester),
-      Events::capitalize($year),
-      $csv[$row_default_meeting_data][$week_day_default_meeting_idx],
-      $csv[$row_default_meeting_data][$time_default_meeting_idx],
-      $csv[$row_default_meeting_data][$room_default_meeting_idx]
-      );
- 
- } 
-
-// ***********************************************
-// ****** Main banner - END ****************  
-// ***********************************************
-
-
-// ***********************************************
-// ****** Browser toolbar - BEGIN ****************  
-// ***********************************************
-
-private static function set_browser_toolbar($title, $icon_in_toolbar) {
- 
-//  Title
- echo '<title> ' . $title . ' </title>';
- 
-//  Favicon
- echo ' <link rel="icon" href="' .  $icon_in_toolbar . '"> ';
-
- }
-
-// ***********************************************
-// ****** Browser toolbar - END ****************  
-// ***********************************************
-
-
-// ***********************************************
-// ****** Single Event - BEGIN ****************  
-// ***********************************************
-
-
-private static function set_abstract_id_and_its_toggle($events_map, $row, $base_str) {
-
-  $clock_str = $events_map[$row][Events::$time_idx];
-  $clock_str = str_replace(' ', '_', $clock_str);
-  $clock_str = str_replace(':', '_', $clock_str);
-  
-
-    $abstract_id = $base_str . 'abst_' .
-      $events_map[$row][Events::$discipline_idx]  . '_' . 
-      $events_map[$row][Events::$year_idx]        . '_' .
-      $events_map[$row][Events::$month_idx]       . '_' . 
-      $events_map[$row][Events::$day_idx]         . '_' .
-      $clock_str;
-      
-  return  $abstract_id;
-  
-}
-
-
-private static function set_event_day($events_map, $row) {
-
-
-    $year = $events_map[$row][Events::$year_idx];
-    $month = $events_map[$row][Events::$month_idx];
-    $day = $events_map[$row][Events::$day_idx];
-    
-    $week_day = Events::compute_week_day($year, $month, $day);
-
-    echo '<td width="100px">';
-
-    echo "<strong>";
-    echo  $week_day  . " <br/> " . Events::$months_conv[ $events_map[$row][Events::$month_idx] ] . " " . $events_map[$row][Events::$day_idx];
-    echo "</strong>";
-    
-    echo '<br/>';
-    
-    
-    echo "<em>";
-    echo $events_map[$row][Events::$time_idx];
-    echo "</em>";
-    
-    echo '<br/>';
-    echo /*"room "  .*/  $events_map[$row][Events::$room_idx] ;
-    echo "<br>";
-    
-    echo '</td>';
-
-}
-
-
-private static function set_event_details($events_map, $row, 
-                                          $discipline_array, $bool_print_discipline, 
-                                          $toggle_abstract_id, $arrow_abstract_id) {
-
-    
-    echo '<td>';
-
-   if ( $bool_print_discipline == true ) {                                
-      echo "<strong>";
-      //name of the current leaf
-        echo $discipline_array[ $events_map[$row][Events::$discipline_idx] ];
-      echo "</strong>";
-      echo "<br>";
-    }
-    
-
-    echo '<a  id=' . '"' .  $toggle_abstract_id . '"';
-    echo '  style="cursor: pointer; text-decoration: underline; " ';    ///@todo I want to give this the same color as an <a> tag with href= instead of id=
-    echo '>'; 
-    
-    echo '<em style="padding-right: 5px">';   ///with this padding we add a space that doesn't get underlined although the text is. An alternative would be to put the 'underline' as a style of <em> instead of <a>
-    echo $events_map[$row][Events::$title_idx];
-    echo '</em>';
-        
-    echo '<i id=' . '"' .  $arrow_abstract_id . '"' . ' class="arrow_down"></i>';
-    
-    echo '</a>';
-    
-    
-    echo "<br>";
-
-    
-    ///@todo: see if I can make this be
-      //     - a link if href is non-empty in the csv file 
-      //     - NOT a link otherwise
-    echo '<a   style="cursor: pointer; text-decoration: none;"';
-//     echo ' target="_blank" ';
-    echo 'href=' . '"' .  $events_map[$row][Events::$speaker_url_idx]  .  '"' . '>';
-    echo $events_map[$row][Events::$speaker_idx];
-    echo '</a>';
-    echo "<br>";
-    echo  $events_map[$row][Events::$speaker_department_idx];
-    if ($events_map[$row][Events::$speaker_department_idx] != '' && $events_map[$row][Events::$speaker_institution_idx] != '') echo ', ';
-    echo $events_map[$row][Events::$speaker_institution_idx];
-    
-    echo "<br>";
-    
-    
-    echo '</td>';
-      
-
-}
-
-
-
-
-private static function set_event_image($remote_path_prefix,
-                                        $local_path_prefix,
-                                        $are_input_files_local,
-                                        $images_folder,
-                                        $events_map,
-                                        $row,
-                                                   $all_schemes,
-                                                   $father_scheme_idx)  {
-                                        
-                                        
- $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
-
- $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
-
-   echo '<td>'; 
-   
-   echo '<img class="' . Events::$sem_image . '" ' .  'src="' .
-     $prefix . 
-     $after_prefix .
-     $events_map[$row][Events::$discipline_idx] . '/' .  
-     $events_map[$row][Events::$year_idx] . '/' . 
-     $events_map[$row][Events::$semester_idx]  . '/' . 
-     $images_folder . '/' . 
-     $events_map[$row][Events::$speaker_image_idx] . '" alt="image">';
-     
-   echo '</td>';
-    
-    }
-
-
-private static function set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                    $images_folder,
-                                                    $events_map,
-                                                    $row,
-                                                    $discipline_array, $bool_print_discipline,
-                                                    $toggle_abstract_id,
-                                                    $arrow_abstract_id,
-                                                   $all_schemes,
-                                                   $father_scheme_idx) {
-
-
-    echo '<table class="' . Events::$sem_item . '">';
-    
-    
-    echo '<td>';
-     
-     echo ' <table id="switch_col">';
-
-     Events::set_event_image($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                               $images_folder, $events_map, $row,
-                                                   $all_schemes,
-                                                   $father_scheme_idx);
-    
-     Events::set_event_day($events_map, $row);
-     
-     echo ' </table>';
-    
-    echo ' </td>';
-    
-
-    Events::set_event_details($events_map, $row, $discipline_array, $bool_print_discipline, 
-                                $toggle_abstract_id, $arrow_abstract_id);
-    
-    
-    echo '</table>';
-
-
-
-}
-
-private static function test_table() {
-//this is to test if two blocks in one row become two blocks in a column in mobile devices
-
-    echo '<table id="switch_col">';
-    echo '<td>';
-    echo 'Title';
-    echo '</td>';
-    echo '<td>';
-    echo 'Title2';
-    echo '</td>';
-    echo '</table>';
-                                            
-}                                           
-
-
-
-private static function set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                     $abstracts_folder,
-                                     $events_map,
-                                     $row,
-                                     $toggle_abstract_id,
-                                     $arrow_abstract_id,
-                                     $all_schemes,
-                                     $father_scheme_idx) {
-                                     
-//   $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
-   $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
-
- $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Events::$events_file;
-
- 
- $abstract_id = Events::set_abstract_id_and_its_toggle($events_map, $row, '');
-    
-
- $abstract_field = $events_map[$row][Events::$abstract_file_idx];
-    
- $arr1 = explode(' ',trim($abstract_field));
- $txt_found = stristr($abstract_field,Events::$about_file_extension);  //case-insensitive match
-//     if (!($txt_found)) echo "---";  //it is either empty or it contains information
-
-    $abstract_path =
-    $after_prefix . 
-    $events_map[$row][Events::$discipline_idx] . '/' .  
-    $events_map[$row][Events::$year_idx] . '/' . 
-    $events_map[$row][Events::$semester_idx] . '/' . 
-    $abstracts_folder . $events_map[$row][Events::$abstract_file_idx];
-
-//----------------    
-    echo '<span ';   ///@todo make this span CENTERED
-    
-    echo ' id=' . '"' . $abstract_id . '"'; 
-    
-    echo ' style="display: none;"';
-    
-    echo '>';
-    
-    if (!($txt_found)) echo $abstract_field;
-    else               Events::include_file( $remote_path_prefix, $local_path_prefix, $abstract_path, $are_input_files_local);
-    
-    echo '</span>';
-//----------------    
-
-
-
-// ********************
-// on click over the title identified by $toggle_abstract_id, toggle the abstract span (I think a simple toggle means turn on or off the whole object)
-    echo '<script>';
-
-    echo '
-      $(document).ready(
-        function() {';
-      
-     echo '
-       $("a#' . $toggle_abstract_id . '").click(';
-       
-     echo '
-       function() {
-          $("span#' . $abstract_id . '").toggle();
-          $("i#' . $arrow_abstract_id . '").toggleClass("arrow_up");
-        }
-      );';    //end click
-      
-      
-    echo '
-       }
-     );';  //end ready
-
-  
-   echo '</script>';
-// ********************
- 
- }
- 
-// ***********************************************
-// ****** Single Event - END ****************  
+// ****** Single Event: Latex & PDF & PNG - END ****************  
 // ***********************************************
 
 
@@ -2120,6 +1976,144 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
 
 // ***********************************************
 // ****** Week Lists - END ****************  
+// ***********************************************
+
+
+// ***********************************************
+// ****** People: Single Person: Latex & PDF & PNG - BEGIN **************  
+// ***********************************************
+
+ public static function single_latex_pdf_slide_person($rows) {
+  ///@todo The font &  is not accepted in Latex!
+
+  $people_count = 0;
+  
+	foreach ($rows as $row) {
+  
+//latex file creation -----------------
+  $slides_folder = '../../../events_people';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
+//   mkdir('slides');              //with PHP
+  shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
+  
+$name_last = $row["LAST_NAME"];
+$name_first = $row["FIRST_NAME"];
+  $image_name = str_replace(" ", "_", str_replace(",", "", $name_last . "_" . $name_first));
+  
+$person_filename = 'permanent_people_' .  $image_name . '_' . $people_count;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
+  $fp = fopen($slides_folder . '/' . $person_filename . '.tex', 'w');
+
+
+//latex file content -----------------
+
+    
+  fwrite($fp, '\documentclass[compress,aspectratio=169]{beamer}' . PHP_EOL);
+    
+ fwrite($fp, '\usepackage[utf8]{inputenc}'. PHP_EOL);
+ fwrite($fp, '\usepackage{verbatim}'. PHP_EOL);
+ fwrite($fp, '\usepackage{graphicx}'. PHP_EOL);
+ fwrite($fp, '\usetheme{CambridgeUS}' . PHP_EOL);
+  fwrite($fp, '\setbeamertemplate{navigation symbols}{}' . PHP_EOL);
+  
+  fwrite($fp, '  \makeatletter                                                                                                                                             ' . PHP_EOL);
+  fwrite($fp, '\setbeamertemplate{footline}{%                                                                                                                              ' . PHP_EOL);
+  fwrite($fp, '  \leavevmode%                                                                                                                                              ' . PHP_EOL);
+  fwrite($fp, '  \hbox{%                                                                                                                                                   ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%                                                               ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{author in head/foot}\insertshortauthor\expandafter\beamer@ifempty\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}       ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%                                                                ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{title in head/foot}\insertshorttitle                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%                                                                  ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}                                                                                        ' . PHP_EOL);
+  fwrite($fp, '    %\insertframenumber{} / \inserttotalframenumber\hspace*{2ex}   %% comment this                                                                          ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}}%                                                                                                                                    ' . PHP_EOL);
+  fwrite($fp, '  \vskip0pt%                                                                                                                                                ' . PHP_EOL);
+  fwrite($fp, '}                                                                                                                                                           ' . PHP_EOL);
+  fwrite($fp, '\makeatother                                                                                                                                                ' . PHP_EOL);
+
+  fwrite($fp, '\setbeamercolor{background canvas}{bg=lightgray}' . PHP_EOL);
+
+  fwrite($fp, '\date{}' . PHP_EOL);
+// 
+  fwrite($fp, '\begin{document}' . PHP_EOL);
+  fwrite($fp, '\begin{frame}[fragile]' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  
+  
+  fwrite($fp, '\textbf{'/* . PHP_EOL*/);
+  fwrite($fp, '\Large ' . 'Faculty Spotlight - ' . $name_first . ' ' . $name_last);
+  fwrite($fp, '}' . PHP_EOL);
+  fwrite($fp, '\vspace{1em}' . PHP_EOL);
+//   
+//   
+  fwrite($fp, '\begin{columns}' . PHP_EOL);
+
+  fwrite($fp, '\begin{column}{0.30\textwidth}' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  
+
+// ---------------------------------  
+//copy the file over to ease export to other computers
+$image_name_ext =  $image_name . '.jpg';
+  shell_exec('cp '  .  '../img/people/' . $image_name_ext . ' ' . $slides_folder);
+  fwrite($fp, '\includegraphics[width=0.6\textwidth]{' .   $image_name_ext  . '}' . PHP_EOL);
+// ---------------------------------  
+
+
+fwrite($fp, '\end{column}' . PHP_EOL);
+
+  fwrite($fp, '\begin{column}{0.70\textwidth}' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  
+//   fwrite($fp, '\vspace{2em}' . PHP_EOL);
+//     fwrite($fp, '\textbf{' . PHP_EOL);
+//   fwrite($fp, '\large ');
+//   fwrite($fp, $name_first . ' ' . $name_last . PHP_EOL);
+//   fwrite($fp, '}' . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+//-------------
+
+     fwrite($fp, '{' . PHP_EOL);
+ if (strlen($row["Bio"]) < 900)   fwrite($fp, '\small ');
+ else                             fwrite($fp, '\footnotesize ');
+ 
+ fwrite($fp, $row["Bio"] . PHP_EOL);
+  fwrite($fp, '}' . PHP_EOL);
+
+
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, '\end{column}' . PHP_EOL);
+//   
+  fwrite($fp, '\end{columns}' . PHP_EOL);
+
+  fwrite($fp, PHP_EOL);
+
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, '\end{frame}' . PHP_EOL);
+//  
+//  
+  fwrite($fp, '\end{document}' . PHP_EOL);
+// 
+  fclose($fp);
+
+// ---------------------------------  
+//enter inside the slides folder each time for a shorter compile command (need all the shell commands to be in the SAME shell_exec, because separate ones would be independent and restart from the original path)
+// Here, I am both generating the PDF and converting to PNG !
+  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $person_filename . '.tex ' . ';' . 'pdftoppm ' . $person_filename . '.pdf ' .  $person_filename . ' -singlefile -png -r 300' . ';' . 'cd ..');
+// ---------------------------------  
+
+  printf($output);
+  
+  $people_count++;
+  
+  } //foreach
+  
+ 
+ }
+ 
+ // ***********************************************
+// ****** People: Single Person: Latex & PDF & PNG - END **************  
 // ***********************************************
 
 
@@ -2811,6 +2805,20 @@ public static function compute_containing_week_from_monday_to_sunday_starting_fr
 // ***********************************************
 // ****** Tools - BEGIN ****************  
 // ***********************************************
+
+private static function test_table() {
+//this is to test if two blocks in one row become two blocks in a column in mobile devices
+
+    echo '<table id="switch_col">';
+    echo '<td>';
+    echo 'Title';
+    echo '</td>';
+    echo '<td>';
+    echo 'Title2';
+    echo '</td>';
+    echo '</table>';
+                                            
+}                                           
 
 
  
