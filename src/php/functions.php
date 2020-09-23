@@ -227,6 +227,54 @@ private static function set_tree_events_by_time_range_body($remote_path_prefix, 
 // ***********************************************
 
 
+private static function loop_over_events($events_map, $starting_row, 
+                                         $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                                         $abstracts_folder, $images_folder, 
+                                         $discipline_array, $bool_print_discipline,
+                                         $all_schemes,
+                                         $father_scheme_idx) {
+
+ 
+    ///@todo: abstract have to be .txt (I think it's enough to be any text file), with a name specified in the csv file
+    ///@todo: strip away any empty spaces before or after the csv fields
+    ///@todo: make sure there are no empty lines at the end of a csv file
+ 
+  
+    $num_rows = count($events_map);  
+    
+    
+  echo '<div class="' . Events::$bootstrap_container . '">';
+
+    
+    for ($row = $starting_row; $row < $num_rows; $row++) {
+
+    $toggle_abstract_id = Events::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
+    $arrow_abstract_id  = Events::set_abstract_id_and_its_toggle($events_map, $row, 'arrow_');
+
+    Events::set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                                          $images_folder, $events_map, $row, 
+                                          $discipline_array, $bool_print_discipline,
+                                          $toggle_abstract_id, $arrow_abstract_id,
+                                                   $all_schemes,
+                                                   $father_scheme_idx);
+    
+    Events::set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                           $abstracts_folder, 
+                           $events_map, $row,
+                           $toggle_abstract_id, $arrow_abstract_id,
+                           $all_schemes,
+                           $father_scheme_idx);
+    
+    }
+    
+
+  echo '</div>';   
+    
+    
+  } 
+
+  
+
  
 private static function generate_page_with_all_events_of_each_leaf_of_the_tree_by_time_range($library_path,  
                                                                      $remote_path_prefix, $local_path_prefix, $are_input_files_local,
@@ -382,54 +430,6 @@ public static function generate_page_with_all_events_by_time_range_wrapper($file
 
 
 
-
-private static function loop_over_events($events_map, $starting_row, 
-                                         $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                                         $abstracts_folder, $images_folder, 
-                                         $discipline_array, $bool_print_discipline,
-                                         $all_schemes,
-                                         $father_scheme_idx) {
-
- 
-    ///@todo: abstract have to be .txt (I think it's enough to be any text file), with a name specified in the csv file
-    ///@todo: strip away any empty spaces before or after the csv fields
-    ///@todo: make sure there are no empty lines at the end of a csv file
- 
-  
-    $num_rows = count($events_map);  
-    
-    
-  echo '<div class="' . Events::$bootstrap_container . '">';
-
-    
-    for ($row = $starting_row; $row < $num_rows; $row++) {
-
-    $toggle_abstract_id = Events::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
-    $arrow_abstract_id  = Events::set_abstract_id_and_its_toggle($events_map, $row, 'arrow_');
-
-    Events::set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                                          $images_folder, $events_map, $row, 
-                                          $discipline_array, $bool_print_discipline,
-                                          $toggle_abstract_id, $arrow_abstract_id,
-                                                   $all_schemes,
-                                                   $father_scheme_idx);
-    
-    Events::set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                           $abstracts_folder, 
-                           $events_map, $row,
-                           $toggle_abstract_id, $arrow_abstract_id,
-                           $all_schemes,
-                           $father_scheme_idx);
-    
-    }
-    
-
-  echo '</div>';   
-    
-    
-  } 
-
-  
  
 private static function parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                                $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
@@ -768,7 +768,490 @@ private static function set_single_leaf_body($remote_path_prefix, $local_path_pr
 // ****** Single Leaf: Body - END ****************  
 // ***********************************************
 
+
+
+
+// ***********************************************
+// ****** Single Event within a Leaf: HTML - BEGIN ****************  
+// ***********************************************
+
+
+private static function set_event_day($events_map, $row) {
+
+
+    $year = $events_map[$row][Events::$year_idx];
+    $month = $events_map[$row][Events::$month_idx];
+    $day = $events_map[$row][Events::$day_idx];
+    
+    $week_day = Events::compute_week_day($year, $month, $day);
+
+    echo '<td width="100px">';
+
+    echo "<strong>";
+    echo  $week_day  . " <br/> " . Events::$months_conv[ $events_map[$row][Events::$month_idx] ] . " " . $events_map[$row][Events::$day_idx];
+    echo "</strong>";
+    
+    echo '<br/>';
+    
+    
+    echo "<em>";
+    echo $events_map[$row][Events::$time_idx];
+    echo "</em>";
+    
+    echo '<br/>';
+    echo /*"room "  .*/  $events_map[$row][Events::$room_idx] ;
+    echo "<br>";
+    
+    echo '</td>';
+
+}
+
+
+private static function set_event_details($events_map, $row, 
+                                          $discipline_array, $bool_print_discipline, 
+                                          $toggle_abstract_id, $arrow_abstract_id) {
+
+    
+    echo '<td>';
+
+   if ( $bool_print_discipline == true ) {                                
+      echo "<strong>";
+      //name of the current leaf
+        echo $discipline_array[ $events_map[$row][Events::$discipline_idx] ];
+      echo "</strong>";
+      echo "<br>";
+    }
+    
+
+    echo '<a  id=' . '"' .  $toggle_abstract_id . '"';
+    echo '  style="cursor: pointer; text-decoration: underline; " ';    ///@todo I want to give this the same color as an <a> tag with href= instead of id=
+    echo '>'; 
+    
+    echo '<em style="padding-right: 5px">';   ///with this padding we add a space that doesn't get underlined although the text is. An alternative would be to put the 'underline' as a style of <em> instead of <a>
+    echo $events_map[$row][Events::$title_idx];
+    echo '</em>';
+        
+    echo '<i id=' . '"' .  $arrow_abstract_id . '"' . ' class="arrow_down"></i>';
+    
+    echo '</a>';
+    
+    
+    echo "<br>";
+
+    
+    ///@todo: see if I can make this be
+      //     - a link if href is non-empty in the csv file 
+      //     - NOT a link otherwise
+    echo '<a   style="cursor: pointer; text-decoration: none;"';
+//     echo ' target="_blank" ';
+    echo 'href=' . '"' .  $events_map[$row][Events::$speaker_url_idx]  .  '"' . '>';
+    echo $events_map[$row][Events::$speaker_idx];
+    echo '</a>';
+    echo "<br>";
+    echo  $events_map[$row][Events::$speaker_department_idx];
+    if ($events_map[$row][Events::$speaker_department_idx] != '' && $events_map[$row][Events::$speaker_institution_idx] != '') echo ', ';
+    echo $events_map[$row][Events::$speaker_institution_idx];
+    
+    echo "<br>";
+    
+    
+    echo '</td>';
+      
+
+}
+
+
+
+
+private static function set_event_image($remote_path_prefix,
+                                        $local_path_prefix,
+                                        $are_input_files_local,
+                                        $images_folder,
+                                        $events_map,
+                                        $row,
+                                                   $all_schemes,
+                                                   $father_scheme_idx)  {
+                                        
+                                        
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+
+ $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+
+   echo '<td>'; 
+   
+   echo '<img class="' . Events::$sem_image . '" ' .  'src="' .
+     $prefix . 
+     $after_prefix .
+     $events_map[$row][Events::$discipline_idx] . '/' .  
+     $events_map[$row][Events::$year_idx] . '/' . 
+     $events_map[$row][Events::$semester_idx]  . '/' . 
+     $images_folder . '/' . 
+     $events_map[$row][Events::$speaker_image_idx] . '" alt="image">';
+     
+   echo '</td>';
+    
+    }
+
+
+private static function set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                    $images_folder,
+                                                    $events_map,
+                                                    $row,
+                                                    $discipline_array, $bool_print_discipline,
+                                                    $toggle_abstract_id,
+                                                    $arrow_abstract_id,
+                                                   $all_schemes,
+                                                   $father_scheme_idx) {
+
+
+    echo '<table class="' . Events::$sem_item . '">';
+    
+    
+    echo '<td>';
+     
+     echo ' <table id="switch_col">';
+
+     Events::set_event_image($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                               $images_folder, $events_map, $row,
+                                                   $all_schemes,
+                                                   $father_scheme_idx);
+    
+     Events::set_event_day($events_map, $row);
+     
+     echo ' </table>';
+    
+    echo ' </td>';
+    
+
+    Events::set_event_details($events_map, $row, $discipline_array, $bool_print_discipline, 
+                                $toggle_abstract_id, $arrow_abstract_id);
+    
+    
+    echo '</table>';
+
+
+
+}
+
+
+
+private static function set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                     $abstracts_folder,
+                                     $events_map,
+                                     $row,
+                                     $toggle_abstract_id,
+                                     $arrow_abstract_id,
+                                     $all_schemes,
+                                     $father_scheme_idx) {
+                                     
+//   $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+   $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+
+ $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Events::$events_file;
+
  
+ $abstract_id = Events::set_abstract_id_and_its_toggle($events_map, $row, '');
+    
+
+ $abstract_field = $events_map[$row][Events::$abstract_file_idx];
+    
+ $arr1 = explode(' ',trim($abstract_field));
+ $txt_found = stristr($abstract_field,Events::$about_file_extension);  //case-insensitive match
+//     if (!($txt_found)) echo "---";  //it is either empty or it contains information
+
+    $abstract_path =
+    $after_prefix . 
+    $events_map[$row][Events::$discipline_idx] . '/' .  
+    $events_map[$row][Events::$year_idx] . '/' . 
+    $events_map[$row][Events::$semester_idx] . '/' . 
+    $abstracts_folder . $events_map[$row][Events::$abstract_file_idx];
+
+//----------------    
+    echo '<span ';   ///@todo make this span CENTERED
+    
+    echo ' id=' . '"' . $abstract_id . '"'; 
+    
+    echo ' style="display: none;"';
+    
+    echo '>';
+    
+    if (!($txt_found)) echo $abstract_field;
+    else               Events::include_file( $remote_path_prefix, $local_path_prefix, $abstract_path, $are_input_files_local);
+    
+    echo '</span>';
+//----------------    
+
+
+
+// ********************
+// on click over the title identified by $toggle_abstract_id, toggle the abstract span (I think a simple toggle means turn on or off the whole object)
+    echo '<script>';
+
+    echo '
+      $(document).ready(
+        function() {';
+      
+     echo '
+       $("a#' . $toggle_abstract_id . '").click(';
+       
+     echo '
+       function() {
+          $("span#' . $abstract_id . '").toggle();
+          $("i#' . $arrow_abstract_id . '").toggleClass("arrow_up");
+        }
+      );';    //end click
+      
+      
+    echo '
+       }
+     );';  //end ready
+
+  
+   echo '</script>';
+// ********************
+ 
+ }
+
+ 
+
+private static function set_abstract_id_and_its_toggle($events_map, $row, $base_str) {
+
+  $clock_str = $events_map[$row][Events::$time_idx];
+  $clock_str = str_replace(' ', '_', $clock_str);
+  $clock_str = str_replace(':', '_', $clock_str);
+  
+
+    $abstract_id = $base_str . 'abst_' .
+      $events_map[$row][Events::$discipline_idx]  . '_' . 
+      $events_map[$row][Events::$year_idx]        . '_' .
+      $events_map[$row][Events::$month_idx]       . '_' . 
+      $events_map[$row][Events::$day_idx]         . '_' .
+      $clock_str;
+      
+  return  $abstract_id;
+  
+}
+
+ 
+// ***********************************************
+// ****** Single Event within a Leaf: HTML - END ****************  
+// ***********************************************
+
+
+ 
+// ***********************************************
+// ****** Single Event within a Leaf: Latex & PDF & PNG - BEGIN **************  
+// ***********************************************
+  
+ public static function generate_pdf_slides_by_time_range($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                          $institution,
+                                                          $department, 
+                                                          $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
+                                                          $all_schemes) {
+                                                          
+ 
+  $script_depth = '../../../';
+  $slides_folder_slideshow = 'slides/';
+  $events_file_prefix =  'week_';
+  $image_format = '.png';
+
+  //first remove old week files in the final slideshow folder
+  shell_exec('rm ' . $script_depth . $slides_folder_slideshow . $events_file_prefix . '*' . $image_format);
+
+  
+     for ($i = 0; $i < count($all_schemes); $i++) {
+     
+    $leaf_array = Events::get_array_of_leaves( $all_schemes[$i] ); 
+$events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+                                                        $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
+                                                        $leaf_array, $all_schemes, $i);
+    
+
+
+      for ($event_i = 0; $event_i < count($events_in_week); $event_i++)   Events::single_latex_pdf_slide($script_depth, 
+                                                                                                         $slides_folder_slideshow, 
+                                                                                                         $events_file_prefix,
+                                                                                                         $image_format,
+                                                                                                         $events_in_week, 
+                                                                                                         $event_i,
+                                                                                                         $leaf_array,
+                                                                                                         $all_schemes[$i]);
+
+}
+
+
+  
+}
+
+
+ private static function single_latex_pdf_slide($script_depth,
+                                                $slides_folder_slideshow,
+                                                $events_file_prefix,
+                                                $image_format,
+                                                $events_in_week,
+                                                $event_i,
+                                                $discipline_array,
+                                                $scheme) {
+  ///@todo The font &  is not accepted in Latex!
+  
+  
+  
+ $prefix_base = Events::get_prefix_up_to_current_leaf('', $scheme);
+
+//latex file -----------------
+  $slides_folder               = $script_depth . 'events_slides';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
+  $slides_folder_slideshow_pos = '../' . $slides_folder_slideshow;  //folder where all slides are for slideshow (relative path wrt. where they are generated)
+  
+  //   mkdir('slides');              //with PHP
+  shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
+  
+  $tree_string = Events::get_father_scheme_string_from_itself($scheme);
+  $event_filename = $events_file_prefix . $tree_string . '_slide_' . $event_i;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
+  $fp = fopen($slides_folder . '/' . $event_filename . '.tex', 'w');
+//   shell_exec('cd ' . $slides_folder);
+    
+  fwrite($fp, '\documentclass[compress,aspectratio=169]{beamer}' . PHP_EOL);
+    
+ fwrite($fp, '\usepackage[utf8]{inputenc}'. PHP_EOL);
+ fwrite($fp, '\usepackage{verbatim}'. PHP_EOL);
+ fwrite($fp, '\usepackage{graphicx}'. PHP_EOL);
+ fwrite($fp, '\usetheme{CambridgeUS}' . PHP_EOL);
+  fwrite($fp, '\setbeamertemplate{navigation symbols}{}' . PHP_EOL);
+  
+  fwrite($fp, '  \makeatletter                                                                                                                                             ' . PHP_EOL);
+  fwrite($fp, '\setbeamertemplate{footline}{%                                                                                                                              ' . PHP_EOL);
+  fwrite($fp, '  \leavevmode%                                                                                                                                              ' . PHP_EOL);
+  fwrite($fp, '  \hbox{%                                                                                                                                                   ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%                                                               ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{author in head/foot}\insertshortauthor\expandafter\beamer@ifempty\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}       ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%                                                                ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{title in head/foot}\insertshorttitle                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
+  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%                                                                  ' . PHP_EOL);
+  fwrite($fp, '    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}                                                                                        ' . PHP_EOL);
+  fwrite($fp, '    %\insertframenumber{} / \inserttotalframenumber\hspace*{2ex}   %% comment this                                                                          ' . PHP_EOL);
+  fwrite($fp, '  \end{beamercolorbox}}%                                                                                                                                    ' . PHP_EOL);
+  fwrite($fp, '  \vskip0pt%                                                                                                                                                ' . PHP_EOL);
+  fwrite($fp, '}                                                                                                                                                           ' . PHP_EOL);
+  fwrite($fp, '\makeatother                                                                                                                                                ' . PHP_EOL);
+
+//   fwrite($fp, '\setbeamercolor{background canvas}{bg=lightgray}' . PHP_EOL);
+
+  fwrite($fp, '\date{}' . PHP_EOL);
+
+  fwrite($fp, '\begin{document}' . PHP_EOL);
+  fwrite($fp, '\begin{frame}[fragile]' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  
+  
+  fwrite($fp, '\textbf{'/* . PHP_EOL*/);
+  fwrite($fp, '\huge' . PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Events::$title_idx] /*. PHP_EOL*/);
+  fwrite($fp, '}' . PHP_EOL);
+  fwrite($fp, '\vspace{1em}' . PHP_EOL);
+  
+  
+  fwrite($fp, '\begin{columns}' . PHP_EOL);
+
+  fwrite($fp, '\begin{column}{0.55\textwidth}' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  
+  fwrite($fp, '\textbf{' . PHP_EOL);
+//   fwrite($fp, /*$discipline_array[*/$events_in_week[$event_i][Events::$discipline_idx]/*]*/ . PHP_EOL);
+  fwrite($fp, '}' . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  
+//-------------
+  fwrite($fp, '\textbf{' . PHP_EOL);
+  fwrite($fp, '\large ');
+  fwrite($fp, Normalizer::normalize($events_in_week[$event_i][Events::$speaker_idx]) . PHP_EOL); //need to recompile php with --enable-intl
+//   fwrite($fp, $events_in_week[$event_i][Events::$speaker_idx] . PHP_EOL);
+  fwrite($fp, '}' . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Events::$speaker_department_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Events::$speaker_institution_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+//-------------
+
+  fwrite($fp, '\vspace{2em}' . PHP_EOL);
+
+//-------------
+  $year = $events_in_week[$event_i][Events::$year_idx];
+  $month = $events_in_week[$event_i][Events::$month_idx];
+  $day = $events_in_week[$event_i][Events::$day_idx];
+  $week_day = Events::compute_week_day($year, $month, $day);
+  fwrite($fp, '\textbf{' . PHP_EOL);
+  fwrite($fp, $week_day);
+  fwrite($fp, ', ');
+  fwrite($fp, Events::$months_conv_long[$events_in_week[$event_i][Events::$month_idx] ] /*. PHP_EOL*/);
+  fwrite($fp, ' ');
+  fwrite($fp, $events_in_week[$event_i][Events::$day_idx] . PHP_EOL);
+  fwrite($fp, '}' . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Events::$time_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, $events_in_week[$event_i][Events::$room_idx] . PHP_EOL);
+  fwrite($fp, PHP_EOL);
+//-------------
+
+fwrite($fp, '\end{column}' . PHP_EOL);
+
+  fwrite($fp, '\begin{column}{0.45\textwidth}' . PHP_EOL);
+  fwrite($fp, '\centering' . PHP_EOL);
+  
+// ---------------------------------  
+//copy the file over to ease export to other computers
+  shell_exec('cp '  .  '../../' . $prefix_base /* path from where the command is launched!!!*/.  
+             $events_in_week[$event_i][Events::$discipline_idx] . '/' . 
+             $events_in_week[$event_i][Events::$year_idx] . '/' . 
+             $events_in_week[$event_i][Events::$semester_idx]  . '/' . Events::$images_folder . $events_in_week[$event_i][Events::$speaker_image_idx] . ' ./' . $slides_folder);
+  fwrite($fp, '\includegraphics[width=0.7\textwidth]{' .   /*$slides_folder . '/' .*/ $events_in_week[$event_i][Events::$speaker_image_idx]  . '}' . PHP_EOL);
+  
+//including the file without copying it
+//   fwrite($fp, '\includegraphics[width=0.7\textwidth]{' .  '../../' . $prefix_base /* path from where the command is launched!!!*/.  
+//              $events_in_week[$event_i][Events::$discipline_idx] . '/' . 
+//              $events_in_week[$event_i][Events::$year_idx] . '/' . 
+//              $events_in_week[$event_i][Events::$semester_idx]  . '/' . Events::$images_folder . $events_in_week[$event_i][Events::$speaker_image_idx]  . '}' . PHP_EOL);
+// ---------------------------------  
+
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, '\end{column}' . PHP_EOL);
+  
+  fwrite($fp, '\end{columns}' . PHP_EOL);
+
+  fwrite($fp, PHP_EOL);
+
+  fwrite($fp, PHP_EOL);
+  fwrite($fp, '\end{frame}' . PHP_EOL);
+ 
+ 
+  fwrite($fp, '\end{document}' . PHP_EOL);
+
+  fclose($fp);
+
+// ---------------------------------  
+//enter inside the slides folder each time for a shorter compile command (need all the shell commands to be in the SAME shell_exec, because separate ones would be independent and restart from the original path)
+// Here, I am both generating the PDF and converting to PNG !
+// Also, I am copying them to the slides/ folder
+  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $event_filename . '.tex ' . ';' . 'pdftoppm ' . $event_filename . '.pdf ' .  $event_filename . ' -singlefile -png -r 300' . ';' . 'cp ' . $event_filename . $image_format . ' ' . $slides_folder_slideshow_pos . ';' . 'cd ..');
+  
+//   $output =  shell_exec('pdflatex '  . ' -output-directory ' . $slides_folder . ' ' .  $slides_folder . '/' . $event_filename . '.tex ' . PHP_EOL );
+// ---------------------------------  
+
+  printf($output);
+ 
+ }
+ 
+ 
+ 
+// ***********************************************
+// ****** Single Event within a Leaf: Latex & PDF & PNG - END ****************  
+// ***********************************************
+
+
+
 
 // ***********************************************
 // ****** All webpages: HTML head - BEGIN ****************  
@@ -782,7 +1265,7 @@ public static function set_html_head($library_path, $title_in_toolbar, $icon_in_
 //So it is muuuuch better in the end to use the function!
 
 
-$description = "Events";
+$description = Events::$general_title;
 $author = "Giorgio Bornia";
 
  Events::set_meta($description, $author);
@@ -876,10 +1359,6 @@ private static function set_jquery_lib() {
 
 private static function set_bootstrap_css_and_javascript_libs() {
 
-// //  Latest compiled and minified CSS
-//  echo '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">';
-// //  Latest compiled JavaScript 
-//  echo '<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>';
 
  echo '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">';
 
@@ -1188,489 +1667,9 @@ private static function set_browser_toolbar($title, $icon_in_toolbar) {
 // ***********************************************
 
 
-// ***********************************************
-// ****** Single Event: HTML - BEGIN ****************  
-// ***********************************************
-
-
-private static function set_event_day($events_map, $row) {
-
-
-    $year = $events_map[$row][Events::$year_idx];
-    $month = $events_map[$row][Events::$month_idx];
-    $day = $events_map[$row][Events::$day_idx];
-    
-    $week_day = Events::compute_week_day($year, $month, $day);
-
-    echo '<td width="100px">';
-
-    echo "<strong>";
-    echo  $week_day  . " <br/> " . Events::$months_conv[ $events_map[$row][Events::$month_idx] ] . " " . $events_map[$row][Events::$day_idx];
-    echo "</strong>";
-    
-    echo '<br/>';
-    
-    
-    echo "<em>";
-    echo $events_map[$row][Events::$time_idx];
-    echo "</em>";
-    
-    echo '<br/>';
-    echo /*"room "  .*/  $events_map[$row][Events::$room_idx] ;
-    echo "<br>";
-    
-    echo '</td>';
-
-}
-
-
-private static function set_event_details($events_map, $row, 
-                                          $discipline_array, $bool_print_discipline, 
-                                          $toggle_abstract_id, $arrow_abstract_id) {
-
-    
-    echo '<td>';
-
-   if ( $bool_print_discipline == true ) {                                
-      echo "<strong>";
-      //name of the current leaf
-        echo $discipline_array[ $events_map[$row][Events::$discipline_idx] ];
-      echo "</strong>";
-      echo "<br>";
-    }
-    
-
-    echo '<a  id=' . '"' .  $toggle_abstract_id . '"';
-    echo '  style="cursor: pointer; text-decoration: underline; " ';    ///@todo I want to give this the same color as an <a> tag with href= instead of id=
-    echo '>'; 
-    
-    echo '<em style="padding-right: 5px">';   ///with this padding we add a space that doesn't get underlined although the text is. An alternative would be to put the 'underline' as a style of <em> instead of <a>
-    echo $events_map[$row][Events::$title_idx];
-    echo '</em>';
-        
-    echo '<i id=' . '"' .  $arrow_abstract_id . '"' . ' class="arrow_down"></i>';
-    
-    echo '</a>';
-    
-    
-    echo "<br>";
-
-    
-    ///@todo: see if I can make this be
-      //     - a link if href is non-empty in the csv file 
-      //     - NOT a link otherwise
-    echo '<a   style="cursor: pointer; text-decoration: none;"';
-//     echo ' target="_blank" ';
-    echo 'href=' . '"' .  $events_map[$row][Events::$speaker_url_idx]  .  '"' . '>';
-    echo $events_map[$row][Events::$speaker_idx];
-    echo '</a>';
-    echo "<br>";
-    echo  $events_map[$row][Events::$speaker_department_idx];
-    if ($events_map[$row][Events::$speaker_department_idx] != '' && $events_map[$row][Events::$speaker_institution_idx] != '') echo ', ';
-    echo $events_map[$row][Events::$speaker_institution_idx];
-    
-    echo "<br>";
-    
-    
-    echo '</td>';
-      
-
-}
-
-
-
-
-private static function set_event_image($remote_path_prefix,
-                                        $local_path_prefix,
-                                        $are_input_files_local,
-                                        $images_folder,
-                                        $events_map,
-                                        $row,
-                                                   $all_schemes,
-                                                   $father_scheme_idx)  {
-                                        
-                                        
- $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
-
- $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
-
-   echo '<td>'; 
-   
-   echo '<img class="' . Events::$sem_image . '" ' .  'src="' .
-     $prefix . 
-     $after_prefix .
-     $events_map[$row][Events::$discipline_idx] . '/' .  
-     $events_map[$row][Events::$year_idx] . '/' . 
-     $events_map[$row][Events::$semester_idx]  . '/' . 
-     $images_folder . '/' . 
-     $events_map[$row][Events::$speaker_image_idx] . '" alt="image">';
-     
-   echo '</td>';
-    
-    }
-
-
-private static function set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                    $images_folder,
-                                                    $events_map,
-                                                    $row,
-                                                    $discipline_array, $bool_print_discipline,
-                                                    $toggle_abstract_id,
-                                                    $arrow_abstract_id,
-                                                   $all_schemes,
-                                                   $father_scheme_idx) {
-
-
-    echo '<table class="' . Events::$sem_item . '">';
-    
-    
-    echo '<td>';
-     
-     echo ' <table id="switch_col">';
-
-     Events::set_event_image($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                               $images_folder, $events_map, $row,
-                                                   $all_schemes,
-                                                   $father_scheme_idx);
-    
-     Events::set_event_day($events_map, $row);
-     
-     echo ' </table>';
-    
-    echo ' </td>';
-    
-
-    Events::set_event_details($events_map, $row, $discipline_array, $bool_print_discipline, 
-                                $toggle_abstract_id, $arrow_abstract_id);
-    
-    
-    echo '</table>';
-
-
-
-}
-
-
-
-private static function set_abstract($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                     $abstracts_folder,
-                                     $events_map,
-                                     $row,
-                                     $toggle_abstract_id,
-                                     $arrow_abstract_id,
-                                     $all_schemes,
-                                     $father_scheme_idx) {
-                                     
-//   $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
-   $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
-
- $file_to_parse = $prefix_base . $leaf_topic . '/' . $year . '/' . $semester . '/' . Events::$events_file;
-
- 
- $abstract_id = Events::set_abstract_id_and_its_toggle($events_map, $row, '');
-    
-
- $abstract_field = $events_map[$row][Events::$abstract_file_idx];
-    
- $arr1 = explode(' ',trim($abstract_field));
- $txt_found = stristr($abstract_field,Events::$about_file_extension);  //case-insensitive match
-//     if (!($txt_found)) echo "---";  //it is either empty or it contains information
-
-    $abstract_path =
-    $after_prefix . 
-    $events_map[$row][Events::$discipline_idx] . '/' .  
-    $events_map[$row][Events::$year_idx] . '/' . 
-    $events_map[$row][Events::$semester_idx] . '/' . 
-    $abstracts_folder . $events_map[$row][Events::$abstract_file_idx];
-
-//----------------    
-    echo '<span ';   ///@todo make this span CENTERED
-    
-    echo ' id=' . '"' . $abstract_id . '"'; 
-    
-    echo ' style="display: none;"';
-    
-    echo '>';
-    
-    if (!($txt_found)) echo $abstract_field;
-    else               Events::include_file( $remote_path_prefix, $local_path_prefix, $abstract_path, $are_input_files_local);
-    
-    echo '</span>';
-//----------------    
-
-
-
-// ********************
-// on click over the title identified by $toggle_abstract_id, toggle the abstract span (I think a simple toggle means turn on or off the whole object)
-    echo '<script>';
-
-    echo '
-      $(document).ready(
-        function() {';
-      
-     echo '
-       $("a#' . $toggle_abstract_id . '").click(';
-       
-     echo '
-       function() {
-          $("span#' . $abstract_id . '").toggle();
-          $("i#' . $arrow_abstract_id . '").toggleClass("arrow_up");
-        }
-      );';    //end click
-      
-      
-    echo '
-       }
-     );';  //end ready
-
-  
-   echo '</script>';
-// ********************
- 
- }
-
- 
-
-private static function set_abstract_id_and_its_toggle($events_map, $row, $base_str) {
-
-  $clock_str = $events_map[$row][Events::$time_idx];
-  $clock_str = str_replace(' ', '_', $clock_str);
-  $clock_str = str_replace(':', '_', $clock_str);
-  
-
-    $abstract_id = $base_str . 'abst_' .
-      $events_map[$row][Events::$discipline_idx]  . '_' . 
-      $events_map[$row][Events::$year_idx]        . '_' .
-      $events_map[$row][Events::$month_idx]       . '_' . 
-      $events_map[$row][Events::$day_idx]         . '_' .
-      $clock_str;
-      
-  return  $abstract_id;
-  
-}
-
- 
-// ***********************************************
-// ****** Single Event: HTML - END ****************  
-// ***********************************************
-
-
- 
-// ***********************************************
-// ****** Single Event: Latex & PDF & PNG - BEGIN **************  
-// ***********************************************
-  
- public static function generate_pdf_slides_by_time_range($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                          $institution,
-                                                          $department, 
-                                                          $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                                          $all_schemes) {
-                                                          
- 
-  $script_depth = '../../../';
-  $slides_folder_slideshow = 'slides/';
-  $events_file_prefix =  'week_';
-  $image_format = '.png';
-
-  //first remove old week files in the final slideshow folder
-  shell_exec('rm ' . $script_depth . $slides_folder_slideshow . $events_file_prefix . '*' . $image_format);
-
-  
-     for ($i = 0; $i < count($all_schemes); $i++) {
-     
-    $leaf_array = Events::get_array_of_leaves( $all_schemes[$i] ); 
-$events_in_week =  Events::parse_all_event_tables_single_leaf($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
-                                                        $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
-                                                        $leaf_array, $all_schemes, $i);
-    
-
-
-      for ($event_i = 0; $event_i < count($events_in_week); $event_i++)   Events::single_latex_pdf_slide($script_depth, 
-                                                                                                         $slides_folder_slideshow, 
-                                                                                                         $events_file_prefix,
-                                                                                                         $image_format,
-                                                                                                         $events_in_week, 
-                                                                                                         $event_i,
-                                                                                                         $leaf_array,
-                                                                                                         $all_schemes[$i]);
-
-}
-
-
-  
-}
-
-
- private static function single_latex_pdf_slide($script_depth,
-                                                $slides_folder_slideshow,
-                                                $events_file_prefix,
-                                                $image_format,
-                                                $events_in_week,
-                                                $event_i,
-                                                $discipline_array,
-                                                $scheme) {
-  ///@todo The font &  is not accepted in Latex!
-  
-  
-  
- $prefix_base = Events::get_prefix_up_to_current_leaf('', $scheme);
-
-//latex file -----------------
-  $slides_folder               = $script_depth . 'events_slides';    //this allows to have the slide files be out-of-source (out of the tracked git repo)
-  $slides_folder_slideshow_pos = '../' . $slides_folder_slideshow;  //folder where all slides are for slideshow (relative path wrt. where they are generated)
-  
-  //   mkdir('slides');              //with PHP
-  shell_exec('mkdir -p ' . $slides_folder);  //with SHELL
-  
-  $tree_string = Events::get_father_scheme_string_from_itself($scheme);
-  $event_filename = $events_file_prefix . $tree_string . '_slide_' . $event_i;    //the prefix 'week_' allows us to distinguish these files from the 'permanent_' slides!
-  $fp = fopen($slides_folder . '/' . $event_filename . '.tex', 'w');
-//   shell_exec('cd ' . $slides_folder);
-    
-  fwrite($fp, '\documentclass[compress,aspectratio=169]{beamer}' . PHP_EOL);
-    
- fwrite($fp, '\usepackage[utf8]{inputenc}'. PHP_EOL);
- fwrite($fp, '\usepackage{verbatim}'. PHP_EOL);
- fwrite($fp, '\usepackage{graphicx}'. PHP_EOL);
- fwrite($fp, '\usetheme{CambridgeUS}' . PHP_EOL);
-  fwrite($fp, '\setbeamertemplate{navigation symbols}{}' . PHP_EOL);
-  
-  fwrite($fp, '  \makeatletter                                                                                                                                             ' . PHP_EOL);
-  fwrite($fp, '\setbeamertemplate{footline}{%                                                                                                                              ' . PHP_EOL);
-  fwrite($fp, '  \leavevmode%                                                                                                                                              ' . PHP_EOL);
-  fwrite($fp, '  \hbox{%                                                                                                                                                   ' . PHP_EOL);
-  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%                                                               ' . PHP_EOL);
-  fwrite($fp, '    \usebeamerfont{author in head/foot}\insertshortauthor\expandafter\beamer@ifempty\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}       ' . PHP_EOL);
-  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
-  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%                                                                ' . PHP_EOL);
-  fwrite($fp, '    \usebeamerfont{title in head/foot}\insertshorttitle                                                                                                     ' . PHP_EOL);
-  fwrite($fp, '  \end{beamercolorbox}%                                                                                                                                     ' . PHP_EOL);
-  fwrite($fp, '  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%                                                                  ' . PHP_EOL);
-  fwrite($fp, '    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}                                                                                        ' . PHP_EOL);
-  fwrite($fp, '    %\insertframenumber{} / \inserttotalframenumber\hspace*{2ex}   %% comment this                                                                          ' . PHP_EOL);
-  fwrite($fp, '  \end{beamercolorbox}}%                                                                                                                                    ' . PHP_EOL);
-  fwrite($fp, '  \vskip0pt%                                                                                                                                                ' . PHP_EOL);
-  fwrite($fp, '}                                                                                                                                                           ' . PHP_EOL);
-  fwrite($fp, '\makeatother                                                                                                                                                ' . PHP_EOL);
-
-//   fwrite($fp, '\setbeamercolor{background canvas}{bg=lightgray}' . PHP_EOL);
-
-  fwrite($fp, '\date{}' . PHP_EOL);
-
-  fwrite($fp, '\begin{document}' . PHP_EOL);
-  fwrite($fp, '\begin{frame}[fragile]' . PHP_EOL);
-  fwrite($fp, '\centering' . PHP_EOL);
-  
-  
-  fwrite($fp, '\textbf{'/* . PHP_EOL*/);
-  fwrite($fp, '\huge' . PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Events::$title_idx] /*. PHP_EOL*/);
-  fwrite($fp, '}' . PHP_EOL);
-  fwrite($fp, '\vspace{1em}' . PHP_EOL);
-  
-  
-  fwrite($fp, '\begin{columns}' . PHP_EOL);
-
-  fwrite($fp, '\begin{column}{0.55\textwidth}' . PHP_EOL);
-  fwrite($fp, '\centering' . PHP_EOL);
-  
-  fwrite($fp, '\textbf{' . PHP_EOL);
-//   fwrite($fp, /*$discipline_array[*/$events_in_week[$event_i][Events::$discipline_idx]/*]*/ . PHP_EOL);
-  fwrite($fp, '}' . PHP_EOL);
-  fwrite($fp, PHP_EOL);
-  
-//-------------
-  fwrite($fp, '\textbf{' . PHP_EOL);
-  fwrite($fp, '\large ');
-  fwrite($fp, Normalizer::normalize($events_in_week[$event_i][Events::$speaker_idx]) . PHP_EOL); //need to recompile php with --enable-intl
-//   fwrite($fp, $events_in_week[$event_i][Events::$speaker_idx] . PHP_EOL);
-  fwrite($fp, '}' . PHP_EOL);
-  fwrite($fp, PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Events::$speaker_department_idx] . PHP_EOL);
-  fwrite($fp, PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Events::$speaker_institution_idx] . PHP_EOL);
-  fwrite($fp, PHP_EOL);
-//-------------
-
-  fwrite($fp, '\vspace{2em}' . PHP_EOL);
-
-//-------------
-  $year = $events_in_week[$event_i][Events::$year_idx];
-  $month = $events_in_week[$event_i][Events::$month_idx];
-  $day = $events_in_week[$event_i][Events::$day_idx];
-  $week_day = Events::compute_week_day($year, $month, $day);
-  fwrite($fp, '\textbf{' . PHP_EOL);
-  fwrite($fp, $week_day);
-  fwrite($fp, ', ');
-  fwrite($fp, Events::$months_conv_long[$events_in_week[$event_i][Events::$month_idx] ] /*. PHP_EOL*/);
-  fwrite($fp, ' ');
-  fwrite($fp, $events_in_week[$event_i][Events::$day_idx] . PHP_EOL);
-  fwrite($fp, '}' . PHP_EOL);
-  fwrite($fp, PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Events::$time_idx] . PHP_EOL);
-  fwrite($fp, PHP_EOL);
-  fwrite($fp, $events_in_week[$event_i][Events::$room_idx] . PHP_EOL);
-  fwrite($fp, PHP_EOL);
-//-------------
-
-fwrite($fp, '\end{column}' . PHP_EOL);
-
-  fwrite($fp, '\begin{column}{0.45\textwidth}' . PHP_EOL);
-  fwrite($fp, '\centering' . PHP_EOL);
-  
-// ---------------------------------  
-//copy the file over to ease export to other computers
-  shell_exec('cp '  .  '../../' . $prefix_base /* path from where the command is launched!!!*/.  
-             $events_in_week[$event_i][Events::$discipline_idx] . '/' . 
-             $events_in_week[$event_i][Events::$year_idx] . '/' . 
-             $events_in_week[$event_i][Events::$semester_idx]  . '/' . Events::$images_folder . $events_in_week[$event_i][Events::$speaker_image_idx] . ' ./' . $slides_folder);
-  fwrite($fp, '\includegraphics[width=0.7\textwidth]{' .   /*$slides_folder . '/' .*/ $events_in_week[$event_i][Events::$speaker_image_idx]  . '}' . PHP_EOL);
-  
-//including the file without copying it
-//   fwrite($fp, '\includegraphics[width=0.7\textwidth]{' .  '../../' . $prefix_base /* path from where the command is launched!!!*/.  
-//              $events_in_week[$event_i][Events::$discipline_idx] . '/' . 
-//              $events_in_week[$event_i][Events::$year_idx] . '/' . 
-//              $events_in_week[$event_i][Events::$semester_idx]  . '/' . Events::$images_folder . $events_in_week[$event_i][Events::$speaker_image_idx]  . '}' . PHP_EOL);
-// ---------------------------------  
-
-  fwrite($fp, PHP_EOL);
-  fwrite($fp, '\end{column}' . PHP_EOL);
-  
-  fwrite($fp, '\end{columns}' . PHP_EOL);
-
-  fwrite($fp, PHP_EOL);
-
-  fwrite($fp, PHP_EOL);
-  fwrite($fp, '\end{frame}' . PHP_EOL);
- 
- 
-  fwrite($fp, '\end{document}' . PHP_EOL);
-
-  fclose($fp);
-
-// ---------------------------------  
-//enter inside the slides folder each time for a shorter compile command (need all the shell commands to be in the SAME shell_exec, because separate ones would be independent and restart from the original path)
-// Here, I am both generating the PDF and converting to PNG !
-// Also, I am copying them to the slides/ folder
-  $output =  shell_exec('cd ' .  $slides_folder . ';' . 'pdflatex '  . $event_filename . '.tex ' . ';' . 'pdftoppm ' . $event_filename . '.pdf ' .  $event_filename . ' -singlefile -png -r 300' . ';' . 'cp ' . $event_filename . $image_format . ' ' . $slides_folder_slideshow_pos . ';' . 'cd ..');
-  
-//   $output =  shell_exec('pdflatex '  . ' -output-directory ' . $slides_folder . ' ' .  $slides_folder . '/' . $event_filename . '.tex ' . PHP_EOL );
-// ---------------------------------  
-
-  printf($output);
- 
- }
- 
- 
- 
-// ***********************************************
-// ****** Single Event: Latex & PDF & PNG - END ****************  
-// ***********************************************
-
-
 
 // ***********************************************
-// ****** Week Lists - BEGIN ****************  
+// ****** Time: Week Lists - BEGIN ****************  
 // ***********************************************
 
 
@@ -1898,32 +1897,6 @@ $present_day_begin   = $month_and_day_begin_end[0][1];
 
 
 
-
-public static function generate_initial_week_files($year_in, $month_begin, $day_begin, $month_end, $day_end, $src_file, $folder_out) {
-//@todo To use this function, temporarily give Write access to all in the containing folder, and clean the output folder week/
-// then, do a chown to remove the web user
-// Actually we do this with a shell script too
-
- $sort_weeks_list = SORT_DESC; //here ascending or descending is equivalent
- $months_and_days = Events::generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end, $sort_weeks_list);
-
-    for ($index = 0; $index < count($months_and_days); $index++) {
-    
-    $destination = $months_and_days[$index][0] . '_' . $months_and_days[$index][1] .'.php';
-    
-    $destination = $folder_out . $destination;
-//     echo ' ' . $src_file . ' ' . $destination;
-     if(!copy($src_file, $destination)) { echo ' copy failed; you may have a permission issue on the directory where you are trying to write (the web user has his own permissions). Also, if the file already exists the copy may not work'; }
-    
-    
-}
-
-
-
-
-}
-
-
  
  
 private static function loop_over_semester_weeks($year, $week_month_day_begin) {
@@ -1983,8 +1956,34 @@ private static function loop_over_semester_weeks($year, $week_month_day_begin) {
 
 
 
+public static function generate_initial_week_files($year_in, $month_begin, $day_begin, $month_end, $day_end, $src_file, $folder_out) {
+//@todo To use this function, temporarily give Write access to all in the containing folder, and clean the output folder week/
+// then, do a chown to remove the web user
+// Actually we do this with a shell script too
+
+ $sort_weeks_list = SORT_DESC; //here ascending or descending is equivalent
+ $months_and_days = Events::generate_initial_week_days($year_in, $month_begin, $day_begin, $month_end, $day_end, $sort_weeks_list);
+
+    for ($index = 0; $index < count($months_and_days); $index++) {
+    
+    $destination = $months_and_days[$index][0] . '_' . $months_and_days[$index][1] .'.php';
+    
+    $destination = $folder_out . $destination;
+//     echo ' ' . $src_file . ' ' . $destination;
+     if(!copy($src_file, $destination)) { echo ' copy failed; you may have a permission issue on the directory where you are trying to write (the web user has his own permissions). Also, if the file already exists the copy may not work'; }
+    
+    
+}
+
+
+
+
+}
+
+
+
 // ***********************************************
-// ****** Week Lists - END ****************  
+// ****** Time: Week Lists - END ****************  
 // ***********************************************
 
 
@@ -2559,6 +2558,77 @@ private static function isDr($degree) {
 // ****** Tools: Time functions - BEGIN ****************  
 // ***********************************************
 
+ 
+public static function get_month_days($year) { 
+
+   $is_leap = $year % 4;
+   
+   $month_days = array();
+   
+   if($is_leap != 0) $month_days = Events::$month_days_non_leap;
+   else             $month_days = Events::$month_days_leap;
+   
+   return $month_days;
+   
+ }
+ 
+
+public static function get_month_string($number) { 
+
+  return Events::$months_conv[$number];
+
+}
+
+
+
+public static function compute_containing_week_from_monday_to_sunday_starting_from_current_day($current_or_following) {
+
+   $current_day_info = Events::compute_current_day_info();
+   
+   $year  = $current_day_info[0];
+   $month = $current_day_info[1];
+   $day   = $current_day_info[2];
+
+   $month_and_day_begin_end = array();
+   
+   $month_and_day_begin_end = Events::compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following);
+
+   return $month_and_day_begin_end;
+}
+
+
+
+public static function compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following) {
+//    We can either compute the current week or the following week
+
+   $week_day = Events::compute_week_day_number($year, $month, $day);
+ 
+   $sequential_current = Events::compute_day_sequential_number($year, $month, $day);
+
+  $month_and_day_begin_end = array();
+  
+  $sequential_week_begin = 0;
+
+        if ($current_or_following == "current")   {    $sequential_week_begin =  $sequential_current - $week_day ;      }
+   else if ($current_or_following == "following") {    $sequential_week_begin =  $sequential_current - $week_day + 7;  }
+
+   
+   $month_and_day_begin = Events::compute_month_and_day_from_sequential_number($year, $sequential_week_begin);   // go from sequential back to year month day
+   
+   array_push($month_and_day_begin_end, $month_and_day_begin);
+   
+   
+   $offset_wanted = 6; //I want from Monday to Sunday
+   
+   $month_and_day_end   = Events::compute_subsequent_day_with_offset($year, $month_and_day_begin[0], $month_and_day_begin[1], $offset_wanted);
+
+   array_push($month_and_day_begin_end, $month_and_day_end);
+
+
+   return $month_and_day_begin_end;
+} 
+
+
 
 private static function compute_week_day_number($year_in, $month_in, $day_in) {
 
@@ -2718,28 +2788,6 @@ private static function compute_day_sequential_number($year, $month, $day) {
    
  }
  
- 
-public static function get_month_days($year) { 
-
-   $is_leap = $year % 4;
-   
-   $month_days = array();
-   
-   if($is_leap != 0) $month_days = Events::$month_days_non_leap;
-   else             $month_days = Events::$month_days_leap;
-   
-   return $month_days;
-   
- }
- 
-
-public static function get_month_string($number) { 
-
-  return Events::$months_conv[$number];
-
-}
-
-
 
  
 private static function compute_current_day_info() {
@@ -2756,55 +2804,6 @@ private static function compute_current_day_info() {
 } 
 
 
-public static function compute_containing_week_from_monday_to_sunday_starting_from_current_day($current_or_following) {
-
-   $current_day_info = Events::compute_current_day_info();
-   
-   $year  = $current_day_info[0];
-   $month = $current_day_info[1];
-   $day   = $current_day_info[2];
-
-   $month_and_day_begin_end = array();
-   
-   $month_and_day_begin_end = Events::compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following);
-
-   return $month_and_day_begin_end;
-}
-
-
-
-public static function compute_containing_week_from_monday_to_sunday_starting_from_arbitrary_day($year, $month, $day, $current_or_following) {
-//    We can either compute the current week or the following week
-
-   $week_day = Events::compute_week_day_number($year, $month, $day);
- 
-   $sequential_current = Events::compute_day_sequential_number($year, $month, $day);
-
-  $month_and_day_begin_end = array();
-  
-  $sequential_week_begin = 0;
-
-        if ($current_or_following == "current")   {    $sequential_week_begin =  $sequential_current - $week_day ;      }
-   else if ($current_or_following == "following") {    $sequential_week_begin =  $sequential_current - $week_day + 7;  }
-
-   
-   $month_and_day_begin = Events::compute_month_and_day_from_sequential_number($year, $sequential_week_begin);   // go from sequential back to year month day
-   
-   array_push($month_and_day_begin_end, $month_and_day_begin);
-   
-   
-   $offset_wanted = 6; //I want from Monday to Sunday
-   
-   $month_and_day_end   = Events::compute_subsequent_day_with_offset($year, $month_and_day_begin[0], $month_and_day_begin[1], $offset_wanted);
-
-   array_push($month_and_day_begin_end, $month_and_day_end);
-
-
-   return $month_and_day_begin_end;
-} 
-
-
-
 // ***********************************************
 // ****** Tools: Time functions - END ****************  
 // ***********************************************
@@ -2812,7 +2811,7 @@ public static function compute_containing_week_from_monday_to_sunday_starting_fr
 
 
 // ***********************************************
-// ****** Tools - BEGIN ****************  
+// ****** Tools: Webpage rendering - BEGIN ****************  
 // ***********************************************
 
 private static function test_table() {
@@ -2829,26 +2828,18 @@ private static function test_table() {
                                             
 }                                           
 
+// ***********************************************
+// ****** Tools: Webpage rendering - END ****************  
+// ***********************************************
 
+
+// ***********************************************
+// ****** Tools: Directory structure - BEGIN ****************  
+// ***********************************************
  
- 
-private static function get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local) {
-//this is the prefix wrt. the main folder
-
-  $prefix = '';
-
- if ($are_input_files_local == true) { $prefix = $local_path_prefix  /*. '/'*/; }  ///@todo these paths MUST already have a slash in them; I should do a function that checks this
- else {                                $prefix = $remote_path_prefix /*. '/'*/; }  ///@todo putting an additional '/' is actually not always a good idea
-
- return $prefix;
-
-}
 
 
- 
- 
- 
-  public static function get_path_components_from_the_end($file_in, $starting_pos_from_end, $how_many_backwards) {
+public static function get_path_components_from_the_end($file_in, $starting_pos_from_end, $how_many_backwards) {
  //retrieve the information from the path 
  
  $delimiter = '/';
@@ -2862,32 +2853,7 @@ private static function get_prefix($remote_path_prefix, $local_path_prefix, $are
 
  }
 
- 
 
- public static function get_string_components_from_the_end($delimiter, $string_in, $starting_pos_from_end, $how_many_backwards) {
- 
- $explosion = explode($delimiter, $string_in);
- 
- $array = Events::get_array_components_from_the_end($explosion, $starting_pos_from_end, $how_many_backwards);
-
- return $array;
-
- }
- 
- 
- 
-  public static function get_array_components_from_the_end($array_in, $starting_pos_from_end, $how_many_backwards) {
-  
-  $array = array();
-  
-  for ($i = 0; $i < $how_many_backwards; $i++) {
-      $array[$i] = $array_in[count($array_in) - 1 - $starting_pos_from_end - $i];
-  }
-
-  return $array;
-
- }
- 
 
 public static function redirect_page_with_path($redir_path) {
 ///@todo see if you can even avoid generating the index page
@@ -2949,16 +2915,6 @@ public static function include_file($remote_path_prefix, $local_path_prefix, $fi
 
 
 
-
-private static function capitalize($string) {
-
-  $string_cap = ucfirst($string);
-  
-  return $string_cap;
-
- }
-
- 
  
 private static function go_up($directory_levels) {
 
@@ -2971,48 +2927,24 @@ private static function go_up($directory_levels) {
 }
 
 
+private static function get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local) {
+//this is the prefix wrt. the main folder
 
-private static function convert_to_associative_array($array_in) {
+  $prefix = '';
 
-//convert a normal array of arrays into an associative array having the first column as key and the remaining ones as value
+ if ($are_input_files_local == true) { $prefix = $local_path_prefix  /*. '/'*/; }  ///@todo these paths MUST already have a slash in them; I should do a function that checks this
+ else {                                $prefix = $remote_path_prefix /*. '/'*/; }  ///@todo putting an additional '/' is actually not always a good idea
 
- $assoc_array = array();
-  
-  for ($i = 0; $i < count($array_in); $i++) {
-   
-   $array_shifted = array_slice($array_in[$i], 1);
-   
-   $assoc_array[ $array_in[$i][0] ] = $array_shifted;
-   
-  }
+ return $prefix;
 
-  return $assoc_array;
-  
 }
 
 
- private static function sort_array_of_arrays_based_on_one_index(& $array_of_arrays, $index, $sort_order) {
- 
-//  $index: column index with respect to which you intend to sort
-//  $sort_order: SORT_ASC, SORT_DESC, ...
- 
-  $temp_column = array();
-    
-  foreach ($array_of_arrays as $key => $row) {
-    $temp_column[$key] = $row[$index];
-  }
-
-  array_multisort($temp_column, $sort_order, $array_of_arrays);
-  //in practice the first array is sorted, and the second one is sorted the same way as the first
-
- }
-
-
-
 // ***********************************************
-// ****** Tools - END ****************  
+// ****** Tools: Directory structure - END ****************  
 // ***********************************************
- 
+
+
 
 // ***********************************************
 // ****** Tools: CSV reading - BEGIN ****************  
@@ -3059,6 +2991,98 @@ private static function read_events_file_and_attach_topic_year_semester($prefix,
 
 // ***********************************************
 // ****** Tools: CSV reading - END ****************  
+// ***********************************************
+
+
+
+// ***********************************************
+// ****** Tools: PHP Strings - BEGIN ****************  
+// ***********************************************
+ 
+
+ public static function get_string_components_from_the_end($delimiter, $string_in, $starting_pos_from_end, $how_many_backwards) {
+ 
+ $explosion = explode($delimiter, $string_in);
+ 
+ $array = Events::get_array_components_from_the_end($explosion, $starting_pos_from_end, $how_many_backwards);
+
+ return $array;
+
+ }
+
+
+
+private static function capitalize($string) {
+
+  $string_cap = ucfirst($string);
+  
+  return $string_cap;
+
+ }
+ 
+// ***********************************************
+// ****** Tools: PHP Strings - END ****************  
+// ***********************************************
+ 
+ 
+// ***********************************************
+// ****** Tools: PHP Arrays - BEGIN ****************  
+// ***********************************************
+ 
+ 
+  public static function get_array_components_from_the_end($array_in, $starting_pos_from_end, $how_many_backwards) {
+  
+  $array = array();
+  
+  for ($i = 0; $i < $how_many_backwards; $i++) {
+      $array[$i] = $array_in[count($array_in) - 1 - $starting_pos_from_end - $i];
+  }
+
+  return $array;
+
+ }
+ 
+ 
+ 
+private static function convert_to_associative_array($array_in) {
+
+//convert a normal array of arrays into an associative array having the first column as key and the remaining ones as value
+
+ $assoc_array = array();
+  
+  for ($i = 0; $i < count($array_in); $i++) {
+   
+   $array_shifted = array_slice($array_in[$i], 1);
+   
+   $assoc_array[ $array_in[$i][0] ] = $array_shifted;
+   
+  }
+
+  return $assoc_array;
+  
+}
+
+
+ private static function sort_array_of_arrays_based_on_one_index(& $array_of_arrays, $index, $sort_order) {
+ 
+//  $index: column index with respect to which you intend to sort
+//  $sort_order: SORT_ASC, SORT_DESC, ...
+ 
+  $temp_column = array();
+    
+  foreach ($array_of_arrays as $key => $row) {
+    $temp_column[$key] = $row[$index];
+  }
+
+  array_multisort($temp_column, $sort_order, $array_of_arrays);
+  //in practice the first array is sorted, and the second one is sorted the same way as the first
+
+ }
+
+
+
+// ***********************************************
+// ****** Tools: PHP Arrays - END ****************  
 // ***********************************************
 
 
