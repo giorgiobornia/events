@@ -276,8 +276,8 @@ echo '</head>';
  
  Events::main_banner($title, $department, $institution);
  
- 
-  echo '<h3> &nbsp <strong> ' . Events::capitalize($semester) . ' ' . $year . ': ' . Events::$months_conv[$month_begin] . ' ' . $day_begin  . ' - ' . Events::$months_conv[$month_end] . ' ' . $day_end  . ' </strong> </h3>';
+ Events::semester_year($year, $semester);
+  echo '<h3> &nbsp <strong> ' . Events::$months_conv[$month_begin] . ' ' . $day_begin  . ' - ' . Events::$months_conv[$month_end] . ' ' . $day_end  . ' </strong> </h3>';
   
  
  $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
@@ -714,7 +714,9 @@ private static function set_single_leaf_body($remote_path_prefix, $local_path_pr
    $title =  Events::get_leaf_name_from_father_scheme_recursively($all_schemes[$father_scheme_idx], $page_topic, $title);
 
  Events::main_banner($title, $department, $institution);
-  
+ 
+ Events::semester_year($year, $semester);
+ 
 //  Events::default_meeting_coords_banner_map('./default.csv', $year, $semester);
   
  Events::about($page_topic,
@@ -1111,6 +1113,14 @@ public static function main_banner($title, $department, $institution) {
   echo '</div>';
 
  }
+
+ 
+private static function semester_year($year, $semester) {
+
+   echo '<h3> &nbsp <strong> ' . Events::capitalize($semester) . ' ' . $year . ' </strong> </h3>';
+   
+}
+ 
  
 ///@todo deprecated 
 private static function default_meeting_coords_banner($semester, $year, $week_day, $time, $room) {
@@ -1710,8 +1720,7 @@ public static function generate_page_with_all_weeks_list_wrapper($filename,
  
  
  }
- 
- 
+
  
 
 private static function generate_page_with_all_weeks_list($relative_path_to_library,
@@ -1738,7 +1747,7 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
   
   Events::main_banner($title, $department, $institution);  
   
-    echo '<h3> &nbsp <strong> ' . Events::capitalize($semester) . ' ' . $year . ' </strong> </h3>';
+  Events::semester_year($year, $semester);
     
     echo '<div class="' . Events::$bootstrap_container . '">';
      
@@ -3052,12 +3061,14 @@ private static function read_events_file_and_attach_topic_year_semester($prefix,
 // ****** Tools: CSV reading - END ****************  
 // ***********************************************
 
+
+//============== private data ===============
  
 // ***********************************************
 // ****** Data - BEGIN ****************  
 // ***********************************************
  
- //============== private data ===============
+// ****** folder and file names - BEGIN ****************  
 
    private static $all_folder           = "all";   //without slash
    private static $week_folder          = "week";   //without slash
@@ -3070,7 +3081,10 @@ private static function read_events_file_and_attach_topic_year_semester($prefix,
    private static $active_mondays_file  = 'active_mondays_first_and_last.csv';
    ///@todo it is up to the user to write the same directories as the ones that are there, perhaps put a check on that
    ///@todo you also have to check that the csv file does not have "empty cells"
- 
+// ****** folder and file names - END ****************  
+
+// ****** time - BEGIN ****************  
+
    private static $active_mondays_first_index = 0;
    private static $active_mondays_last_index = 1;
    private static $active_mondays_month_index = 0;
@@ -3123,8 +3137,9 @@ private static function read_events_file_and_attach_topic_year_semester($prefix,
    private static   $month_days_leap     = array(31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);  //bissextile
  
    private static   $month_days_max = 31;
+// ****** time - END ****************  
 
-// =====
+// ****** CSV file - BEGIN ****************  
    private static   $month_idx               = 0;  //if this column is empty, it still generates the page
    private static   $day_idx                 = 1;  //if this column is empty, it still generates the page
    private static   $time_idx                = 2;  //if this column is empty, it still generates the page
@@ -3142,27 +3157,37 @@ private static function read_events_file_and_attach_topic_year_semester($prefix,
 
 
   private static $row_events_begin = 0;
+// ****** CSV file - END ****************  
   
+// ****** Directory structure - BEGIN ****************  
    private static   $discipline_idx_in_path_from_end = 2;
    private static   $year_idx_in_path_from_end       = 1;
    private static   $semester_idx_in_path_from_end   = 0;
    private static   $num_positions_from_the_end_to_read = 3;
    private static   $first_position_from_the_end_to_read = 1; //to discard 'index.php' from the absolute filename
+// ****** Directory structure - END ****************  
    
-// ===== 
+// ===== Tree - BEGIN
    private static   $is_all_page   = true;
    private static   $is_leaf_page  = false;
+// ===== Tree - END
+   
+// ===== Main title - BEGIN
    private static   $general_title   = 'Events';
+// ===== Main title - END
 
-// ===== bootstrap style
+
+// ===== bootstrap style - BEGIN
   private static $bootstrap_container = 'container';              //centered page
   private static $bootstrap_container_fluid = 'container-fluid';  //all viewport width
   private static $banners_text_alignment = 'text-align: left;';
+// ===== bootstrap style - END
 
-// ===== sem style (must be consistent with css)
+// ===== sem style (must be consistent with css) - BEGIN
   private static $sem_image = 'sem_image';
   private static $sem_item = 'sem_item';
   private static $sem_header_style = 'background-color: lightgray;';
+// ===== sem style (must be consistent with css) - END
 
 
 // ***********************************************
