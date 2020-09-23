@@ -859,6 +859,79 @@ private static function set_event_details($events_map, $row,
 
 
 
+public static function automatically_make_image_square($input_image) {
+// do the same for any input image format  
+
+//   phpinfo(); 
+//you have to check that 'gd' is enabled
+// you need to make sure 'gd' has PNG support, JPG support, GIF support
+ 
+   $square = 100;
+
+   // Load up the original image
+   $src  = imagecreatefrompng($input_image);
+   $w = imagesx($src); // image width
+   $h = imagesy($src); // image height
+// // //    printf("Orig: %dx%d\n", $w, $h);
+
+   // Create output canvas and fill with bg color
+   $final = imagecreatetruecolor($square, $square);
+   $bg_color = imagecolorallocate ($final, 0, 0, 0);
+   imagefill($final, 0, 0, $bg_color);
+
+   // Check if portrait or landscape
+   if($h >= $w) {
+      // Portrait, i.e. tall image
+      $newh = $square;
+      $neww = intval($square * $w / $h);
+// // //       printf("New: %dx%d\n", $neww, $newh);
+      // Resize and composite original image onto output canvas
+      imagecopyresampled(
+         $final, $src, 
+         intval(($square-$neww)/2), 0,
+         0, 0,
+         $neww, $newh, 
+         $w, $h);
+   } else {
+      // Landscape, i.e. wide image
+      $neww = $square;
+      $newh = intval($square * $h / $w);
+// // //       printf("New: %dx%d\n", $neww, $newh);
+      imagecopyresampled(
+         $final, $src, 
+         0, intval(($square-$newh)/2),
+         0, 0,
+         $neww, $newh, 
+         $w, $h);
+   }
+
+ // Now I have to decide whether I should generate a new image, or send the image directly inside the browser
+ // The point is that I cannot allow the www user to generate the images
+ // I have to do an <img> tag, because otherwise I am sending "raw data" 
+ // This solution with ob works! So I don't need to figure out how to generate an image file, but I'll send the data
+ 
+ 
+ ob_start(); 
+ imagepng($final); 
+ $imagedata = ob_get_contents(); 
+ ob_end_clean();
+ 
+ $final_src = 'data: image/png; base64, ' . base64_encode($imagedata);
+ 
+//  return $final_src;
+
+ Events::generate_image($final_src);
+  
+}
+
+
+private static function generate_image($src) {
+
+ echo '<img class="' . Events::$sem_image . '"' . ' ' . ' src="' . $src . '" alt="image">';  
+
+
+}
+
 
 private static function set_event_image($remote_path_prefix,
                                         $local_path_prefix,
@@ -876,14 +949,16 @@ private static function set_event_image($remote_path_prefix,
 
    echo '<td>'; 
    
-   echo '<img class="' . Events::$sem_image . '" ' .  'src="' .
+   $final_src = 
      $prefix . 
      $after_prefix .
      $events_map[$row][Events::$discipline_idx] . '/' .  
      $events_map[$row][Events::$year_idx] . '/' . 
      $events_map[$row][Events::$semester_idx]  . '/' . 
      $images_folder . '/' . 
-     $events_map[$row][Events::$speaker_image_idx] . '" alt="image">';
+     $events_map[$row][Events::$speaker_image_idx];
+     
+   Events::generate_image($final_src);
      
    echo '</td>';
     
