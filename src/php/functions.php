@@ -1740,7 +1740,7 @@ private static function navigation_bar_depth_0_scheme($prefix, $leaf_array) {
 private static function navigation_bar_link_to_department($department) {
 
    echo '<li class="nav-item">';
-   echo '<a class="nav-link"  style="background-color:   #daebe8;"   href="' . $department[1] . '">' . $department[0] . '</a>';
+   echo '<a class="nav-link"  style="background-color:   #b7d7e8;"   href="' . $department[1] . '">' . $department[0] . '</a>';
    echo '</li>';
 
 }
