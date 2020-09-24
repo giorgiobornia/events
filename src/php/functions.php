@@ -173,8 +173,9 @@ $depth = 0;
 // ****** Tree: Search: Event Lists - BEGIN ****************  
 // ***********************************************
 
-private static function set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
-                                                      $institution, 
+private static function set_tree_events_by_time_range_body($library_path,
+                                                  $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                  $institution, 
                                                   $department, 
                                                   $year,
                                                   $semester, 
@@ -343,7 +344,8 @@ $branch_name = Events::get_father_scheme_name($all_schemes[$i]);
     $leaf_array = Events::get_array_of_leaves( $all_schemes[$i] );  ///@todo this is all leaves, I think this only works with depth 0 and 1; one should get all leaves at all depths
 
        
-    Events::set_tree_events_by_time_range_body($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+    Events::set_tree_events_by_time_range_body($library_path,
+                                              $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                               $institution, $department, 
                                               $year, $semester, $month_begin, $day_begin, $month_end, $day_end, 
                                               Events::$abstracts_folder, Events::$images_folder, 
@@ -1075,9 +1077,7 @@ private static function generate_image_src_file($library_path,
      $events_map[$row][Events::$speaker_image_idx];
      
 
- $library_path = '/Library/WebServer/Sites/dept/events_lib/';
- 
- $default_img_path = $library_path . './src/img/smiley_slight.png';
+ $default_img_path = $library_path . Events::$default_event_img;
  
 
 // if the string specified in the CSV file is empty, or it is non-empty but the file doesn't exist
@@ -3376,7 +3376,8 @@ private static function convert_to_associative_array($array_in) {
    private static $about_file           = './about.txt';
    private static $active_editions_file = './active_editions.csv';
    private static $active_mondays_file  = 'active_mondays_first_and_last.csv';
-   ///@todo it is up to the user to write the same directories as the ones that are there, perhaps put a check on that
+   private static $default_event_img    = './src/img/smiley_slight.png';
+///@todo it is up to the user to write the same directories as the ones that are there, perhaps put a check on that
    ///@todo you also have to check that the csv file does not have "empty cells"
 // ****** folder and file names - END ****************  
 
@@ -3501,27 +3502,27 @@ private static function convert_to_associative_array($array_in) {
 
 
 
-///@todo I now have a solution to the square image with php. Solution with CSS:
-///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
-///@todo see how I can fix the underlining that is missing under mathematical symbols in the title of a talk
+///@todo see how I can fix the "underline" that is missing under mathematical symbols in the title of a talk
 ///@todo Improve documentation with an example of how to use the week-based functions
 ///@todo Since the list of seminars changes from one semester to another, find a way to only show the seminars that are ACTIVE in the CURRENT semester;
 //       on the other hand, try to make the other ones visible, to avoid hiding a history of perhaps interesting past seminars
-///@todo Remove automatically potential whitespaces from fields such as month,day,time in events.csv
-///@todo Remove potential zeros in numbers of month and day such as 09 instead of 9
-///@todo If no title is specified, do not put the dropdown arrow for the abstract
+
+///@todo events.csv: Remove automatically potential whitespaces from fields such as month,day,time in 
+///@todo events.csv: Remove potential zeros in numbers of month and day such as 09 instead of 9
+///@todo events.csv: If no title is specified, do not put the dropdown arrow for the abstract
+///@todo events.csv: Remove potential empty rows added by organizers
+
 ///@todo Check that it works also if we add 'summer' folders, for summer events
 ///@todo write a function that checks that the directories of the inputs are there
-///@todo Remove potential empty rows added by organizers in the events.csv file
 ///@todo Perhaps land immediately to the "Current" week page, instead of the weeks' list one
 ///@todo Implement a search engine to find all events along the whole database
 
 ///@todo: If you want a blank page for the pause in between semesters, you may just setup the current semester to "summer", and loop over the whole tree to find "summer" folders, and if you don't find events you just say "no events this week"
 
-///@todo If no image is specified, put some default (define a library default and pass the application default (DoubleT.jpg) if one wants)
+///@todo Pass an "application" default image instead of having only a "library" default image
 
 ///@todo: how to access the CSS data from inside the PHP code
 
-///@todo: Tell the seminar organizers to please put the extensions in the files
+
 
 ?>
