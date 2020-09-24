@@ -858,8 +858,15 @@ private static function set_event_details($events_map, $row,
 }
 
 
+private static function generate_image($src) {
 
-public static function automatically_make_image_square($input_image) {
+ echo '<img class="' . Events::$sem_image . '"' . ' ' . ' src="' . $src . '" alt="image">';  
+
+
+}
+
+
+private static function generate_image_src_data_make_image_square($input_image) {
 // do the same for any input image format  
 
 //   phpinfo(); 
@@ -869,7 +876,7 @@ public static function automatically_make_image_square($input_image) {
    $square = 100;
 
    // Load up the original image
-   $src  = imagecreatefrompng($input_image);
+   $src  = imagecreatefromjpeg($input_image);
    $w = imagesx($src); // image width
    $h = imagesy($src); // image height
 // // //    printf("Orig: %dx%d\n", $w, $h);
@@ -912,23 +919,43 @@ public static function automatically_make_image_square($input_image) {
  
  
  ob_start(); 
- imagepng($final); 
+ imagejpeg($final); 
  $imagedata = ob_get_contents(); 
  ob_end_clean();
  
- $final_src = 'data: image/png; base64, ' . base64_encode($imagedata);
+ $final_src = 'data: image/jpg; base64, ' . base64_encode($imagedata);
  
-//  return $final_src;
+ return $final_src;
 
- Events::generate_image($final_src);
-  
 }
 
 
-private static function generate_image($src) {
 
- echo '<img class="' . Events::$sem_image . '"' . ' ' . ' src="' . $src . '" alt="image">';  
 
+private static function generate_image_src_file($remote_path_prefix,
+                                                $local_path_prefix,
+                                                $are_input_files_local,
+                                                $images_folder,
+                                                $events_map,
+                                                $row,
+                                                $all_schemes,
+                                                $father_scheme_idx)  {
+                                                   
+                                                   
+ $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
+
+ $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
+
+   $final_src = 
+     $prefix . 
+     $after_prefix .
+     $events_map[$row][Events::$discipline_idx] . '/' .  
+     $events_map[$row][Events::$year_idx] . '/' . 
+     $events_map[$row][Events::$semester_idx]  . '/' . 
+     $images_folder . '/' . 
+     $events_map[$row][Events::$speaker_image_idx];
+     
+     return $final_src;
 
 }
 
@@ -939,26 +966,32 @@ private static function set_event_image($remote_path_prefix,
                                         $images_folder,
                                         $events_map,
                                         $row,
-                                                   $all_schemes,
-                                                   $father_scheme_idx)  {
+                                        $all_schemes,
+                                        $father_scheme_idx)  {
                                         
-                                        
- $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
-
- $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
-
-   echo '<td>'; 
    
-   $final_src = 
-     $prefix . 
-     $after_prefix .
-     $events_map[$row][Events::$discipline_idx] . '/' .  
-     $events_map[$row][Events::$year_idx] . '/' . 
-     $events_map[$row][Events::$semester_idx]  . '/' . 
-     $images_folder . '/' . 
-     $events_map[$row][Events::$speaker_image_idx];
+    
+       $final_src = Events::generate_image_src_file($remote_path_prefix,
+                                                    $local_path_prefix,
+                                                    $are_input_files_local,
+                                                    $images_folder,
+                                                    $events_map,
+                                                    $row,
+                                                    $all_schemes,
+                                                    $father_scheme_idx);
+                                                    
+                                                    
+
+     $make_square_on_the_fly = false;
      
-   Events::generate_image($final_src);
+   if ($make_square_on_the_fly)  {
+        $final_src = Events::generate_image_src_data_make_image_square($final_src);
+    }
+   
+   
+   echo '<td>'; 
+     
+     Events::generate_image($final_src);
      
    echo '</td>';
     

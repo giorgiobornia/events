@@ -62,11 +62,6 @@ $father_scheme_idx = Events::get_father_scheme_index_from_string($father_scheme_
                                                                     $all_schemes,
                                                                     $father_scheme_idx
                                                                     );
-                                                                    
-  Events::automatically_make_image_square("./images/short.png");
-  Events::automatically_make_image_square("./images/tall.png");
-  Events::automatically_make_image_square("./images/blank_face.png");
-
  
  ?>
  
