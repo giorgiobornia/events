@@ -30,6 +30,43 @@ The folder of each year/semester contains:
     Do not touch it
 
 
+======================================================
+=== Each Leaf of a Tree (Each Topic): the Fields in the events.csv file =======================
+======================================================
+Remember that they have to be comma-separated
+
+
+month
+
+day
+
+time
+
+room
+   More generally, this could be not only a room number but also a town address
+   
+speaker
+   If it's an event without a speaker, you can leave it empty
+   
+speaker_department
+   If it's an event without a speaker, you can leave it empty
+
+speaker_institution
+   If it's an event without a speaker, you can leave it empty
+
+speaker_url
+   If it's an event without a speaker, you can leave it empty
+
+speaker_image
+    If this is empty, a default image will show up.
+
+title
+    Works with Latex commands
+
+abstract_file
+    Here, you can either put a filename and create that file in the folder abstracts/, or you can put the text of the abstract directly. 
+    Works with Latex commands, in both cases
+    
 
 
 

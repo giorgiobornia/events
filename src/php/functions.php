@@ -208,6 +208,7 @@ private static function set_tree_events_by_time_range_body($remote_path_prefix, 
  }
  
  else  Events::loop_over_events($events_in_week, $starting_row,
+                                 $library_path,
                                   $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                   $abstracts_folder, $images_folder, 
                                   $discipline_array, $bool_print_discipline,
@@ -221,6 +222,7 @@ private static function set_tree_events_by_time_range_body($remote_path_prefix, 
 
 
 private static function loop_over_events($events_map, $starting_row, 
+                                         $library_path,
                                          $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                          $abstracts_folder, $images_folder, 
                                          $discipline_array, $bool_print_discipline,
@@ -244,7 +246,8 @@ private static function loop_over_events($events_map, $starting_row,
     $toggle_abstract_id = Events::set_abstract_id_and_its_toggle($events_map, $row, 'toggle_');
     $arrow_abstract_id  = Events::set_abstract_id_and_its_toggle($events_map, $row, 'arrow_');
 
-    Events::set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+    Events::set_event_image_and_details($library_path,
+                                        $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                           $images_folder, $events_map, $row, 
                                           $discipline_array, $bool_print_discipline,
                                           $toggle_abstract_id, $arrow_abstract_id,
@@ -557,8 +560,8 @@ echo '</head>';
   
   echo '<body>';
 
-
-    Events::set_single_leaf_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+  ///@todo pass the library here
+    Events::set_single_leaf_body($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                          $institution, $department,
                                          $page_topic, $year, $semester,
                                          Events::$abstracts_folder, Events::$images_folder,
@@ -688,7 +691,8 @@ private static function about($page_topic,
 // ***********************************************
 
 
-private static function set_single_leaf_body($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+private static function set_single_leaf_body($library_path,
+                                              $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                   $institution, $department,
                                                    $page_topic, $year, $semester, 
                                                    $abstracts_folder, $images_folder,
@@ -747,6 +751,7 @@ private static function set_single_leaf_body($remote_path_prefix, $local_path_pr
  
  
  Events::loop_over_events($events, $starting_row,
+                            $library_path,
                             $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                             $abstracts_folder, $images_folder, 
                             $leaf_array, 
@@ -884,7 +889,7 @@ private static function image_output( $resource, $img_ext ) {
 
 
 private static function image_type_from_mime_info( $path ) {
-//@todo it seems that it doesn't work if the filename does not contain any extension. There must be some extension
+///@todo it seems that it doesn't work if the filename does not contain any extension. There must be some extension
 
 // $image_info = getImageSize($path);
 // $mime_type = $image_info['mime'];
@@ -1045,7 +1050,8 @@ private static function generate_image_src_data_make_image_square($input_image) 
 
 
 
-private static function generate_image_src_file($remote_path_prefix,
+private static function generate_image_src_file($library_path,
+                                                $remote_path_prefix,
                                                 $local_path_prefix,
                                                 $are_input_files_local,
                                                 $images_folder,
@@ -1054,7 +1060,7 @@ private static function generate_image_src_file($remote_path_prefix,
                                                 $all_schemes,
                                                 $father_scheme_idx)  {
                                                    
-                                                   
+ 
  $prefix = Events::get_prefix($remote_path_prefix, $local_path_prefix, $are_input_files_local);
 
  $after_prefix = Events::get_prefix_up_to_current_leaf('', $all_schemes[$father_scheme_idx]);
@@ -1068,12 +1074,26 @@ private static function generate_image_src_file($remote_path_prefix,
      $images_folder . '/' . 
      $events_map[$row][Events::$speaker_image_idx];
      
-     return $final_src;
 
+ $library_path = '/Library/WebServer/Sites/dept/events_lib/';
+ 
+ $default_img_path = $library_path . './src/img/smiley_slight.png';
+ 
+
+// if the string specified in the CSV file is empty, or it is non-empty but the file doesn't exist
+    if ( file_exists($final_src) ) {
+         return $final_src;
+    }
+    else {
+         return $default_img_path; 
+    }
+     
+    
 }
 
 
-private static function set_event_image($remote_path_prefix,
+private static function set_event_image($library_path, 
+                                        $remote_path_prefix,
                                         $local_path_prefix,
                                         $are_input_files_local,
                                         $images_folder,
@@ -1084,7 +1104,8 @@ private static function set_event_image($remote_path_prefix,
                                         
    
     
-       $final_src = Events::generate_image_src_file($remote_path_prefix,
+       $final_src = Events::generate_image_src_file($library_path,
+                                                    $remote_path_prefix,
                                                     $local_path_prefix,
                                                     $are_input_files_local,
                                                     $images_folder,
@@ -1125,7 +1146,8 @@ private static function set_event_image($remote_path_prefix,
   }
 
 
-private static function set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+private static function set_event_image_and_details($library_path,
+                                                    $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                     $images_folder,
                                                     $events_map,
                                                     $row,
@@ -1143,7 +1165,8 @@ private static function set_event_image_and_details($remote_path_prefix, $local_
      
      echo ' <table id="switch_col">';
 
-     Events::set_event_image($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+     Events::set_event_image($library_path,
+                               $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                $images_folder, $events_map, $row,
                                                    $all_schemes,
                                                    $father_scheme_idx);
