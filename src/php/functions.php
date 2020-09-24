@@ -1679,7 +1679,7 @@ private static function navigation_bar_past_years($prefix, $page_topic, $is_all_
   
   
    echo '<li class="nav-item">';
-   echo '<a class="nav-link" href="'/* . $prefix_disc*/ . '">' . $label_name  . '</a>';
+   echo '<a class="nav-link" style="background-color:   #d5f4e6;" href="'/* . $prefix_disc*/ . '">' . $label_name  . '</a>';
    echo '</li>';
    
  $past_years = Events::get_active_years($prefix_disc);
@@ -1687,7 +1687,7 @@ private static function navigation_bar_past_years($prefix, $page_topic, $is_all_
  foreach ($past_years as $year => $value) {
    
    echo '<li class="nav-item dropdown">';
-   echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $year . ' </a>';
+   echo '<a  class="nav-link dropdown-toggle"  style="background-color:   #d5f4e6;" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $year . ' </a>';
    
    echo '  <ul class="dropdown-menu">';
   foreach ($past_years[$year] as $term) {
@@ -1709,7 +1709,7 @@ private static function navigation_bar_depth_1_scheme($prefix, $discipline_array
   $link_name = $discipline_array[0];
 
   echo '<li class="nav-item dropdown">';
-    echo '<a  class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $link_name . ' </a>';
+    echo '<a  class="nav-link dropdown-toggle"  style="background-color:  #fbefcc;" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $link_name . ' </a>';
 
    echo '  <ul class="dropdown-menu" style="min-width: 15rem;">';
     foreach ($discipline_array[1] as $discipline => $discipline_string) {
@@ -1729,7 +1729,7 @@ private static function navigation_bar_depth_0_scheme($prefix, $leaf_array) {
   foreach ($leaf_array as $key => $value) {
 
    echo '<li class="nav-item">';
-   echo '<a class="nav-link" href="' . $prefix . $key . '/' . '">' . $value . '</a>';
+   echo '<a class="nav-link" style="background-color: #fbefcc;" href="' . $prefix . $key . '/' . '">' . $value . '</a>';
    echo '</li>';
 
   }
@@ -1740,7 +1740,7 @@ private static function navigation_bar_depth_0_scheme($prefix, $leaf_array) {
 private static function navigation_bar_link_to_department($department) {
 
    echo '<li class="nav-item">';
-   echo '<a class="nav-link" href="' . $department[1] . '">' . $department[0] . '</a>';
+   echo '<a class="nav-link"  style="background-color:   #daebe8;"   href="' . $department[1] . '">' . $department[0] . '</a>';
    echo '</li>';
 
 }
