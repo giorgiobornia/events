@@ -858,6 +858,111 @@ private static function set_event_details($events_map, $row,
 }
 
 
+
+private static function image_output( $resource, $img_ext ) {
+
+    switch ( $img_ext ) {
+        case 'jpeg':
+        case 'jpg':
+            return imagejpeg($resource);
+        break;
+
+        case 'png':
+            return imagepng($resource);
+        break;
+
+        case 'gif':
+            return imagegif($resource);
+        break;
+
+        default:
+            throw new InvalidArgumentException('File "' . $img_ext . '" is not valid jpg, png or gif image.');
+        break;
+    }
+    
+}
+
+
+private static function image_type_from_mime_info( $path ) {
+//@todo it seems that it doesn't work if the filename does not contain any extension. There must be some extension
+
+// $image_info = getImageSize($path);
+// $mime_type = $image_info['mime'];
+
+//  echo $path;
+$mime_type = mime_content_type($path);
+//  echo $mime_type;
+// $finfo = finfo_open(FILEINFO_MIME_TYPE);
+// echo finfo_file($finfo, $path) . "\n";
+// finfo_close($finfo);
+
+//  echo exif_imagetype($path);
+ 
+switch ( $mime_type ) {
+case 'image/gif':
+    $extension = '.gif';
+    break;
+case 'image/jpeg':
+    $extension = '.jpg';
+    break;
+case 'image/png':        
+    $extension = '.png';
+    break;
+default:
+    // handle errors
+    break;
+}
+
+return $extension;
+
+}
+
+///@todo see if more file types can be supported
+///@todo The problem is that in certain OSes people do not add the extension in the filename so I need to figure out the FILE TYPE not from the filename extension!!!
+
+private static function image_type_from_extension( $filename ) {
+ 
+   return strtolower( pathinfo( $filename, PATHINFO_EXTENSION ));
+
+  //  changes in case of WEB URL for the image:    
+  //     ( strtolower( array_pop( explode('.', substr($filename, 0, strpos($filename, '?'))))) ) {
+  //  changes in case of WEB URL for the image:    
+
+}
+
+
+
+private static function imagecreate_from_file( $filename ) {
+
+    if (!file_exists($filename)) {
+        throw new InvalidArgumentException('File "' . $filename . '" not found.');
+    }
+    
+  
+    $img_ext = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ));
+  
+    switch ( $img_ext ) {
+        case 'jpeg':
+        case 'jpg':
+            return imagecreatefromjpeg($filename);
+        break;
+
+        case 'png':
+            return imagecreatefrompng($filename);
+        break;
+
+        case 'gif':
+            return imagecreatefromgif($filename);
+        break;
+
+        default:
+            throw new InvalidArgumentException('File "'.$filename.'" is not valid jpg, png or gif image.');
+        break;
+    }
+}
+
+
+
 private static function generate_image($src) {
 
  echo '<img class="' . Events::$sem_image . '"' . ' ' . ' src="' . $src . '" alt="image">';  
@@ -872,11 +977,13 @@ private static function generate_image_src_data_make_image_square($input_image) 
 //   phpinfo(); 
 //you have to check that 'gd' is enabled
 // you need to make sure 'gd' has PNG support, JPG support, GIF support
- 
+
    $square = 100;
 
    // Load up the original image
-   $src  = imagecreatefromjpeg($input_image);
+   $src  = Events::imagecreate_from_file($input_image);
+//    $src  = imagecreatefromjpeg($input_image);
+
    $w = imagesx($src); // image width
    $h = imagesy($src); // image height
 // // //    printf("Orig: %dx%d\n", $w, $h);
@@ -918,12 +1025,18 @@ private static function generate_image_src_data_make_image_square($input_image) 
  // This solution with ob works! So I don't need to figure out how to generate an image file, but I'll send the data
  
  
- ob_start(); 
- imagejpeg($final); 
+ ob_start();
+ 
+ $img_ext = Events::image_type_from_extension($input_image);
+ Events::image_output($final, $img_ext); //  imagepng($final); 
+
  $imagedata = ob_get_contents(); 
  ob_end_clean();
- 
- $final_src = 'data: image/jpg; base64, ' . base64_encode($imagedata);
+//  echo $img_ext;
+ if ( $img_ext == 'jpg' ) $img_ext = 'jpeg';  //The mime type is image/jpeg, not image/jpg
+// echo $img_ext;
+
+ $final_src = 'data: image/' . $img_ext . '; base64, ' . base64_encode($imagedata);
  
  return $final_src;
 
@@ -980,22 +1093,36 @@ private static function set_event_image($remote_path_prefix,
                                                     $all_schemes,
                                                     $father_scheme_idx);
                                                     
-                                                    
 
-     $make_square_on_the_fly = false;
-     
-   if ($make_square_on_the_fly)  {
-        $final_src = Events::generate_image_src_data_make_image_square($final_src);
+   $img_ext = Events::image_type_from_extension($final_src);
+//     Events::image_type_from_mime_info($final_src);
+
+// HTML accepts also a filename without extension, but here if the table has a wrong image name, then the image is not found
+// I will put a safety check: when the image name does not have the extension, do the traditional way
+// Otherwise, do the new way that makes a square
+
+// I will do like this: if the file is not found because it was uncorrectly specified, I will put a default
+
+     $final_src2 = '';
+   if ($img_ext !== '')  {
+        $final_src2 = Events::generate_image_src_data_make_image_square($final_src);
     }
    
    
-   echo '<td>'; 
-     
-     Events::generate_image($final_src);
+   echo '<td>';
+   
+   
+     if ($img_ext !== '')  { 
+        Events::generate_image($final_src2);
+     }
+     else {
+//      echo "Missing image extension";
+        Events::generate_image($final_src);
+     }
      
    echo '</td>';
     
-    }
+  }
 
 
 private static function set_event_image_and_details($remote_path_prefix, $local_path_prefix, $are_input_files_local,
@@ -3351,9 +3478,8 @@ private static function convert_to_associative_array($array_in) {
 
 
 
+///@todo I now have a solution to the square image with php. Solution with CSS:
 ///@todo http://stackoverflow.com/questions/15167545/how-to-crop-a-rectangular-image-into-a-square-with-css
-///@todo do a function that picks a rectangular image and makes it square by extending its smaller side with black
-///@todo take an arbitrary image, find max between width and height, and make that max equal to N, and keep the aspect ratio for the other dimension; then put a background square of N x N; finally apply border-radius
 ///@todo see how I can fix the underlining that is missing under mathematical symbols in the title of a talk
 ///@todo Improve documentation with an example of how to use the week-based functions
 ///@todo Since the list of seminars changes from one semester to another, find a way to only show the seminars that are ACTIVE in the CURRENT semester;
@@ -3361,7 +3487,6 @@ private static function convert_to_associative_array($array_in) {
 ///@todo Remove automatically potential whitespaces from fields such as month,day,time in events.csv
 ///@todo Remove potential zeros in numbers of month and day such as 09 instead of 9
 ///@todo If no title is specified, do not put the dropdown arrow for the abstract
-///@todo If no image is specified, put some default (define DoubleT.jpg as a default)
 ///@todo Check that it works also if we add 'summer' folders, for summer events
 ///@todo write a function that checks that the directories of the inputs are there
 ///@todo Remove potential empty rows added by organizers in the events.csv file
@@ -3369,5 +3494,11 @@ private static function convert_to_associative_array($array_in) {
 ///@todo Implement a search engine to find all events along the whole database
 
 ///@todo: If you want a blank page for the pause in between semesters, you may just setup the current semester to "summer", and loop over the whole tree to find "summer" folders, and if you don't find events you just say "no events this week"
+
+///@todo If no image is specified, put some default (define a library default and pass the application default (DoubleT.jpg) if one wants)
+
+///@todo: how to access the CSS data from inside the PHP code
+
+///@todo: Tell the seminar organizers to please put the extensions in the files
 
 ?>
