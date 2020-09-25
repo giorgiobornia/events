@@ -68,6 +68,21 @@ abstract_file
     Works with Latex commands, in both cases
     
 
+====================================================
+Tips on how to fill the CSV files ============
+  Just keep in mind that the content coming from the CSV files (and from the abstract files)
+  can be an input to the following languages:
+    HTML
+    Latex
+
+ Therefore, do not write things that HTML or Latex could complain about:
+  - HTML is quite lenient
+  - For Latex, "&" must be there only inside a math environment
+    So, try as much as possible to avoid using "&" in your text. Replace it with "and".
+    99.9% of the time this is fine. Only for acronyms such as "A&M" it is hard to replace it, so it will not work for Latex.
+    I don't have an automatic solution for that yet, so fix the Latex by hand in these cases.
+  - For Latex, "_" also must be there only inside a math environment
+====================================================
 
 
 ====================================================
@@ -101,4 +116,3 @@ The folder of each year/semester contains:
 === The generation of PDF slides ===================
 ====================================================
 
-Done!

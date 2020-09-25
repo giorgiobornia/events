@@ -799,7 +799,7 @@ private static function set_event_day($events_map, $row) {
     
     
     echo "<em>";
-    echo $events_map[$row][Events::$time_idx];
+    echo Events::all_uppercase($events_map[$row][Events::$time_idx]);
     echo "</em>";
     
     echo '<br/>';
@@ -1795,7 +1795,10 @@ private static function navigation_bar_content($id_target, $prefix, $page_topic,
 }
 
 private static function navigation_bar_search_form() {
+//action gives the page where you want to send your form data
+// instead of a page, can it be a function?
 
+//    echo '<form class="form-inline" action="https://www.google.com">';
    echo '<form class="form-inline">';
    echo '<input class="form-control" type="text" placeholder="Search" aria-label="Search">';
    echo '</form>';
@@ -3297,12 +3300,19 @@ private static function read_events_file_and_attach_topic_year_semester($prefix,
 
 private static function capitalize($string) {
 
-  $string_cap = ucfirst($string);
+  $string_out = ucfirst($string);
   
-  return $string_cap;
+  return $string_out;
 
  }
  
+private static function all_uppercase($string) {
+
+  $string_out = strtoupper($string);
+  
+  return $string_out;
+
+ } 
 // ***********************************************
 // ****** Tools: PHP Strings - END ****************  
 // ***********************************************
@@ -3533,6 +3543,7 @@ private static function convert_to_associative_array($array_in) {
 
 ///@todo: how to access the CSS data from inside the PHP code
 
-
+///@todo: make the dates input all uniform, because different organizers may use different styles (do all lowercase/uppercase)
+//        Maybe do a functionality that creates an item for Google Calendar, or something  
 
 ?>
