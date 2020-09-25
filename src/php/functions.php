@@ -1753,10 +1753,14 @@ private static function navigation_bar_content($library_path, $id_target, $prefi
  
  echo '<div class="collapse navbar-collapse" id="' . $id_target . '"' . '>';
 
+ 
  echo '<ul class="navbar-nav mr-auto">';
  
- //===================
  
+ echo '<li class="dropdown-divider"></li>';
+ 
+ 
+ //===================
   for ($i = 0; $i < count($all_schemes); $i++) {
 
  $depth = 0;
@@ -1771,10 +1775,8 @@ private static function navigation_bar_content($library_path, $id_target, $prefi
  ///@todo implement the other depths
  
  }
- 
- 
- 
  //===================
+ 
 
  echo '<li class="dropdown-divider"></li>';
   
@@ -1784,9 +1786,15 @@ private static function navigation_bar_content($library_path, $id_target, $prefi
 
   Events::navigation_bar_link_to_department($department);
   
+  
  echo '</ul>';
 
-//  Events::navigation_bar_search_form($library_path);
+ 
+ echo '<hr/>';
+ 
+      Events::navigation_bar_search_form($library_path);
+ 
+
  
  echo '</div>';
 
@@ -1843,13 +1851,22 @@ private static function navigation_bar_search_form($library_path) {
 
    $search_out = $library_path  . "src/php/search_results.php";    //this ONLY works with RELATIVE paths, not absolute...
    
-//    echo '<form class="form-inline">';
-   echo '<form class="form-inline" action="' . $search_out . '"' . '  method="post" >';
+   $search_placeholder = 'Search Events pages';
    
-   echo '<input class="form-control" type="text" placeholder="Search" aria-label="Search" name="search_input" />';  
-               // an input MUST have a "name" if you want to retrieve it with $_POST
-               
-   echo '</form>';
+//    echo '<form class="form-inline">';
+   echo '<form class="" action="' . $search_out . '"' . '  method="post" >';
+   echo '<div class="input-group mb-3">';
+   
+   echo '<input class="form-control" type="text"   placeholder="' .    $search_placeholder  . '" aria-label="' .  $search_placeholder  .  '" name="search_input" />';                 // an input MUST have a "name" if you want to retrieve it with $_POST
+   
+      echo '<div class="input-group-append">';
+         echo '<button type="submit" class="btn btn-primary" ' . ' style="background-color: ' . Events::$color_2 . ';" >Submit</button>';
+      echo '</div>';
+ 
+   echo '</div>';
+
+ echo '</form>';
+
    
 }
 
@@ -1924,9 +1941,6 @@ echo '<html>';
 	
     Events::google_search($_POST);
 	
-	
-	
-	
  
  
   echo '</body>';
@@ -1946,7 +1960,7 @@ private static function google_search($post_array) {
 
 	$term = isset($post_array['search_input']) ? $post_array['search_input'] : '';
     $term = urlencode($term);
-    $website = urlencode("http://www.math.ttu.edu/events/");
+    $website = urlencode("www.math.ttu.edu/events/");
     $redirect = "https://www.google.com/search?q=site%3A{$website}+{$term}";
     header("Location: $redirect");
     
