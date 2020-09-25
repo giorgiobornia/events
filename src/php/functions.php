@@ -1678,7 +1678,7 @@ private static function navigation_bar_past_years($prefix, $page_topic, $is_all_
   
   
    echo '<li class="nav-item">';
-   echo '<a class="nav-link" style="background-color:   #d5f4e6;" href="'/* . $prefix_disc*/ . '">' . $label_name  . '</a>';
+   echo '<a class="nav-link" style="background-color: ' .   Events::$color_1 . ';" href="'/* . $prefix_disc*/ . '">' . $label_name  . '</a>';
    echo '</li>';
    
  $past_years = Events::get_active_years($prefix_disc);
@@ -1686,7 +1686,7 @@ private static function navigation_bar_past_years($prefix, $page_topic, $is_all_
  foreach ($past_years as $year => $value) {
    
    echo '<li class="nav-item dropdown">';
-   echo '<a  class="nav-link dropdown-toggle"  style="background-color:   #d5f4e6;" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $year . ' </a>';
+   echo '<a  class="nav-link dropdown-toggle"  style="background-color: ' .    Events::$color_1 . ';" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $year . ' </a>';
    
    echo '  <ul class="dropdown-menu">';
   foreach ($past_years[$year] as $term) {
@@ -1708,7 +1708,7 @@ private static function navigation_bar_depth_1_scheme($prefix, $discipline_array
   $link_name = $discipline_array[0];
 
   echo '<li class="nav-item dropdown">';
-    echo '<a  class="nav-link dropdown-toggle"  style="background-color:  #fbefcc;" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $link_name . ' </a>';
+    echo '<a  class="nav-link dropdown-toggle"  style="background-color: ' . Events::$color_0 . ';" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' .  $link_name . ' </a>';
 
    echo '  <ul class="dropdown-menu" style="min-width: 15rem;">';
     foreach ($discipline_array[1] as $discipline => $discipline_string) {
@@ -1728,7 +1728,7 @@ private static function navigation_bar_depth_0_scheme($prefix, $leaf_array) {
   foreach ($leaf_array as $key => $value) {
 
    echo '<li class="nav-item">';
-   echo '<a class="nav-link" style="background-color: #fbefcc;" href="' . $prefix . $key . '/' . '">' . $value . '</a>';
+   echo '<a class="nav-link" style="background-color: ' . Events::$color_0 . ';"  href="' . $prefix . $key . '/' . '">' . $value . '</a>';
    echo '</li>';
 
   }
@@ -1739,7 +1739,7 @@ private static function navigation_bar_depth_0_scheme($prefix, $leaf_array) {
 private static function navigation_bar_link_to_department($department) {
 
    echo '<li class="nav-item">';
-   echo '<a class="nav-link"  style="background-color:   #b7d7e8;"   href="' . $department[1] . '">' . $department[0] . '</a>';
+   echo '<a class="nav-link"  style="background-color: ' . Events::$color_2 . ';"  href="' . $department[1] . '">' . $department[0] . '</a>';
    echo '</li>';
 
 }
@@ -1813,7 +1813,7 @@ private static function navigation_bar($library_path,
  $target_past_years = 'my_navbar';
 
  
- echo '<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #fbefcc;" >'; /*fixed-top ///@todo padding-top of the body must be modified, if you want the navigation bar to be fixed */
+ echo '<nav class="navbar navbar-expand-lg navbar-light" style="background-color: ' . Events::$color_0 . ';" >'; /*fixed-top ///@todo padding-top of the body must be modified, if you want the navigation bar to be fixed */
  
  Events::navigation_bar_brand($prefix, $home_all_sems);
  
@@ -1830,10 +1830,15 @@ private static function navigation_bar($library_path,
 
 
 private static function navigation_bar_search_form($library_path) {
-//action gives the page where you want to send your form data
-// instead of a page, can it be a function?
 // if you put method="get" then it will put the form parameters in the URL, starting with a "?"
 // if you put method="post" it will not
+
+//"action" gives the page where you want to send your form data
+// instead of a page, can it be a function?
+
+// The attribute "action" sends to another page
+// How can I pass certain arguments to this page, as if it was a "function"?
+// Can I do like command line arguments?! NO, I tried, you can't
 
 
    $search_out = $library_path  . "src/php/search_results.php";    //this ONLY works with RELATIVE paths, not absolute...
@@ -1842,7 +1847,7 @@ private static function navigation_bar_search_form($library_path) {
    echo '<form class="form-inline" action="' . $search_out . '"' . '  method="post" >';
    
    echo '<input class="form-control" type="text" placeholder="Search" aria-label="Search" name="search_input" />';  
-               // an input MUST have a name if you want to retrieve it with $_POST
+               // an input MUST have a "name" if you want to retrieve it with $_POST
                
    echo '</form>';
    
@@ -1861,7 +1866,7 @@ private static function navigation_bar_search_form($library_path) {
 public static function search_results_page(
 $library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                                                        $institution, $department, 
-                                                       $page_topic, $year, $semester,
+                                                        $year, $semester,
                                                        $icon_in_toolbar, 
                                                        $all_schemes,
                                                        $father_scheme_idx
@@ -1872,43 +1877,56 @@ $library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
 echo '<!DOCTYPE html>';
 
 echo '<html>';
-
-
-
-
-//   $title_in_toolbar =  Events::get_leaf_name_from_father_scheme_recursively($all_schemes[$father_scheme_idx], $page_topic, $title_in_toolbar);
+// 
+// 
+//   $title_in_toolbar = Events::$general_title;
+// 
+//   
+//   Events::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
+// 
+//   
+  echo '<body>';
+// 
+//    Events::navigation_bar($relative_path_to_library,  ///need this here, for the search form
+//                            $remote_url_base, $local_url_base, $are_input_files_local, 
+//                            $discipline,  ///@todo not needed here
+//                            $all_schemes,
+//                            $father_scheme_idx,   ///@todo change args: $father_scheme_idx is not needed here
+//                            Events::$is_all_page, 
+//                            $department);
+//   
+//   Events::main_banner($title, $department, $institution);  
 //   
 // 
-//   Events::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
+//   Events::semester_year($year, $semester);
+ 
   
-
-  
-  echo '<body>';
-
-//   ///@todo pass the library here
-//     Events::set_single_leaf_body($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
-//                                          $institution, $department,
-//                                          $page_topic, $year, $semester,
-//                                          Events::$abstracts_folder, Events::$images_folder,
-//                                                        $all_schemes,
-//                                                        $father_scheme_idx);
-// 
  
- 
- 
- 
- echo "Search results will be shown here: WIP \n";
-
- echo $_SERVER['REMOTE_ADDR'];  
 
 
- print_r($_POST);
+//  print_r($_POST);
 
 	foreach ($_POST as $key => $value) {
-		echo "$key: $value";
-	};
+	  echo "Events matching with \"" . $value . "\"";
+	  echo "<br/>";
+	  };
+	
 
+    echo "Work In Progress... ";
+	
+	
+	
+	//here is where I have to implement the SEARCH of the string by looping over ALL events
+	
+	// I believe one must construct an OFFLINE DATABASE, daily updated, instead of recomputing it at every request,
+	// so that it is much faster to perform the research.
+	
+	
 
+	
+	
+	
+	
  
  
   echo '</body>';
@@ -1916,7 +1934,7 @@ echo '<html>';
   
 
 echo '</html>';
-
+// 
 
 
 }
@@ -3596,6 +3614,9 @@ private static function convert_to_associative_array($array_in) {
 
 // ===== Styles - BEGIN
    private static   $font_size_time_title   = '150%';
+   private static   $color_0 = '#FFCCCC';
+   private static   $color_1 = '#FF9999';
+   private static   $color_2 = '#FF6666';
 // ===== Styles - END
 
 // ===== bootstrap style - BEGIN
