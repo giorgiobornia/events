@@ -309,7 +309,8 @@ echo '</head>';
   
   $discipline = Events::$all_folder;
   
-  Events::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+  Events::navigation_bar($library_path, 
+                         $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                            $discipline, 
                            $all_schemes,
                            $father_scheme_idx,  ///@todo this variable is not defined here
@@ -706,7 +707,8 @@ private static function set_single_leaf_body($library_path,
 
 
 
- Events::navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local,
+ Events::navigation_bar($library_path, 
+                         $remote_path_prefix, $local_path_prefix, $are_input_files_local,
                           $page_topic,
                           $all_schemes,
                           $father_scheme_idx,
@@ -1569,8 +1571,8 @@ public static function set_mandatory_libs($library_path) {
 
 // This must in the last position to override
  echo '<link rel="stylesheet" href="'  .  $library_path . './src/css/sem_style.css"> ';
- 
-}
+
+ }
 
 
 private static function set_latex_rendering_lib() {
@@ -1748,7 +1750,7 @@ private static function navigation_bar_link_to_department($department) {
 
 
 
-private static function navigation_bar_content($id_target, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx) {
+private static function navigation_bar_content($library_path, $id_target, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx) {
 
 
  
@@ -1787,26 +1789,32 @@ private static function navigation_bar_content($id_target, $prefix, $page_topic,
   
  echo '</ul>';
 
-//  Events::navigation_bar_search_form();
+//  Events::navigation_bar_search_form($library_path);
  
  echo '</div>';
 
  
 }
 
-private static function navigation_bar_search_form() {
+private static function navigation_bar_search_form($library_path) {
 //action gives the page where you want to send your form data
 // instead of a page, can it be a function?
+// if you put method="get" then it will put the form parameters in the URL, starting with a "?"
+// if you put method="post" it will not
 
-//    echo '<form class="form-inline" action="https://www.google.com">';
-   echo '<form class="form-inline">';
-   echo '<input class="form-control" type="text" placeholder="Search" aria-label="Search">';
+
+   $search_out = $library_path  . "src/php/search_results.php";    //this ONLY works with RELATIVE paths, not absolute...
+   
+//    echo '<form class="form-inline">';
+   echo '<form class="form-inline" action="' . $search_out . '"' . '  method="post" >';
+   echo '<input class="form-control" type="text" placeholder="Search" aria-label="Search"  />';
    echo '</form>';
    
 }
 
 
-public static function navigation_bar($remote_path_prefix, $local_path_prefix, $are_input_files_local, 
+private static function navigation_bar($library_path,
+                                       $remote_path_prefix, $local_path_prefix, $are_input_files_local, 
                                       $page_topic,
                                       $all_schemes,
                                       $father_scheme_idx,
@@ -1828,7 +1836,7 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
  
  Events::navigation_bar_menu_button($target_past_years);
 
- Events::navigation_bar_content($target_past_years, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx);
+ Events::navigation_bar_content($library_path, $target_past_years, $prefix, $page_topic, $is_all_or_single_page, $department, $all_schemes, $father_scheme_idx);
 
 
  echo '</nav>';
@@ -2587,7 +2595,8 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
 
   echo '<body>';
   
-  Events::navigation_bar($remote_url_base, $local_url_base, $are_input_files_local, 
+  Events::navigation_bar($relative_path_to_library,  ///need this here, for the search form
+                           $remote_url_base, $local_url_base, $are_input_files_local, 
                            $discipline,  ///@todo not needed here
                            $all_schemes,
                            $father_scheme_idx,   ///@todo change args: $father_scheme_idx is not needed here
