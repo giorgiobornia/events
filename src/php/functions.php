@@ -1809,7 +1809,7 @@ public static function navigation_bar($remote_path_prefix, $local_path_prefix, $
  $target_past_years = 'my_navbar';
 
  
- echo '<nav class="navbar navbar-expand-lg navbar-light">'; /*fixed-top ///@todo padding-top of the body must be modified, if you want the navigation bar to be fixed */
+ echo '<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #fbefcc;" >'; /*fixed-top ///@todo padding-top of the body must be modified, if you want the navigation bar to be fixed */
  
  Events::navigation_bar_brand($prefix, $home_all_sems);
  
