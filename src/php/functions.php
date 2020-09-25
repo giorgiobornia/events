@@ -1787,9 +1787,19 @@ private static function navigation_bar_content($id_target, $prefix, $page_topic,
   
  echo '</ul>';
 
+//  Events::navigation_bar_search_form();
+ 
  echo '</div>';
 
  
+}
+
+private static function navigation_bar_search_form() {
+
+   echo '<form class="form-inline">';
+   echo '<input class="form-control" type="text" placeholder="Search" aria-label="Search">';
+   echo '</form>';
+   
 }
 
 
