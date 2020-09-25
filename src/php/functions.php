@@ -1922,7 +1922,7 @@ echo '<html>';
 	// so that it is much faster to perform the research.
 	
 	
-
+    Events::google_search($_POST);
 	
 	
 	
@@ -1939,6 +1939,20 @@ echo '</html>';
 
 }
 
+
+
+private static function google_search($post_array) {
+	//As a partial solution, you can pass your stuff to Google Search!!! It finds all pages containing that string!!!
+
+	$term = isset($post_array['search_input']) ? $post_array['search_input'] : '';
+    $term = urlencode($term);
+    $website = urlencode("http://www.math.ttu.edu/events/");
+    $redirect = "https://www.google.com/search?q=site%3A{$website}+{$term}";
+    header("Location: $redirect");
+    
+    exit;
+
+}
 
 
 
