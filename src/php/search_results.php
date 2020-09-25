@@ -1,14 +1,13 @@
 <?php
 
-echo "Search results will be shown here: WIP \n";
+include './functions.php';
 
-echo $_SERVER['REMOTE_ADDR'];  //this works
-
-//$_POST seems to be not working now...
-print_r($_POST);
-
-	foreach ($_POST as $key => $value) {
-		echo "$key: $value";
-		};
-
+  Events::search_results_page($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                       $institution, $department, 
+                                                       $page_topic, $year, $semester,
+                                                       $icon_in_toolbar, 
+                                                       $all_schemes,
+                                                       $father_scheme_idx
+);
+  
 ?>

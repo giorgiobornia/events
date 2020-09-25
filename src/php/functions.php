@@ -293,15 +293,12 @@ echo '<!DOCTYPE html>';
 echo '<html>';
 
 
-echo '<head>';
 
   $title_in_toolbar = Events::$general_title;
 
   
   Events::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
    
-echo '</head>';
-
 
 
   echo '<body>';
@@ -369,6 +366,7 @@ $branch_name = Events::get_father_scheme_name($all_schemes[$i]);
   
 
 echo '</html>';
+
   
  }
  
@@ -549,7 +547,6 @@ echo '<!DOCTYPE html>';
 
 echo '<html>';
 
-echo '<head>';
 
 
 
@@ -558,7 +555,6 @@ echo '<head>';
 
   Events::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
   
-echo '</head>';
 
   
   echo '<body>';
@@ -1515,12 +1511,13 @@ fwrite($fp, '\end{column}' . PHP_EOL);
 // ***********************************************
 
 
-public static function set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar) {
+private static function set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar) {
 
 // the disadvantage of doing echo instead of including the file with a php include is just when you have to handle single quotes vs double quotes; also, a little lack of readability
 // However, the great advantage is that it is very clear what is passed! Previously, the variable coming from the file had to be set, and with the EXACT SAME NAME!
 //So it is muuuuch better in the end to use the function!
 
+echo '<head>';
 
 $description = Events::$general_title;
 $author = "Giorgio Bornia";
@@ -1537,7 +1534,7 @@ $author = "Giorgio Bornia";
 
  Events::set_mandatory_libs($library_path);
 
-
+echo '</head>';
 
 }
 
@@ -1796,21 +1793,7 @@ private static function navigation_bar_content($library_path, $id_target, $prefi
  
 }
 
-private static function navigation_bar_search_form($library_path) {
-//action gives the page where you want to send your form data
-// instead of a page, can it be a function?
-// if you put method="get" then it will put the form parameters in the URL, starting with a "?"
-// if you put method="post" it will not
 
-
-   $search_out = $library_path  . "src/php/search_results.php";    //this ONLY works with RELATIVE paths, not absolute...
-   
-//    echo '<form class="form-inline">';
-   echo '<form class="form-inline" action="' . $search_out . '"' . '  method="post" >';
-   echo '<input class="form-control" type="text" placeholder="Search" aria-label="Search"  />';
-   echo '</form>';
-   
-}
 
 
 private static function navigation_bar($library_path,
@@ -1844,8 +1827,105 @@ private static function navigation_bar($library_path,
 }
 
 
+
+
+private static function navigation_bar_search_form($library_path) {
+//action gives the page where you want to send your form data
+// instead of a page, can it be a function?
+// if you put method="get" then it will put the form parameters in the URL, starting with a "?"
+// if you put method="post" it will not
+
+
+   $search_out = $library_path  . "src/php/search_results.php";    //this ONLY works with RELATIVE paths, not absolute...
+   
+//    echo '<form class="form-inline">';
+   echo '<form class="form-inline" action="' . $search_out . '"' . '  method="post" >';
+   
+   echo '<input class="form-control" type="text" placeholder="Search" aria-label="Search" name="search_input" />';  
+               // an input MUST have a name if you want to retrieve it with $_POST
+               
+   echo '</form>';
+   
+}
+
+
 // ***********************************************
 // ****** All webpages: Navigation bar - END ****************  
+// ***********************************************
+
+// ***********************************************
+// ****** All webpages: Search results - BEGIN ****************  
+// ***********************************************
+
+
+public static function search_results_page(
+$library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+                                                       $institution, $department, 
+                                                       $page_topic, $year, $semester,
+                                                       $icon_in_toolbar, 
+                                                       $all_schemes,
+                                                       $father_scheme_idx
+) {
+
+
+
+echo '<!DOCTYPE html>';
+
+echo '<html>';
+
+
+
+
+//   $title_in_toolbar =  Events::get_leaf_name_from_father_scheme_recursively($all_schemes[$father_scheme_idx], $page_topic, $title_in_toolbar);
+//   
+// 
+//   Events::set_html_head($library_path, $title_in_toolbar, $icon_in_toolbar);
+  
+
+  
+  echo '<body>';
+
+//   ///@todo pass the library here
+//     Events::set_single_leaf_body($library_path, $remote_path_prefix, $local_path_prefix, $are_input_files_local,
+//                                          $institution, $department,
+//                                          $page_topic, $year, $semester,
+//                                          Events::$abstracts_folder, Events::$images_folder,
+//                                                        $all_schemes,
+//                                                        $father_scheme_idx);
+// 
+ 
+ 
+ 
+ 
+ echo "Search results will be shown here: WIP \n";
+
+ echo $_SERVER['REMOTE_ADDR'];  
+
+
+ print_r($_POST);
+
+	foreach ($_POST as $key => $value) {
+		echo "$key: $value";
+	};
+
+
+ 
+ 
+  echo '</body>';
+  
+  
+
+echo '</html>';
+
+
+
+}
+
+
+
+
+// ***********************************************
+// ****** All webpages: Search results - END ****************  
 // ***********************************************
 
 
@@ -2591,8 +2671,14 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
                                                                $semester,
                                                                $week_month_day_begin) {  
 
-  Events::set_html_head($relative_path_to_library, $title, $icon_in_toolbar);
+echo '<!DOCTYPE html>';
 
+echo '<html>';
+
+Events::set_html_head($relative_path_to_library, $title, $icon_in_toolbar);
+
+  
+  
   echo '<body>';
   
   Events::navigation_bar($relative_path_to_library,  ///need this here, for the search form
@@ -2623,6 +2709,11 @@ private static function generate_page_with_all_weeks_list($relative_path_to_libr
     //sandbox
 
   echo '</body>';
+  
+  
+ echo '</html>';
+ 
+  
  
  }
 
