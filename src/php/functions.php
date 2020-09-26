@@ -1739,7 +1739,7 @@ private static function navigation_bar_depth_0_scheme($prefix, $leaf_array) {
 private static function navigation_bar_link_to_department($department) {
 
    echo '<li class="nav-item">';
-   echo '<a class="nav-link"  style="background-color: ' . Events::$color_2 . ';"  href="' . $department[1] . '">' . $department[0] . '</a>';
+   echo '<a class="nav-link"  style="background-color: ' . Events::$color_2 . ';"  href="' . $department[Events::$dept_url_idx] . '">' . $department[Events::$dept_name_idx] . '</a>';
    echo '</li>';
 
 }
@@ -1938,8 +1938,7 @@ echo '<html>';
 	// I believe one must construct an OFFLINE DATABASE, daily updated, instead of recomputing it at every request,
 	// so that it is much faster to perform the research.
 	
-	
-    Events::google_search($_POST);
+    Events::google_search($_POST, $site_url);
 	
  
  
@@ -1955,12 +1954,13 @@ echo '</html>';
 
 
 
-private static function google_search($post_array) {
+private static function google_search($post_array, $site_url) {
 	//As a partial solution, you can pass your stuff to Google Search!!! It finds all pages containing that string!!!
 
+	$site_url = "www.math.ttu.edu/events/";
 	$term = isset($post_array['search_input']) ? $post_array['search_input'] : '';
     $term = urlencode($term);
-    $website = urlencode("www.math.ttu.edu/events/");
+    $website = urlencode($site_url);
     $redirect = "https://www.google.com/search?q=site%3A{$website}+{$term}";
     header("Location: $redirect");
     
@@ -1983,16 +1983,13 @@ private static function google_search($post_array) {
 
 public static function main_banner($title, $department, $institution) {
 
-  $dept_name_idx = 0;
-  $dept_url_idx = 1;
-  
 
   echo '<div class="main_banner">';
   echo '<div style="background-color: rgba(0, 0, 0, 0.3);">';                       //filter so that fonts on images are readable
   echo '<div class="' . Events::$bootstrap_container . '"' . ' ' . 'style="' . Events::$banners_text_alignment . '"' . '>';  //
 //   echo '<div style="' . Events::$banners_text_alignment . ' display: inline; width: 100%; margin-left: auto; margin-right: auto;  "' . '>';  //
   echo '      <h2> ' . $title . ' </h2>';
-  echo '      <h3> ' . /*'<a href="' . $department[$dept_url_idx] . '"' . ' style="color: white;"' . '>'  .*/ $department[$dept_name_idx]  /*. '</a>'*/ . ' </h3>';
+  echo '      <h3> ' . /*'<a href="' . $department[Events::$dept_url_idx] . '"' . ' style="color: white;"' . '>'  .*/ $department[Events::$dept_name_idx]  /*. '</a>'*/ . ' </h3>';
   echo '      <h3> ' . $institution . ' </h3>';
   echo '  </div>';
   echo '</div>';
@@ -3542,7 +3539,8 @@ private static function convert_to_associative_array($array_in) {
    private static $about_file           = './about.txt';
    private static $active_editions_file = './active_editions.csv';
    private static $active_mondays_file  = 'active_mondays_first_and_last.csv';
-   private static $default_event_img    = './src/img/smiley_slight.png';
+   private static $default_event_img    = './src/img/default_event_smiley_slight.png';
+//    private static $default_event_img    = './src/img/default_event_calendar.jpg';
 ///@todo it is up to the user to write the same directories as the ones that are there, perhaps put a check on that
    ///@todo you also have to check that the csv file does not have "empty cells"
 // ****** folder and file names - END ****************  
@@ -3622,7 +3620,13 @@ private static function convert_to_associative_array($array_in) {
 
   private static $row_events_begin = 0;
 // ****** CSV file - END ****************  
-  
+
+// ****** Department specification - BEGIN ****************  
+   private static  $dept_name_idx = 0;
+   private static  $dept_url_idx = 1;
+// ****** Department specification - END ****************  
+
+
 // ****** Directory structure - BEGIN ****************  
    private static   $discipline_idx_in_path_from_end = 2;
    private static   $year_idx_in_path_from_end       = 1;
@@ -3680,19 +3684,24 @@ private static function convert_to_associative_array($array_in) {
 ///@todo events.csv: Remove potential zeros in numbers of month and day such as 09 instead of 9
 ///@todo events.csv: If no title is specified, do not put the dropdown arrow for the abstract
 ///@todo events.csv: Remove potential empty rows added by organizers
+///@todo events.csv: Tell the organizers that they should write the time in the same format "HH:MM AM/PM"
 
 ///@todo Check that it works also if we add 'summer' folders, for summer events
 ///@todo write a function that checks that the directories of the inputs are there
 ///@todo Perhaps land immediately to the "Current" week page, instead of the weeks' list one
-///@todo Implement a search engine to find all events along the whole database
+///@todo Implement a search engine to find all events along the whole database. Using Google Search for now
 
 ///@todo: If you want a blank page for the pause in between semesters, you may just setup the current semester to "summer", and loop over the whole tree to find "summer" folders, and if you don't find events you just say "no events this week"
+///@todo: other way: Pick current year, loop over all weeks listed for all semesters of that year: If time is outside the given list of weeks, then it is a break.
 
 ///@todo Pass an "application" default image instead of having only a "library" default image
 
 ///@todo: how to access the CSS data from inside the PHP code
 
-///@todo: make the dates input all uniform, because different organizers may use different styles (do all lowercase/uppercase)
-//        Maybe do a functionality that creates an item for Google Calendar, or something  
+///@todo: Maybe do a functionality that creates for each event an item for Google Calendar, or something  
+
+///@todo: Understand why images after "squarification" are a bit blurry, and improve that
+
+///@todo: Find out how to pass a function as "action" of a form, instead of a php file. Perhaps I have to use ajax or jQuery (as it makes ajax requests easy)
 
 ?>
